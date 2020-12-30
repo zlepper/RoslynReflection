@@ -21,13 +21,12 @@ namespace RoslynReflection.Parsers
         {
             var name = classDeclaration.Identifier.ValueText.Trim();
 
-            var sourceClass = _classList.GetClass(name, _surroundingType);
+            var sourceClass = _classList.GetType(name, _surroundingType);
 
             var typeDeclarationParser = new TypeDeclarationParser(_classList, sourceClass);
             foreach (var typeDeclaration in classDeclaration.Members.OfType<TypeDeclarationSyntax>())
             {
-                var nested = typeDeclarationParser.ParseTypeDeclaration(typeDeclaration);
-                
+                typeDeclarationParser.ParseTypeDeclaration(typeDeclaration);
             }
             
             

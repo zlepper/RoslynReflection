@@ -8,25 +8,27 @@ namespace RoslynReflection.Parsers
     internal class TypeDeclarationParser
     {
         private Lazy<ClassDeclarationParser> _classDeclarationParser;
-        private SourceType? _surroundingType;
-        
+
         internal TypeDeclarationParser(SourceClassList classList, SourceType? surroundingType = null)
         {
-            _surroundingType = surroundingType;
             _classDeclarationParser = new(() => new ClassDeclarationParser(classList, surroundingType));
         }
 
-        internal SourceType ParseTypeDeclaration(TypeDeclarationSyntax typeDeclaration)
+        internal void ParseTypeDeclaration(TypeDeclarationSyntax typeDeclaration)
         {
-            return (typeDeclaration) switch
+            switch (typeDeclaration)
             {
-                ClassDeclarationSyntax classDecl => _classDeclarationParser.Value.ParseClassDeclaration(classDecl),
-                InterfaceDeclarationSyntax interfaceDeclarationSyntax => throw new NotImplementedException(),
-                RecordDeclarationSyntax recordDeclarationSyntax => throw new NotImplementedException(),
-                StructDeclarationSyntax structDeclarationSyntax => throw new NotImplementedException(),
-                _ => throw new ArgumentOutOfRangeException(nameof(typeDeclaration), typeDeclaration.GetType(),
-                    "Unknown TypeDeclaration type")
-            };
+                case ClassDeclarationSyntax classDecl:
+                    _classDeclarationParser.Value.ParseClassDeclaration(classDecl);
+                    break;
+                case InterfaceDeclarationSyntax interfaceDeclarationSyntax:
+                case RecordDeclarationSyntax recordDeclarationSyntax:
+                case StructDeclarationSyntax structDeclarationSyntax:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(typeDeclaration), typeDeclaration.GetType(),
+                        "Unknown TypeDeclaration type");
+            }
         }
 
         
