@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using RoslynReflection.Models;
 using RoslynReflection.Models.FromSource;
 
 namespace RoslynReflection.Collections
 {
     internal class SourceClassList
     {
-        private SourceModule _module;
-        private SourceNamespace _namespace;
-        private Dictionary<string, SourceClass> _classes = new();
+        private readonly SourceModule _module;
+        private readonly SourceNamespace _namespace;
+        private readonly Dictionary<string, SourceClass> _classes = new();
 
         internal SourceClassList(SourceModule module, SourceNamespace ns)
         {
@@ -21,14 +22,30 @@ namespace RoslynReflection.Collections
             }
         }
 
-        internal SourceClass GetClass(string name)
+        internal SourceClass GetClass(string name, SourceType? surroundingType = null)
         {
-            if (_classes.TryGetValue(name, out var existing))
+            var key = name;
+
+            if (surroundingType != null)
+            {
+                key = surroundingType.FullName() + "." + key;
+            }
+            
+            if (_classes.TryGetValue(key, out var existing))
             {
                 return existing;
             }
+
+            var c = _classes[key] = new SourceClass(_module, _namespace, name)
+            {
+                SurroundingType = surroundingType
+            };
+
+            if (surroundingType != null)
+            {
+                surroundingType.NestedTypes.Add(c);
+            }
             
-            var c = _classes[name] = new SourceClass(_module, _namespace, name);
             _namespace.SourceTypes.Add(c);
             return c;
         }

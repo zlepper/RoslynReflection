@@ -8,10 +8,12 @@ namespace RoslynReflection.Parsers
     internal class TypeDeclarationParser
     {
         private Lazy<ClassDeclarationParser> _classDeclarationParser;
+        private SourceType? _surroundingType;
         
-        internal TypeDeclarationParser(SourceClassList classList)
+        internal TypeDeclarationParser(SourceClassList classList, SourceType? surroundingType = null)
         {
-            _classDeclarationParser = new(() => new ClassDeclarationParser(classList));
+            _surroundingType = surroundingType;
+            _classDeclarationParser = new(() => new ClassDeclarationParser(classList, surroundingType));
         }
 
         internal SourceType ParseTypeDeclaration(TypeDeclarationSyntax typeDeclaration)

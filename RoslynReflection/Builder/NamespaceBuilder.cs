@@ -5,14 +5,16 @@ namespace RoslynReflection.Builder
 {
     internal class NamespaceBuilder : INamespaceBuilder
     {
-        private readonly SourceNamespace _namespace;
+        internal readonly SourceNamespace Namespace;
         private readonly ModuleBuilder _parent;
 
         internal NamespaceBuilder(ModuleBuilder parent, SourceNamespace ns)
         {
             _parent = parent;
-            _namespace = ns;
+            Namespace = ns;
         }
+
+        internal SourceModule Module => _parent.Module;
 
         public INamespaceBuilder NewNamespace(string name)
         {
@@ -26,8 +28,8 @@ namespace RoslynReflection.Builder
 
         public IClassBuilder NewClass(string name)
         {
-            var sourceClass = new SourceClass(_parent.Module, _namespace, name);
-            _namespace.SourceTypes.Add(sourceClass);
+            var sourceClass = new SourceClass(_parent.Module, Namespace, name);
+            Namespace.SourceTypes.Add(sourceClass);
 
             return new ClassBuilder(this, sourceClass);
         }

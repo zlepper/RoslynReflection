@@ -1,9 +1,15 @@
-﻿namespace RoslynReflection.Models.Bases
+﻿using RoslynReflection.Collections;
+
+namespace RoslynReflection.Models.Bases
 {
     internal abstract class BaseType : IType
     {
         public abstract IModule Module { get; }
         public abstract INamespace Namespace { get; }
+
+        public IType? SurroundingType { get; internal set; }
+
+        public readonly ValueList<IType> NestedTypes = new();
 
         public string Name { get; }
 
@@ -14,7 +20,7 @@
 
         protected bool Equals(BaseType other)
         {
-            return Name == other.Name;
+            return NestedTypes.Equals(other.NestedTypes) && Name == other.Name;
         }
 
         public override bool Equals(object? obj)
@@ -27,7 +33,10 @@
 
         public override int GetHashCode()
         {
-            return Name.GetHashCode();
+            unchecked
+            {
+                return (NestedTypes.GetHashCode() * 397) ^ Name.GetHashCode();
+            }
         }
 
         public static bool operator ==(BaseType? left, BaseType? right)
@@ -42,7 +51,7 @@
 
         public override string ToString()
         {
-            return $"BaseType {{ {nameof(Name)} = {Name} }}";
+            return $"BaseType {{ {nameof(NestedTypes)} = {NestedTypes}, IsNestedType = {this.IsNestedType()}, {nameof(Name)} = {Name} }}";
         }
     }
 }

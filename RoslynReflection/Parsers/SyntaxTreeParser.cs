@@ -36,7 +36,7 @@ namespace RoslynReflection.Parsers
                     var classList = new SourceClassList(_module, ns);
                     var typeParser = new TypeDeclarationParser(classList);
                     
-                    foreach (var typeDeclarationSyntax in namespaceDeclarationSyntax.DescendantNodes().OfType<TypeDeclarationSyntax>())
+                    foreach (var typeDeclarationSyntax in namespaceDeclarationSyntax.Members.OfType<TypeDeclarationSyntax>())
                     {
                         typeParser.ParseTypeDeclaration(typeDeclarationSyntax);
                     }

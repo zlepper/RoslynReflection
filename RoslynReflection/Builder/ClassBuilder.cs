@@ -32,7 +32,13 @@ namespace RoslynReflection.Builder
 
         public IClassBuilder NewInnerClass(string name)
         {
-            throw new NotImplementedException("TODO");
+            var c = new SourceClass(_namespaceBuilder.Module, _namespaceBuilder.Namespace, name)
+            {
+                SurroundingType = _sourceClass
+            };
+            _sourceClass.NestedTypes.Add(c);
+            _namespaceBuilder.Namespace.SourceTypes.Add(c);
+            return new ClassBuilder(_namespaceBuilder, _sourceClass);
         }
     }
 }
