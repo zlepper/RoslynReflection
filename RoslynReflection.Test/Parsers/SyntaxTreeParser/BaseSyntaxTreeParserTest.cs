@@ -1,13 +1,9 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using NUnit.Framework;
-using RoslynReflection.Builder;
+﻿using Microsoft.CodeAnalysis.CSharp;
 using RoslynReflection.Models.FromSource;
-using RoslynReflection.Parsers;
 
-namespace RoslynReflection.Test.Parsers
+namespace RoslynReflection.Test.Parsers.SyntaxTreeParser
 {
-    internal abstract class SyntaxTreeParserTest
+    internal abstract class BaseSyntaxTreeParserTest
     {
         protected SourceModule GetResult(string code)
         {
@@ -15,7 +11,7 @@ namespace RoslynReflection.Test.Parsers
 
             var module = new SourceModule();
 
-            var parser = new SyntaxTreeParser(module);
+            var parser = new RoslynReflection.Parsers.SyntaxTreeParser(module);
 
             parser.ParseSyntaxTree(syntaxTree);
 

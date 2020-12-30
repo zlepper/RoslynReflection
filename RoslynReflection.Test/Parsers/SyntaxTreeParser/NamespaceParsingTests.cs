@@ -1,12 +1,11 @@
-﻿using Microsoft.CodeAnalysis;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using RoslynReflection.Builder;
 
-namespace RoslynReflection.Test.Parsers
+namespace RoslynReflection.Test.Parsers.SyntaxTreeParser
 {
     [TestFixture]
     // ReSharper disable once InconsistentNaming
-    internal class SyntaxTreeParser_NamespaceParsing : SyntaxTreeParserTest
+    internal class NamespaceParsingTests : BaseSyntaxTreeParserTest
     {
         
         [Test]

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using RoslynReflection.Models.FromSource;
 
-namespace RoslynReflection.Parsers
+namespace RoslynReflection.Collections
 {
     /// <summary>
     /// Ensures a namespace is only "created" once
     /// </summary>
-    internal class SourceNamespaceList : IEnumerable<SourceNamespace>
+    internal class SourceNamespaceList
     {
         private Dictionary<string, SourceNamespace> _namespaces = new();
         private SourceModule _sourceModule;
@@ -32,24 +32,6 @@ namespace RoslynReflection.Parsers
             var ns = _namespaces[name] = new SourceNamespace(_sourceModule, name);
             _sourceModule.SourceNamespaces.Add(ns);
             return ns;
-        }
-
-        internal void AddNamespace(string name)
-        {
-            if (!_namespaces.ContainsKey(name))
-            {
-                _namespaces[name] = new SourceNamespace(_sourceModule, name);
-            }
-        }
-
-        public IEnumerator<SourceNamespace> GetEnumerator()
-        {
-            return _namespaces.Values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoslynReflection.Collections;
 using RoslynReflection.Models.FromSource;
 
 namespace RoslynReflection.Parsers
@@ -14,7 +15,7 @@ namespace RoslynReflection.Parsers
             _namespaceList = namespaceList;
         }
 
-        internal IEnumerable<NamespaceDeclarationSyntax> ParseNamespaceDeclaration(NamespaceDeclarationSyntax namespaceDeclaration, SourceNamespace? parentNamespace = null)
+        internal IEnumerable<(NamespaceDeclarationSyntax declaration, SourceNamespace ns)> ParseNamespaceDeclaration(NamespaceDeclarationSyntax namespaceDeclaration, SourceNamespace? parentNamespace = null)
         {
             var name = namespaceDeclaration.Name.GetText().ToString().Trim();
 
@@ -30,7 +31,7 @@ namespace RoslynReflection.Parsers
                 .OfType<NamespaceDeclarationSyntax>()
                 .SelectMany(s => ParseNamespaceDeclaration(s, ns));
 
-            return Enumerable.Repeat(namespaceDeclaration, 1).Concat(childNamespaces);
+            return Enumerable.Repeat((namespaceDeclaration, ns), 1).Concat(childNamespaces);
         }
     }
 }
