@@ -3,7 +3,7 @@ using System.Linq;
 using RoslynReflection.Collections;
 using RoslynReflection.Models;
 
-namespace RoslynReflection.Parsers
+namespace RoslynReflection.Parsers.SourceCode
 {
     public class ParsingResult
     {

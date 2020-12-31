@@ -1,4 +1,4 @@
-﻿namespace RoslynReflection.Parsers
+﻿namespace RoslynReflection.Parsers.SourceCode
 {
     public class CompilationUnitParser
     {

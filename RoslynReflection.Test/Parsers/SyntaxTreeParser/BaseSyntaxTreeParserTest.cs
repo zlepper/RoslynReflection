@@ -11,7 +11,7 @@ namespace RoslynReflection.Test.Parsers.SyntaxTreeParser
 
             var module = new SourceModule();
 
-            var parser = new RoslynReflection.Parsers.SyntaxTreeParser(module);
+            var parser = new RoslynReflection.Parsers.SourceCode.SyntaxTreeParser(module);
 
             parser.ParseSyntaxTree(syntaxTree);
 

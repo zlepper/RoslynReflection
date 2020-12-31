@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Collections;
 using RoslynReflection.Models.FromSource;
 
-namespace RoslynReflection.Parsers
+namespace RoslynReflection.Parsers.SourceCode
 {
     internal class SyntaxTreeParser
     {

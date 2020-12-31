@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Collections;
 using RoslynReflection.Models.FromSource;
 
-namespace RoslynReflection.Parsers
+namespace RoslynReflection.Parsers.SourceCode
 {
     internal class TypeDeclarationParser
     {
