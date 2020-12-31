@@ -2,16 +2,16 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Collections;
-using RoslynReflection.Models.FromSource;
+using RoslynReflection.Models;
 
 namespace RoslynReflection.Parsers.SourceCode
 {
     internal class SyntaxTreeParser
     {
-        private readonly SourceModule _module;
+        private readonly ScannedModule _module;
         private SourceNamespaceList _namespaces;
         
-        internal SyntaxTreeParser(SourceModule module)
+        internal SyntaxTreeParser(ScannedModule module)
         {
             _module = module;
             _namespaces = new SourceNamespaceList(module);
@@ -31,7 +31,7 @@ namespace RoslynReflection.Parsers.SourceCode
 
                 foreach (var (namespaceDeclarationSyntax, ns) in namespaces)
                 {
-                    var classList = new SourceClassList(_module, ns);
+                    var classList = new ClassList(_module, ns);
                     var typeParser = new TypeDeclarationParser(classList);
                     
                     foreach (var typeDeclarationSyntax in namespaceDeclarationSyntax.Members.OfType<TypeDeclarationSyntax>())

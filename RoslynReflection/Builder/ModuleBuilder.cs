@@ -1,32 +1,30 @@
 ﻿using RoslynReflection.Models;
-using RoslynReflection.Models.FromSource;
 
 namespace RoslynReflection.Builder
 {
     public class ModuleBuilder : IModuleBuilder
     {
-        internal readonly SourceModule Module = new();
-        
-        public static IModuleBuilder NewBuilder()
-        {
-            return new ModuleBuilder();
-        }
+        internal readonly ScannedModule Module = new();
 
         private ModuleBuilder()
         {
-            
         }
 
         public INamespaceBuilder NewNamespace(string name)
         {
-            var ns = new SourceNamespace(Module, name);
-            Module.SourceNamespaces.Add(ns);
+            var ns = new ScannedNamespace(Module, name);
+            Module.Namespaces.Add(ns);
             return new NamespaceBuilder(this, ns);
         }
 
-        public IModule Finish()
+        public ScannedModule Finish()
         {
             return Module;
+        }
+
+        public static IModuleBuilder NewBuilder()
+        {
+            return new ModuleBuilder();
         }
     }
 }

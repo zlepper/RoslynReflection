@@ -1,55 +1,41 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RoslynReflection.Models;
-using RoslynReflection.Models.FromSource;
 
 namespace RoslynReflection.Collections
 {
     internal abstract class SourceTypeList<T>
-    where T: SourceType
+        where T : ScannedType
     {
-        protected readonly SourceModule Module;
-        protected readonly SourceNamespace Namespace;
         private readonly Dictionary<string, T> _types = new();
+        protected readonly ScannedModule Module;
+        protected readonly ScannedNamespace Namespace;
 
-        protected SourceTypeList(SourceModule module, SourceNamespace ns)
+        protected SourceTypeList(ScannedModule module, ScannedNamespace ns)
         {
             Module = module;
             Namespace = ns;
-            
-            foreach (var sourceType in Namespace.SourceTypes.OfType<T>())
-            {
-                _types[sourceType.Name] = sourceType;
-            }
+
+            foreach (var type in Namespace.Types.OfType<T>()) _types[type.Name] = type;
         }
 
-        internal T GetType(string name, SourceType? surroundingType = null)
+        internal T GetType(string name, ScannedType? surroundingType = null)
         {
             var key = name;
 
-            if (surroundingType != null)
-            {
-                key = surroundingType.FullName() + "." + key;
-            }
-            
-            if (_types.TryGetValue(key, out var existing))
-            {
-                return existing;
-            }
+            if (surroundingType != null) key = surroundingType.FullName() + "." + key;
+
+            if (_types.TryGetValue(key, out var existing)) return existing;
 
             var type = _types[key] = InitType(name);
             type.SurroundingType = surroundingType;
 
-            if (surroundingType != null)
-            {
-                surroundingType.NestedTypes.Add(type);
-            }
-            
-            Namespace.SourceTypes.Add(type);
+            if (surroundingType != null) surroundingType.NestedTypes.Add(type);
+
+            Namespace.Types.Add(type);
             return type;
         }
 
         protected abstract T InitType(string name);
-
     }
 }

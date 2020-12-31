@@ -1,36 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using RoslynReflection.Models.FromSource;
+﻿using System.Collections.Generic;
+using RoslynReflection.Models;
 
 namespace RoslynReflection.Collections
 {
     /// <summary>
-    /// Ensures a namespace is only "created" once
+    ///     Ensures a namespace is only "created" once
     /// </summary>
     internal class SourceNamespaceList
     {
-        private Dictionary<string, SourceNamespace> _namespaces = new();
-        private SourceModule _sourceModule;
-        
-        public SourceNamespaceList(SourceModule sourceModule)
+        private readonly Dictionary<string, ScannedNamespace> _namespaces = new();
+        private readonly ScannedModule _sourceModule;
+
+        public SourceNamespaceList(ScannedModule sourceModule)
         {
             _sourceModule = sourceModule;
 
-            foreach (var ns in _sourceModule.SourceNamespaces)
-            {
-                _namespaces[ns.Name] = ns;
-            }
+            foreach (var ns in _sourceModule.Namespaces) _namespaces[ns.Name] = ns;
         }
 
-        internal SourceNamespace GetNamespace(string name)
+        internal ScannedNamespace GetNamespace(string name)
         {
-            if (_namespaces.TryGetValue(name, out var existing))
-            {
-                return existing;
-            }
+            if (_namespaces.TryGetValue(name, out var existing)) return existing;
 
-            var ns = _namespaces[name] = new SourceNamespace(_sourceModule, name);
-            _sourceModule.SourceNamespaces.Add(ns);
+            var ns = _namespaces[name] = new ScannedNamespace(_sourceModule, name);
+            _sourceModule.Namespaces.Add(ns);
             return ns;
         }
     }

@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Collections;
-using RoslynReflection.Models.FromSource;
+using RoslynReflection.Models;
 
 namespace RoslynReflection.Parsers.SourceCode
 {
@@ -15,7 +15,7 @@ namespace RoslynReflection.Parsers.SourceCode
             _namespaceList = namespaceList;
         }
 
-        internal IEnumerable<(NamespaceDeclarationSyntax declaration, SourceNamespace ns)> ParseNamespaceDeclaration(NamespaceDeclarationSyntax namespaceDeclaration, SourceNamespace? parentNamespace = null)
+        internal IEnumerable<(NamespaceDeclarationSyntax declaration, ScannedNamespace ns)> ParseNamespaceDeclaration(NamespaceDeclarationSyntax namespaceDeclaration, ScannedNamespace? parentNamespace = null)
         {
             var name = namespaceDeclaration.Name.GetText().ToString().Trim();
 

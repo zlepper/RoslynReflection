@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Collections;
-using RoslynReflection.Models.FromSource;
+using RoslynReflection.Models;
 
 namespace RoslynReflection.Parsers.SourceCode
 {
@@ -9,7 +9,7 @@ namespace RoslynReflection.Parsers.SourceCode
     {
         private Lazy<ClassDeclarationParser> _classDeclarationParser;
 
-        internal TypeDeclarationParser(SourceClassList classList, SourceType? surroundingType = null)
+        internal TypeDeclarationParser(ClassList classList, ScannedType? surroundingType = null)
         {
             _classDeclarationParser = new(() => new ClassDeclarationParser(classList, surroundingType));
         }

@@ -1,15 +1,13 @@
-﻿using System;
-using RoslynReflection.Models;
-using RoslynReflection.Models.FromSource;
+﻿using RoslynReflection.Models;
 
 namespace RoslynReflection.Builder
 {
     internal class ClassBuilder : IClassBuilder
     {
-        private NamespaceBuilder _namespaceBuilder;
-        private readonly SourceClass _sourceClass;
+        private readonly ScannedClass _sourceClass;
+        private readonly NamespaceBuilder _namespaceBuilder;
 
-        internal ClassBuilder(NamespaceBuilder parent, SourceClass sourceClass)
+        internal ClassBuilder(NamespaceBuilder parent, ScannedClass sourceClass)
         {
             _namespaceBuilder = parent;
             _sourceClass = sourceClass;
@@ -20,7 +18,7 @@ namespace RoslynReflection.Builder
             return _namespaceBuilder.NewNamespace(name);
         }
 
-        public IModule Finish()
+        public ScannedModule Finish()
         {
             return _namespaceBuilder.Finish();
         }
@@ -32,12 +30,12 @@ namespace RoslynReflection.Builder
 
         public IClassBuilder NewInnerClass(string name)
         {
-            var c = new SourceClass(_namespaceBuilder.Module, _namespaceBuilder.Namespace, name)
+            var c = new ScannedClass(_namespaceBuilder.Module, _namespaceBuilder.Namespace, name)
             {
                 SurroundingType = _sourceClass
             };
             _sourceClass.NestedTypes.Add(c);
-            _namespaceBuilder.Namespace.SourceTypes.Add(c);
+            _namespaceBuilder.Namespace.Types.Add(c);
             return new ClassBuilder(_namespaceBuilder, _sourceClass);
         }
     }

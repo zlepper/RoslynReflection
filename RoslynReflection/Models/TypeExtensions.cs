@@ -2,12 +2,12 @@
 {
     public static class TypeExtensions
     {
-        public static bool IsNestedType(this IType type)
+        public static bool IsNestedType(this ScannedType type)
         {
             return type.SurroundingType != null;
         }
 
-        public static string FullName(this IType type)
+        public static string FullName(this ScannedType type)
         {
             if (type.SurroundingType == null)
             {
@@ -17,7 +17,7 @@
             return $"{type.SurroundingType.FullName()}.{type.Name}";
         }
 
-        public static string FullyQualifiedName(this IType type)
+        public static string FullyQualifiedName(this ScannedType type)
         {
             return $"{type.Namespace.Name}.{type.FullName()}";
         }

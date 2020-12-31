@@ -13,6 +13,6 @@ namespace RoslynReflection.Builder
         /// <summary>
         /// Gets the resulting module
         /// </summary>
-        IModule Finish();
+        ScannedModule Finish();
     }
 }

@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using RoslynReflection.Builder;
 
-namespace RoslynReflection.Test.Parsers.SyntaxTreeParser
+namespace RoslynReflection.Test.Parsers.SyntaxTreeParserTests
 {
     [TestFixture]
     internal class ClassParsingTests : BaseSyntaxTreeParserTest
