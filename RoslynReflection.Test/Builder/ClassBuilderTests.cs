@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
 
@@ -59,6 +60,19 @@ namespace RoslynReflection.Test.Builder
                 .Finish();
             
             Assert.That(actualModule, Is.EqualTo(expectedModule));
+        }
+
+        [Test]
+        public void ThrowsExceptionsWhenNavigatingAboveOutermostClass()
+        {
+            Assert.That(() =>
+            {
+                ModuleBuilder
+                    .NewBuilder()
+                    .NewNamespace("MyNamespace")
+                    .NewClass("MyClass")
+                    .GoBackToParent();
+            }, Throws.TypeOf<InvalidOperationException>());
         }
     }
 }

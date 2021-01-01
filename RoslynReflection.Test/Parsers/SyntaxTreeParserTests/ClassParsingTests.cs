@@ -53,6 +53,7 @@ namespace RoslynReflection.Test.Parsers.SyntaxTreeParserTests
             var code = @"namespace MyNamespace {
     public class MyClass {
         public class MyInnerClass { }    
+        public class MySecondInnerClass { }    
     }
 }";
 
@@ -63,6 +64,8 @@ namespace RoslynReflection.Test.Parsers.SyntaxTreeParserTests
                     .NewNamespace("MyNamespace")
                     .NewClass("MyClass")
                     .NewInnerClass("MyInnerClass")
+                    .GoBackToParent()
+                    .NewInnerClass("MySecondInnerClass")
                     .Finish()
             ));
         }
