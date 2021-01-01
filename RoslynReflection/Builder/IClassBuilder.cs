@@ -3,5 +3,6 @@
     public interface IClassBuilder : INamespaceBuilder
     {
         IClassBuilder NewInnerClass(string name);
+        IClassBuilder GoBackToParent();
     }
 }

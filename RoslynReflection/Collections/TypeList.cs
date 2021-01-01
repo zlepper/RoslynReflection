@@ -4,14 +4,14 @@ using RoslynReflection.Models;
 
 namespace RoslynReflection.Collections
 {
-    internal abstract class SourceTypeList<T>
+    internal abstract class TypeList<T>
         where T : ScannedType
     {
         private readonly Dictionary<string, T> _types = new();
         protected readonly ScannedModule Module;
         protected readonly ScannedNamespace Namespace;
 
-        protected SourceTypeList(ScannedModule module, ScannedNamespace ns)
+        protected TypeList(ScannedModule module, ScannedNamespace ns)
         {
             Module = module;
             Namespace = ns;
@@ -27,15 +27,11 @@ namespace RoslynReflection.Collections
 
             if (_types.TryGetValue(key, out var existing)) return existing;
 
-            var type = _types[key] = InitType(name);
-            type.SurroundingType = surroundingType;
+            var type = _types[key] = InitType(name, surroundingType);
 
-            if (surroundingType != null) surroundingType.NestedTypes.Add(type);
-
-            Namespace.Types.Add(type);
             return type;
         }
 
-        protected abstract T InitType(string name);
+        protected abstract T InitType(string name, ScannedType? surroundingType = null);
     }
 }

@@ -13,7 +13,6 @@ namespace RoslynReflection.Builder
         public INamespaceBuilder NewNamespace(string name)
         {
             var ns = new ScannedNamespace(Module, name);
-            Module.Namespaces.Add(ns);
             return new NamespaceBuilder(this, ns);
         }
 

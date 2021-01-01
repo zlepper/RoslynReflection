@@ -23,7 +23,6 @@ namespace RoslynReflection.Collections
             if (_namespaces.TryGetValue(name, out var existing)) return existing;
 
             var ns = _namespaces[name] = new ScannedNamespace(_sourceModule, name);
-            _sourceModule.Namespaces.Add(ns);
             return ns;
         }
     }

@@ -6,18 +6,25 @@ namespace RoslynReflection.Models
 {
     public abstract record ScannedType
     {
-        public readonly ScannedModule Module;
+        public ScannedModule Module => Namespace.Module;
         public readonly ScannedNamespace Namespace;
         public readonly string Name;
+        public readonly ScannedType? SurroundingType;
 
-        protected ScannedType(ScannedModule module, ScannedNamespace ns, string name)
+        protected ScannedType(ScannedNamespace ns, string name, ScannedType? surroundingType = null)
         {
-            Module = module;
             Namespace = ns;
             Name = name;
+            SurroundingType = surroundingType;
+
+            ns.Types.Add(this);
+
+            if (surroundingType != null)
+            {
+                surroundingType.NestedTypes.Add(this);
+            }
         }
 
-        public ScannedType? SurroundingType { get; internal set; }
         public readonly ValueList<ScannedType> NestedTypes = new();
 
         public virtual bool Equals(ScannedType? other)

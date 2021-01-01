@@ -27,8 +27,7 @@ namespace RoslynReflection.Builder
 
         public IClassBuilder NewClass(string name)
         {
-            var sourceClass = new ScannedClass(_parent.Module, Namespace, name);
-            Namespace.Types.Add(sourceClass);
+            var sourceClass = new ScannedClass(Namespace, name);
 
             return new ClassBuilder(this, sourceClass);
         }

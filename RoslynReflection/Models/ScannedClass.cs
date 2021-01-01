@@ -2,7 +2,7 @@ namespace RoslynReflection.Models
 {
     public record ScannedClass : ScannedType
     {
-        public ScannedClass(ScannedModule module, ScannedNamespace ns, string name) : base(module, ns, name)
+        public ScannedClass(ScannedNamespace ns, string name, ScannedType? surroundingType = null) : base(ns, name, surroundingType)
         {
         }
     }

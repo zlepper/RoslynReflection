@@ -1,4 +1,5 @@
-﻿using RoslynReflection.Models;
+﻿using System;
+using RoslynReflection.Models;
 
 namespace RoslynReflection.Builder
 {
@@ -6,11 +7,17 @@ namespace RoslynReflection.Builder
     {
         private readonly ScannedClass _sourceClass;
         private readonly NamespaceBuilder _namespaceBuilder;
+        private readonly ClassBuilder? _parentClassBuilder;
 
         internal ClassBuilder(NamespaceBuilder parent, ScannedClass sourceClass)
         {
             _namespaceBuilder = parent;
             _sourceClass = sourceClass;
+        }
+
+        private ClassBuilder(NamespaceBuilder parent, ScannedClass sourceClass, ClassBuilder parentClassBuilder) : this(parent, sourceClass)
+        {
+            _parentClassBuilder = parentClassBuilder;
         }
 
         public INamespaceBuilder NewNamespace(string name)
@@ -30,13 +37,18 @@ namespace RoslynReflection.Builder
 
         public IClassBuilder NewInnerClass(string name)
         {
-            var c = new ScannedClass(_namespaceBuilder.Module, _namespaceBuilder.Namespace, name)
+            var c = new ScannedClass(_namespaceBuilder.Namespace, name, _sourceClass);
+            return new ClassBuilder(_namespaceBuilder, _sourceClass, this);
+        }
+
+        public IClassBuilder GoBackToParent()
+        {
+            if (_parentClassBuilder == null)
             {
-                SurroundingType = _sourceClass
-            };
-            _sourceClass.NestedTypes.Add(c);
-            _namespaceBuilder.Namespace.Types.Add(c);
-            return new ClassBuilder(_namespaceBuilder, _sourceClass);
+                throw new InvalidOperationException("Currently not interacting with a nested class");
+            }
+
+            return _parentClassBuilder;
         }
     }
 }

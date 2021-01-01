@@ -2,15 +2,15 @@
 
 namespace RoslynReflection.Collections
 {
-    internal class ClassList : SourceTypeList<ScannedClass>
+    internal class ClassList : TypeList<ScannedClass>
     {
         public ClassList(ScannedModule module, ScannedNamespace ns) : base(module, ns)
         {
         }
 
-        protected override ScannedClass InitType(string name)
+        protected override ScannedClass InitType(string name, ScannedType? surroundingType = null)
         {
-            return new(Module, Namespace, name);
+            return new(Namespace, name, surroundingType);
         }
     }
 }

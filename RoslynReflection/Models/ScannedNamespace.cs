@@ -14,6 +14,8 @@ namespace RoslynReflection.Models
         {
             Module = module;
             Name = name;
+            
+            module.Namespaces.Add(this);
         }
 
         public virtual bool Equals(ScannedNamespace? other)
