@@ -2,7 +2,7 @@
 using RoslynReflection.Models;
 using RoslynReflection.Parsers.SourceCode;
 
-namespace RoslynReflection.Test.Parsers.SyntaxTreeParserTests
+namespace RoslynReflection.Test.Parsers.SourceCode
 {
     internal abstract class BaseSyntaxTreeParserTest
     {

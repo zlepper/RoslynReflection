@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using RoslynReflection.Builder;
 
-namespace RoslynReflection.Test.Parsers.SyntaxTreeParserTests
+namespace RoslynReflection.Test.Parsers.SourceCode
 {
     [TestFixture]
     // ReSharper disable once InconsistentNaming
