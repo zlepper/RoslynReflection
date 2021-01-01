@@ -1,0 +1,26 @@
+name: .NET
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    name: Dotnet ${{ matrix.dotnet_version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        dotnet_version: ['2.1.811', '3.1.402', '5.0.100']
+        os: ['ubuntu-latest', 'windows-latest', 'macOS-latest']
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: $${{ matrix.dotnet_version }}
+    - name: Test
+      run: dotnet test
