@@ -21,6 +21,6 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: $${{ matrix.dotnet_version }}
+        dotnet-version: ${{ matrix.dotnet_version }}
     - name: Test
       run: dotnet test
