@@ -9,7 +9,7 @@ namespace RoslynReflection.Extensions
             return new FieldStringBuilder(builder).AppendField(fieldName, value);
         }
 
-        internal class FieldStringBuilder
+        internal struct FieldStringBuilder
         {
             private StringBuilder _stringBuilder;
             private bool _hasAddedFirstField;
@@ -17,6 +17,7 @@ namespace RoslynReflection.Extensions
             public FieldStringBuilder(StringBuilder stringBuilder)
             {
                 _stringBuilder = stringBuilder;
+                _hasAddedFirstField = false;
             }
 
             
