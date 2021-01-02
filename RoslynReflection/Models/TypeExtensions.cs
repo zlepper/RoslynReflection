@@ -19,7 +19,7 @@
 
         public static string FullyQualifiedName(this ScannedType type)
         {
-            return $"{type.Namespace.Name}.{type.FullName()}";
+            return $"{type.Namespace.NameAsPrefix()}{type.FullName()}";
         }
     }
 }

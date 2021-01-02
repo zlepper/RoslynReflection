@@ -6,12 +6,12 @@ namespace RoslynReflection.Collections
     /// <summary>
     ///     Ensures a namespace is only "created" once
     /// </summary>
-    internal class SourceNamespaceList
+    internal class NamespaceList
     {
         private readonly Dictionary<string, ScannedNamespace> _namespaces = new();
         private readonly ScannedModule _sourceModule;
 
-        public SourceNamespaceList(ScannedModule sourceModule)
+        public NamespaceList(ScannedModule sourceModule)
         {
             _sourceModule = sourceModule;
 

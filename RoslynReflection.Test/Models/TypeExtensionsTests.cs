@@ -76,5 +76,18 @@ namespace RoslynReflection.Test.Models
             
             Assert.That(target.FullyQualifiedName(), Is.EqualTo("MyNamespace.MyClass.MyInnerClass"));
         }
+
+        [Test]
+        public void FullyQualifiedName_ForClassWithoutNamespace()
+        {
+            var target = ModuleBuilder.NewBuilder()
+                .NewNamespace("")
+                .NewClass("MyClass")
+                .Finish()
+                .Classes()
+                .Single();
+            
+            Assert.That(target.FullyQualifiedName(), Is.EqualTo("MyClass"));
+        }
     }
 }

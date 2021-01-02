@@ -9,12 +9,12 @@ namespace RoslynReflection.Parsers.SourceCode
     internal class SyntaxTreeParser
     {
         private readonly ScannedModule _module;
-        private SourceNamespaceList _namespaces;
+        private NamespaceList _namespaces;
         
         internal SyntaxTreeParser(ScannedModule module)
         {
             _module = module;
-            _namespaces = new SourceNamespaceList(module);
+            _namespaces = new NamespaceList(module);
         }
 
         internal void ParseSyntaxTree(SyntaxTree document)

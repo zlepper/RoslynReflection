@@ -44,8 +44,8 @@ namespace RoslynReflection.Models
 
         protected virtual bool PrintMembers(StringBuilder builder)
         {
-            builder.AppendField(nameof(Name), Name);
-            builder.AppendField(nameof(NestedTypes), NestedTypes);
+            builder.AppendField(nameof(Name), Name)
+                .AppendField(nameof(NestedTypes), NestedTypes);
             
             return true;
         }

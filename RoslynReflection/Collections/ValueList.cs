@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +9,8 @@ namespace RoslynReflection.Collections
     where T : notnull
     {
         private readonly List<T> _collectionImplementation;
+
+        public int Count => _collectionImplementation.Count;
 
         public ValueList()
         {
@@ -32,6 +35,11 @@ namespace RoslynReflection.Collections
         public void AddRange(IEnumerable<T> items)
         {
             _collectionImplementation.AddRange(items);
+        }
+
+        public void RemoveAll(Predicate<T> match)
+        {
+            _collectionImplementation.RemoveAll(match);
         }
 
         protected bool Equals(ValueList<T> other)

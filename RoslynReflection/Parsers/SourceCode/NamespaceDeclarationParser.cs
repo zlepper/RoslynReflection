@@ -8,9 +8,9 @@ namespace RoslynReflection.Parsers.SourceCode
 {
     internal class NamespaceDeclarationParser
     {
-        private SourceNamespaceList _namespaceList;
+        private NamespaceList _namespaceList;
 
-        internal NamespaceDeclarationParser(SourceNamespaceList namespaceList)
+        internal NamespaceDeclarationParser(NamespaceList namespaceList)
         {
             _namespaceList = namespaceList;
         }
