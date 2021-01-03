@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace RoslynReflection.Collections
@@ -8,43 +9,53 @@ namespace RoslynReflection.Collections
     public class ValueList<T> : IEnumerable<T>
     where T : notnull
     {
-        private readonly List<T> _collectionImplementation;
+        private readonly List<T> _innerCollection;
 
-        public int Count => _collectionImplementation.Count;
+        private readonly IEqualityComparer<T> _comparer;
 
-        public ValueList()
+        public int Count => _innerCollection.Count;
+
+        public ValueList(IEqualityComparer<T> comparer)
         {
-            _collectionImplementation = new List<T>();
+            _comparer = comparer;
+            _innerCollection = new();
+        }
+        
+        public ValueList() : this(EqualityComparer<T>.Default)
+        {
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return _collectionImplementation.GetEnumerator();
+            return _innerCollection.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable) _collectionImplementation).GetEnumerator();
+            return ((IEnumerable) _innerCollection).GetEnumerator();
         }
 
         public void Add(T item)
         {
-            _collectionImplementation.Add(item);
-        }
-        
-        public void AddRange(IEnumerable<T> items)
-        {
-            _collectionImplementation.AddRange(items);
+            _innerCollection.Add(item);
         }
 
         public void RemoveAll(Predicate<T> match)
         {
-            _collectionImplementation.RemoveAll(match);
+            _innerCollection.RemoveAll(match);
         }
 
         protected bool Equals(ValueList<T> other)
         {
-            return _collectionImplementation.SequenceEqual(other._collectionImplementation);
+            if (other.Count != Count)
+            {
+                return false;
+            }
+
+            var t = _innerCollection.ToImmutableHashSet(_comparer);
+            var o = other.ToImmutableHashSet(_comparer);
+
+            return t.SetEquals(o);
         }
 
         public override bool Equals(object? obj)
@@ -57,10 +68,7 @@ namespace RoslynReflection.Collections
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return _collectionImplementation.Sum(item => item.GetHashCode() * 13);
-            }
+            return _innerCollection.Aggregate(0, (sum, item) => unchecked(sum + item.GetHashCode() * 397));
         }
 
         public static bool operator ==(ValueList<T>? left, ValueList<T>? right)
@@ -75,7 +83,7 @@ namespace RoslynReflection.Collections
 
         public override string ToString()
         {
-            return "[" + string.Join(", ", _collectionImplementation) + "]";
+            return "[" + string.Join(", ", _innerCollection) + "]";
         }
     }
 }

@@ -43,7 +43,8 @@ namespace RoslynReflection.Parsers.AssemblyParser
 
             var surroundingType = type.DeclaringType == null ? null : AddType(type.DeclaringType);
 
-            return _typeDict[type] = new ScannedClass(ns, type.Name, surroundingType);
+            var typeParser = new AssemblyTypeParser(ns, surroundingType);
+            return _typeDict[type] = typeParser.ParseType(type);
         }
 
         private static IEnumerable<Type> GetPossibleTypes(Assembly assembly)

@@ -12,7 +12,8 @@ namespace RoslynReflection.Models
         public readonly string Name;
         public readonly ScannedType? SurroundingType;
 
-        public readonly ValueList<Attribute> Attributes = new();
+        public readonly ValueList<ScannedType> NestedTypes = new();
+        public readonly ValueList<object> Attributes = new(AttributeComparer.Instance);
 
         protected ScannedType(ScannedNamespace ns, string name, ScannedType? surroundingType = null)
         {
@@ -27,8 +28,6 @@ namespace RoslynReflection.Models
                 surroundingType.NestedTypes.Add(this);
             }
         }
-
-        public readonly ValueList<ScannedType> NestedTypes = new();
 
         public virtual bool Equals(ScannedType? other)
         {
@@ -56,5 +55,7 @@ namespace RoslynReflection.Models
             
             return true;
         }
+        
+        
     }
 }

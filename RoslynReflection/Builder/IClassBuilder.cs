@@ -22,6 +22,6 @@ namespace RoslynReflection.Builder
         /// </summary>
         /// <param name="attribute">The attribute instance to pass along</param>
         /// <returns>This builder</returns>
-        IClassBuilder WithAttribute(Attribute attribute);
+        IClassBuilder WithAttribute(object attribute);
     }
 }
