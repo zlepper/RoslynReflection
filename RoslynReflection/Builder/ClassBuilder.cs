@@ -50,5 +50,11 @@ namespace RoslynReflection.Builder
 
             return _parentClassBuilder;
         }
+
+        public IClassBuilder WithAttribute(Attribute attribute)
+        {
+            _sourceClass.Attributes.Add(attribute);
+            return this;
+        }
     }
 }

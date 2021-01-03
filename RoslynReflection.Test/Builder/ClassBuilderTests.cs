@@ -93,5 +93,22 @@ namespace RoslynReflection.Test.Builder
 
             Assert.That(actual, Is.EqualTo(expectedModule));
         }
+
+        [Test]
+        public void AddsAttributes()
+        {
+            var expectedModule = new ScannedModule();
+            var expectedNamespace = new ScannedNamespace(expectedModule, "MyNs");
+            var myClass = new ScannedClass(expectedNamespace, "MyClass");
+            myClass.Attributes.Add(new SampleAttribute("hello"));
+
+            var actual = ModuleBuilder.NewBuilder()
+                .NewNamespace("MyNs")
+                .NewClass("MyClass")
+                .WithAttribute(new SampleAttribute("hello"))
+                .Finish();
+            
+            Assert.That(actual, Is.EqualTo(actual));
+        }
     }
 }
