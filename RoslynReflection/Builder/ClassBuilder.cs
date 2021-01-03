@@ -38,7 +38,7 @@ namespace RoslynReflection.Builder
         public IClassBuilder NewInnerClass(string name)
         {
             var c = new ScannedClass(_namespaceBuilder.Namespace, name, _sourceClass);
-            return new ClassBuilder(_namespaceBuilder, _sourceClass, this);
+            return new ClassBuilder(_namespaceBuilder, c, this);
         }
 
         public IClassBuilder GoBackToParent()

@@ -74,5 +74,24 @@ namespace RoslynReflection.Test.Builder
                     .GoBackToParent();
             }, Throws.TypeOf<InvalidOperationException>());
         }
+
+        [Test]
+        public void DoubleNestedClass()
+        {
+            var expectedModule = new ScannedModule();
+            var expectedNamespace = new ScannedNamespace(expectedModule, "MyNs");
+            var outer = new ScannedClass(expectedNamespace, "Outer");
+            var middle = new ScannedClass(expectedNamespace, "Middle", outer);
+            var unused2 = new ScannedClass(expectedNamespace, "Inner", middle);
+
+            var actual = ModuleBuilder.NewBuilder()
+                .NewNamespace("MyNs")
+                .NewClass("Outer")
+                .NewInnerClass("Middle")
+                .NewInnerClass("Inner")
+                .Finish();
+
+            Assert.That(actual, Is.EqualTo(expectedModule));
+        }
     }
 }
