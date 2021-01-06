@@ -258,6 +258,62 @@ namespace RoslynReflection.Test.Models
             Assert.That(available.TryGetType(myClass, $"MyThing.NoExist", out var match), Is.False);
             Assert.That(match, Is.Null);
         }
+        
+        [Test]
+        public void SkipsConflictingNamespaceIfAliasDoesntMatch()
+        {
+            var module = new ScannedModule();
+            var otherNamespace = new ScannedNamespace(module, "OtherNamespace");
+            var otherClass = new ScannedClass(otherNamespace, "OtherClass");
+            var otherNamespace2 = new ScannedNamespace(module, "OtherNamespace2");
+            var otherClass2 = new ScannedClass(otherNamespace2, "OtherClass");
+            var classNamespace = new ScannedNamespace(module, "MyNamespace");
+            var myClass = new ScannedClass(classNamespace, "MyClass")
+            {
+                Usings =
+                {
+                    new ScannedUsingAlias("OtherNamespace", "MyThing"),
+                    new ScannedUsingAlias("OtherNamespace2", "MyThing2")
+                }
+            };
+
+            var available = new AvailableTypes();
+            available.AddNamespace(otherNamespace);
+            available.AddNamespace(otherNamespace2);
+            available.AddNamespace(classNamespace);
+            
+            Assert.That(available.TryGetType(myClass, $"MyThing2.{otherClass2.Name}", out var match), Is.True);
+            Assert.That(match, Is.Not.Null);
+            Assert.That(ReferenceEquals(match, otherClass2), Is.True);
+        }
+        
+        [Test]
+        public void FindsClassInNormalNamespaceEvenWithAliasImports()
+        {
+            var module = new ScannedModule();
+            var otherNamespace = new ScannedNamespace(module, "OtherNamespace");
+            var otherClass = new ScannedClass(otherNamespace, "OtherClass");
+            var otherNamespace2 = new ScannedNamespace(module, "OtherNamespace2");
+            var otherClass2 = new ScannedClass(otherNamespace2, "OtherClass");
+            var classNamespace = new ScannedNamespace(module, "MyNamespace");
+            var myClass = new ScannedClass(classNamespace, "MyClass")
+            {
+                Usings =
+                {
+                    new ScannedUsingAlias("OtherNamespace", "MyThing"),
+                    new ScannedUsing("OtherNamespace2"),
+                }
+            };
+
+            var available = new AvailableTypes();
+            available.AddNamespace(otherNamespace);
+            available.AddNamespace(otherNamespace2);
+            available.AddNamespace(classNamespace);
+            
+            Assert.That(available.TryGetType(myClass, $"{otherClass2.Name}", out var match), Is.True);
+            Assert.That(match, Is.Not.Null);
+            Assert.That(ReferenceEquals(match, otherClass2), Is.True);
+        }
 
     }
 }

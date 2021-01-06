@@ -7,9 +7,6 @@ namespace RoslynReflection.Extensions
     {
         internal static IEnumerable<T> SkipLast<T>(this IEnumerable<T> source, int n)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
             if (n < 0)
                 throw new ArgumentOutOfRangeException(nameof(n), 
                     "Argument n should be non-negative.");
