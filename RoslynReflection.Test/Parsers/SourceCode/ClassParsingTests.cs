@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using RoslynReflection.Builder;
+using RoslynReflection.Test.Builder;
 
 namespace RoslynReflection.Test.Parsers.SourceCode
 {
@@ -85,6 +86,53 @@ namespace RoslynReflection.Test.Parsers.SourceCode
                 ModuleBuilder.NewBuilder()
                     .NewNamespace("MyNamespace")
                     .NewClass("MyClass")
+                    .Finish()
+            ));
+        }
+
+        [Ignore("Not yet implement")]
+        [Test]
+        public void ParsesExternalAnnotations()
+        {
+            var code = @"
+using RoslynReflection.Test.Builder;
+
+namespace MyNamespace {
+    [Sample(""Hello"")]
+    [Another(""World"")]
+    public class MyClass {}
+}";
+
+            var result = GetResult(code);
+            Assert.That(result, Is.EqualTo(
+                ModuleBuilder.NewBuilder()
+                    .NewNamespace("MyNamespace")
+                    .NewClass("MyClass")
+                    .WithAttribute(new SampleAttribute("Hello"))
+                    .WithAttribute(new AnotherAttribute("World"))
+                    .Finish()
+            ));
+        }
+        
+        [Ignore("Not yet implement")]
+        [Test]
+        public void ParsesExternalAnnotations_AsInlineList()
+        {
+            var code = @"
+using RoslynReflection.Test.Builder;
+
+namespace MyNamespace {
+    [Sample(""Hello""), Another(""World"")]
+    pu-blic class MyClass {}
+}";
+
+            var result = GetResult(code);
+            Assert.That(result, Is.EqualTo(
+                ModuleBuilder.NewBuilder()
+                    .NewNamespace("MyNamespace")
+                    .NewClass("MyClass")
+                    .WithAttribute(new SampleAttribute("Hello"))
+                    .WithAttribute(new AnotherAttribute("World"))
                     .Finish()
             ));
         }

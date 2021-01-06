@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RoslynReflection.Builder
+﻿namespace RoslynReflection.Builder
 {
     public interface IClassBuilder : INamespaceBuilder
     {

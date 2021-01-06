@@ -5,9 +5,12 @@
         <LangVersion>9</LangVersion>
         <Nullable>enable</Nullable>
         <WarningsAsErrors>true</WarningsAsErrors>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <AnalysisLevel>latest</AnalysisLevel>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
     </ItemGroup>
 

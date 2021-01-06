@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ClassWithAttribute
+﻿namespace ClassWithAttribute
 {
     [My("Hello World")]
     public class ClassWithAttribute

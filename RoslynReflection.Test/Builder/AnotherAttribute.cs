@@ -3,18 +3,18 @@
 namespace RoslynReflection.Test.Builder
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class SampleAttribute : Attribute
+    public class AnotherAttribute : Attribute
     {
-        public readonly string Foo;
+        public readonly string Bar;
 
-        public SampleAttribute(string foo)
+        public AnotherAttribute(string bar)
         {
-            Foo = foo;
+            Bar = bar;
         }
 
-        protected bool Equals(SampleAttribute other)
+        protected bool Equals(AnotherAttribute other)
         {
-            return base.Equals(other) && Foo == other.Foo;
+            return base.Equals(other) && Bar == other.Bar;
         }
 
         public override bool Equals(object? obj)
@@ -22,27 +22,27 @@ namespace RoslynReflection.Test.Builder
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((SampleAttribute) obj);
+            return Equals((AnotherAttribute) obj);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(base.GetHashCode(), Foo);
+            return HashCode.Combine(base.GetHashCode(), Bar);
         }
 
-        public static bool operator ==(SampleAttribute left, SampleAttribute right)
+        public static bool operator ==(AnotherAttribute left, AnotherAttribute right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(SampleAttribute left, SampleAttribute right)
+        public static bool operator !=(AnotherAttribute left, AnotherAttribute right)
         {
             return !Equals(left, right);
         }
 
         public override string ToString()
         {
-            return $"SampleAttribute {{ {nameof(Foo)} = {Foo} }}";
+            return $"{nameof(AnotherAttribute)} {{ {nameof(Bar)} = {Bar}}}";
         }
     }
 }

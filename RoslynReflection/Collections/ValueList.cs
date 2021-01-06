@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using RoslynReflection.Models;
 
 namespace RoslynReflection.Collections
 {
@@ -84,6 +85,11 @@ namespace RoslynReflection.Collections
         public override string ToString()
         {
             return "[" + string.Join(", ", _innerCollection) + "]";
+        }
+
+        public void AddRange(IEnumerable<T> items)
+        {
+            _innerCollection.AddRange(items);
         }
     }
 }

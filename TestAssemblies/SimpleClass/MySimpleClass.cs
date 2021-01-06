@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SimpleClass
+﻿namespace SimpleClass
 {
     public class MySimpleClass
     {

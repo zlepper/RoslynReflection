@@ -28,6 +28,8 @@ namespace RoslynReflection.Parsers.SourceCode
                 typeDeclarationParser.ParseTypeDeclaration(typeDeclaration);
             }
             
+
+            
             
             return sourceClass;
         }

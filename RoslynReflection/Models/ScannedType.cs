@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 using RoslynReflection.Collections;
 using RoslynReflection.Extensions;
@@ -14,6 +13,8 @@ namespace RoslynReflection.Models
 
         public readonly ValueList<ScannedType> NestedTypes = new();
         public readonly ValueList<object> Attributes = new(AttributeComparer.Instance);
+
+        public readonly ValueList<IScannedUsing> Usings = new();
 
         protected ScannedType(ScannedNamespace ns, string name, ScannedType? surroundingType = null)
         {
@@ -33,7 +34,7 @@ namespace RoslynReflection.Models
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Name == other.Name && Attributes.Equals(other.Attributes) && NestedTypes.Equals(other.NestedTypes);
+            return Name == other.Name && Attributes.Equals(other.Attributes) && NestedTypes.Equals(other.NestedTypes) && Usings.Equals(other.Usings);
         }
 
         public override int GetHashCode()
@@ -43,6 +44,7 @@ namespace RoslynReflection.Models
                 var hashCode = Name.GetHashCode();
                 hashCode = (hashCode * 397) ^ Attributes.GetHashCode();
                 hashCode = (hashCode * 397) ^ NestedTypes.GetHashCode();
+                hashCode = (hashCode * 397) ^ Usings.GetHashCode();
                 return hashCode;
             }
         }
@@ -51,7 +53,8 @@ namespace RoslynReflection.Models
         {
             builder.AppendField(nameof(Name), Name)
                 .AppendField(nameof(NestedTypes), NestedTypes)
-                .AppendField(nameof(Attributes), Attributes);
+                .AppendField(nameof(Attributes), Attributes)
+                .AppendField(nameof(Usings), Usings);
             
             return true;
         }
