@@ -1,12 +1,12 @@
 ﻿using RoslynReflection.Models;
 
-namespace RoslynReflection.Builder
+namespace RoslynReflection.Builder.Source
 {
-    public class ModuleBuilder : IModuleBuilder
+    public class SourceModuleBuilder : IModuleBuilder
     {
         internal readonly ScannedModule Module = new();
 
-        private ModuleBuilder()
+        private SourceModuleBuilder()
         {
         }
 
@@ -23,7 +23,7 @@ namespace RoslynReflection.Builder
 
         public static IModuleBuilder NewBuilder()
         {
-            return new ModuleBuilder();
+            return new SourceModuleBuilder();
         }
     }
 }

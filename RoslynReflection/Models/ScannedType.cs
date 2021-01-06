@@ -51,12 +51,18 @@ namespace RoslynReflection.Models
 
         protected virtual bool PrintMembers(StringBuilder builder)
         {
-            builder.AppendField(nameof(Name), Name)
+            InternalPrintMembers(builder.StartAppendingFields());
+            
+            return true;
+        }
+
+        internal StringBuilderExtensions.FieldStringBuilder InternalPrintMembers(
+            StringBuilderExtensions.FieldStringBuilder builder)
+        {
+            return builder.AppendField(nameof(Name), Name)
                 .AppendField(nameof(NestedTypes), NestedTypes)
                 .AppendField(nameof(Attributes), Attributes)
                 .AppendField(nameof(Usings), Usings);
-            
-            return true;
         }
         
         

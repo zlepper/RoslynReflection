@@ -1,6 +1,8 @@
-﻿using RoslynReflection.Models;
+﻿using System;
+using RoslynReflection.Models;
+using RoslynReflection.Models.Assembly;
 
-namespace RoslynReflection.Builder
+namespace RoslynReflection.Builder.Assembly
 {
     internal class ClassBuilder : IClassBuilder
     {
@@ -23,15 +25,25 @@ namespace RoslynReflection.Builder
             return NamespaceBuilder.Finish();
         }
 
-        public IClassBuilder NewClass(string name)
+        public IClassBuilder NewClass(Type type)
         {
-            return NamespaceBuilder.NewClass(name);
+            return NamespaceBuilder.NewClass(type);
         }
 
-        public INestedClassBuilder<IClassBuilder> NewInnerClass(string name)
+        public IClassBuilder NewClass<T>()
         {
-            var c = new ScannedClass(NamespaceBuilder.Namespace, name, SourceClass);
+            return NewClass(typeof(T));
+        }
+
+        public INestedClassBuilder<IClassBuilder> NewInnerClass(Type type)
+        {
+            var c = new ScannedAssemblyClass(type, NamespaceBuilder.Namespace, SourceClass);
             return new NestedClassBuilder<IClassBuilder>(NamespaceBuilder, c, this);
+        }
+
+        public INestedClassBuilder<IClassBuilder> NewInnerClass<T>()
+        {
+            return NewInnerClass(typeof(T));
         }
 
 
@@ -58,10 +70,15 @@ namespace RoslynReflection.Builder
             return _parentClassBuilder;
         }
 
-        public new INestedClassBuilder<INestedClassBuilder<TClassBuilder>> NewInnerClass(string name)
+        public new INestedClassBuilder<INestedClassBuilder<TClassBuilder>> NewInnerClass(Type type)
         {
-            var c = new ScannedClass(NamespaceBuilder.Namespace, name, SourceClass);
+            var c = new ScannedAssemblyClass(type, NamespaceBuilder.Namespace, SourceClass);
             return new NestedClassBuilder<INestedClassBuilder<TClassBuilder>>(NamespaceBuilder, c, this);
+        }
+
+        public new INestedClassBuilder<INestedClassBuilder<TClassBuilder>> NewInnerClass<T>()
+        {
+            return NewInnerClass(typeof(T));
         }
     }
 }

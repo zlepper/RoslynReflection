@@ -1,7 +1,7 @@
 ﻿using System;
 using ClassWithAttribute;
 using NUnit.Framework;
-using RoslynReflection.Builder;
+using RoslynReflection.Builder.Assembly;
 using RoslynReflection.Models;
 using RoslynReflection.Parsers.AssemblyParser;
 using SimpleClass;
@@ -16,27 +16,27 @@ namespace RoslynReflection.Test.Parsers.Assembly
             var parser = new AssemblyParser();
             return parser.ParseAssembly(typeof(T).Assembly);
         }
-        
+
         [Test]
         public void ParsesClassWithoutNamespace()
         {
             var result = ParseAssemblyFromClass<ClassWithoutNamespace>();
 
-            Assert.That(result, Is.EqualTo(ModuleBuilder.NewBuilder()
+            Assert.That(result, Is.EqualTo(AssemblyModuleBuilder.NewBuilder()
                 .NewNamespace("")
-                .NewClass("ClassWithoutNamespace")
+                .NewClass<ClassWithoutNamespace>()
                 .Finish()
             ));
         }
-        
+
         [Test]
         public void ParsesClassWithNamespace()
         {
             var result = ParseAssemblyFromClass<MySimpleClass>();
 
-            Assert.That(result, Is.EqualTo(ModuleBuilder.NewBuilder()
+            Assert.That(result, Is.EqualTo(AssemblyModuleBuilder.NewBuilder()
                 .NewNamespace("SimpleClass")
-                .NewClass("MySimpleClass")
+                .NewClass<MySimpleClass>()
                 .Finish()
             ));
         }
@@ -46,11 +46,11 @@ namespace RoslynReflection.Test.Parsers.Assembly
         {
             var result = ParseAssemblyFromClass<ClassWithAttribute.ClassWithAttribute>();
 
-            var expected = ModuleBuilder.NewBuilder()
+            var expected = AssemblyModuleBuilder.NewBuilder()
                 .NewNamespace(nameof(ClassWithAttribute))
-                .NewClass(nameof(MyAttribute))
+                .NewClass<MyAttribute>()
                 .WithAttribute(new AttributeUsageAttribute(AttributeTargets.Class))
-                .NewClass(nameof(ClassWithAttribute.ClassWithAttribute))
+                .NewClass<ClassWithAttribute.ClassWithAttribute>()
                 .WithAttribute(new MyAttribute("Hello World"))
                 .Finish();
 

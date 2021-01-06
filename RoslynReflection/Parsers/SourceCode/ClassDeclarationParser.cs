@@ -20,7 +20,7 @@ namespace RoslynReflection.Parsers.SourceCode
         {
             var name = classDeclaration.Identifier.ValueText.Trim();
 
-            var sourceClass = _classList.GetType(name, _surroundingType);
+            var sourceClass = _classList.GetType(name, classDeclaration, _surroundingType);
 
             var typeDeclarationParser = new TypeDeclarationParser(_classList, sourceClass);
             foreach (var typeDeclaration in classDeclaration.Members.OfType<TypeDeclarationSyntax>())

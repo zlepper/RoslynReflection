@@ -1,4 +1,4 @@
-﻿namespace RoslynReflection.Builder
+﻿namespace RoslynReflection.Builder.Source
 {
     public interface IClassBuilder : INamespaceBuilder
     {

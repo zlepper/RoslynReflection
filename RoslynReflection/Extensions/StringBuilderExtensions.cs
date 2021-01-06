@@ -8,6 +8,11 @@ namespace RoslynReflection.Extensions
         {
             return new FieldStringBuilder(builder).AppendField(fieldName, value);
         }
+        
+        internal static FieldStringBuilder StartAppendingFields(this StringBuilder builder)
+        {
+            return new(builder);
+        }
 
         internal struct FieldStringBuilder
         {

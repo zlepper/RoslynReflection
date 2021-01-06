@@ -1,8 +1,9 @@
 ﻿using NUnit.Framework;
-using RoslynReflection.Builder;
+using RoslynReflection.Builder.Source;
 using RoslynReflection.Models;
+using RoslynReflection.Models.Source;
 
-namespace RoslynReflection.Test.Builder
+namespace RoslynReflection.Test.Builder.Source
 {
     [TestFixture]
     public class ClassBuilderTests
@@ -12,9 +13,9 @@ namespace RoslynReflection.Test.Builder
         {
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNamespace");
-            var _ = new ScannedClass(expectedNamespace, "MyClass");
+            var _ = new ScannedSourceClass(expectedNamespace, "MyClass");
 
-            var actualModule = ModuleBuilder.NewBuilder()
+            var actualModule = SourceModuleBuilder.NewBuilder()
                 .NewNamespace("MyNamespace")
                 .NewClass("MyClass")
                 .Finish();
@@ -27,10 +28,10 @@ namespace RoslynReflection.Test.Builder
         {
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNamespace");
-            var expectedParentClass = new ScannedClass(expectedNamespace, "MyClass");
-            var _ = new ScannedClass(expectedNamespace, "MyInnerClass", expectedParentClass);
+            var expectedParentClass = new ScannedSourceClass(expectedNamespace, "MyClass");
+            var _ = new ScannedSourceClass(expectedNamespace, "MyInnerClass", expectedParentClass);
 
-            var actualModule = ModuleBuilder.NewBuilder()
+            var actualModule = SourceModuleBuilder.NewBuilder()
                 .NewNamespace("MyNamespace")
                 .NewClass("MyClass")
                 .NewInnerClass("MyInnerClass")
@@ -44,14 +45,14 @@ namespace RoslynReflection.Test.Builder
         {
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNamespace");
-            var expectedParentClass = new ScannedClass(expectedNamespace, "MyClass");
-            var unused1 = new ScannedClass(expectedNamespace, "MyFirstInnerClass", expectedParentClass);
-            var unused2 = new ScannedClass(expectedNamespace, "MySecondInnerClass", expectedParentClass);
-            var unused3 = new ScannedClass(expectedNamespace, "MyInnerInnerClass", unused2);
-            var unused4 = new ScannedClass(expectedNamespace, "MyThirdInnerClass", expectedParentClass);
+            var expectedParentClass = new ScannedSourceClass(expectedNamespace, "MyClass");
+            var unused1 = new ScannedSourceClass(expectedNamespace, "MyFirstInnerClass", expectedParentClass);
+            var unused2 = new ScannedSourceClass(expectedNamespace, "MySecondInnerClass", expectedParentClass);
+            var unused3 = new ScannedSourceClass(expectedNamespace, "MyInnerInnerClass", unused2);
+            var unused4 = new ScannedSourceClass(expectedNamespace, "MyThirdInnerClass", expectedParentClass);
             
             
-            var actualModule = ModuleBuilder.NewBuilder()
+            var actualModule = SourceModuleBuilder.NewBuilder()
                 .NewNamespace("MyNamespace")
                 .NewClass("MyClass")
                 .NewInnerClass("MyFirstInnerClass")
@@ -71,11 +72,11 @@ namespace RoslynReflection.Test.Builder
         {
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNs");
-            var outer = new ScannedClass(expectedNamespace, "Outer");
-            var middle = new ScannedClass(expectedNamespace, "Middle", outer);
-            var unused2 = new ScannedClass(expectedNamespace, "Inner", middle);
+            var outer = new ScannedSourceClass(expectedNamespace, "Outer");
+            var middle = new ScannedSourceClass(expectedNamespace, "Middle", outer);
+            var unused2 = new ScannedSourceClass(expectedNamespace, "Inner", middle);
 
-            var actual = ModuleBuilder.NewBuilder()
+            var actual = SourceModuleBuilder.NewBuilder()
                 .NewNamespace("MyNs")
                 .NewClass("Outer")
                 .NewInnerClass("Middle")
@@ -90,10 +91,10 @@ namespace RoslynReflection.Test.Builder
         {
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNs");
-            var myClass = new ScannedClass(expectedNamespace, "MyClass");
+            var myClass = new ScannedSourceClass(expectedNamespace, "MyClass");
             myClass.Attributes.Add(new SampleAttribute("hello"));
 
-            var actual = ModuleBuilder.NewBuilder()
+            var actual = SourceModuleBuilder.NewBuilder()
                 .NewNamespace("MyNs")
                 .NewClass("MyClass")
                 .WithAttribute(new SampleAttribute("hello"))
@@ -108,10 +109,10 @@ namespace RoslynReflection.Test.Builder
             var expectedModule = new ScannedModule();
             var ns1 = new ScannedNamespace(expectedModule, "ns1");
             var ns2 = new ScannedNamespace(expectedModule, "ns2");
-            var unused1 = new ScannedClass(ns1, "C1");
-            var unused2 = new ScannedClass(ns2, "C2");
+            var unused1 = new ScannedSourceClass(ns1, "C1");
+            var unused2 = new ScannedSourceClass(ns2, "C2");
 
-            var actualModule = ModuleBuilder.NewBuilder()
+            var actualModule = SourceModuleBuilder.NewBuilder()
                 .NewNamespace("ns1")
                 .NewClass("C1")
                 .NewNamespace("ns2")

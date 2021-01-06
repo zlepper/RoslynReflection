@@ -1,16 +1,18 @@
-﻿using RoslynReflection.Models;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoslynReflection.Models;
+using RoslynReflection.Models.Source;
 
 namespace RoslynReflection.Collections
 {
-    internal class ClassList : TypeList<ScannedClass>
+    internal class ClassList : TypeList<ScannedSourceClass, ClassDeclarationSyntax>
     {
-        public ClassList(ScannedModule module, ScannedNamespace ns) : base(module, ns)
+        public ClassList(ScannedNamespace ns) : base(ns)
         {
         }
 
-        protected override ScannedClass InitType(string name, ScannedType? surroundingType = null)
+        protected override ScannedSourceClass InitType(string name, ClassDeclarationSyntax declarationSyntax, ScannedType? surroundingType = null)
         {
-            return new(Namespace, name, surroundingType);
+            return new(declarationSyntax, Namespace, name, surroundingType);
         }
     }
 }

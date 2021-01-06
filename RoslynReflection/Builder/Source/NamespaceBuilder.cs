@@ -1,13 +1,14 @@
 ﻿using RoslynReflection.Models;
+using RoslynReflection.Models.Source;
 
-namespace RoslynReflection.Builder
+namespace RoslynReflection.Builder.Source
 {
     internal class NamespaceBuilder : INamespaceBuilder
     {
-        private readonly ModuleBuilder _parent;
+        private readonly SourceModuleBuilder _parent;
         internal readonly ScannedNamespace Namespace;
 
-        internal NamespaceBuilder(ModuleBuilder parent, ScannedNamespace ns)
+        internal NamespaceBuilder(SourceModuleBuilder parent, ScannedNamespace ns)
         {
             _parent = parent;
             Namespace = ns;
@@ -25,7 +26,7 @@ namespace RoslynReflection.Builder
 
         public IClassBuilder NewClass(string name)
         {
-            var sourceClass = new ScannedClass(Namespace, name);
+            var sourceClass = new ScannedSourceClass(Namespace, name);
 
             return new ClassBuilder(this, sourceClass);
         }

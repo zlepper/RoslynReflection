@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using RoslynReflection.Builder;
+using RoslynReflection.Builder.Source;
 using RoslynReflection.Test.Builder;
 
 namespace RoslynReflection.Test.Parsers.SourceCode
@@ -19,7 +20,7 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                ModuleBuilder.NewBuilder()
+                SourceModuleBuilder.NewBuilder()
                     .NewNamespace("MyNamespace")
                     .NewClass("MyClass")
                     .Finish()
@@ -39,7 +40,7 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                ModuleBuilder.NewBuilder()
+                SourceModuleBuilder.NewBuilder()
                     .NewNamespace("MyNamespace")
                     .NewClass("MyClass")
                     .NewClass("MyOtherClass")
@@ -61,7 +62,7 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                ModuleBuilder.NewBuilder()
+                SourceModuleBuilder.NewBuilder()
                     .NewNamespace("MyNamespace")
                     .NewClass("MyClass")
                     .NewInnerClass("MyInnerClass")
@@ -83,7 +84,7 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                ModuleBuilder.NewBuilder()
+                SourceModuleBuilder.NewBuilder()
                     .NewNamespace("MyNamespace")
                     .NewClass("MyClass")
                     .Finish()
@@ -105,7 +106,7 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             Assert.That(result, Is.EqualTo(
-                ModuleBuilder.NewBuilder()
+                SourceModuleBuilder.NewBuilder()
                     .NewNamespace("MyNamespace")
                     .NewClass("MyClass")
                     .WithAttribute(new SampleAttribute("Hello"))
@@ -128,7 +129,7 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             Assert.That(result, Is.EqualTo(
-                ModuleBuilder.NewBuilder()
+                SourceModuleBuilder.NewBuilder()
                     .NewNamespace("MyNamespace")
                     .NewClass("MyClass")
                     .WithAttribute(new SampleAttribute("Hello"))

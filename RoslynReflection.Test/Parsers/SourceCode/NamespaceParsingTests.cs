@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using RoslynReflection.Builder;
+using RoslynReflection.Builder.Source;
 
 namespace RoslynReflection.Test.Parsers.SourceCode
 {
@@ -17,7 +18,7 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                ModuleBuilder.NewBuilder()
+                SourceModuleBuilder.NewBuilder()
                     .NewNamespace("MyNamespace")
                     .Finish()
             ));
@@ -33,7 +34,7 @@ namespace MySecondNamespace";
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                ModuleBuilder.NewBuilder()
+                SourceModuleBuilder.NewBuilder()
                     .NewNamespace("MyNamespace")
                     .NewNamespace("MySecondNamespace")
                     .Finish()
@@ -49,7 +50,7 @@ namespace MySecondNamespace";
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                ModuleBuilder.NewBuilder()
+                SourceModuleBuilder.NewBuilder()
                     .NewNamespace("MyNamespace")
                     .NewNamespace("MyNamespace.MyInnerNamespace")
                     .Finish()

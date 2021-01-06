@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using NUnit.Framework;
 using RoslynReflection.Builder;
+using RoslynReflection.Builder.Source;
 
 namespace RoslynReflection.Test.Models
 {
@@ -10,7 +11,7 @@ namespace RoslynReflection.Test.Models
         [Test]
         public void ToStringReturnsSomething()
         {
-            var ns = ModuleBuilder.NewBuilder()
+            var ns = SourceModuleBuilder.NewBuilder()
                 .NewNamespace("ns")
                 .Finish()
                 .Namespaces
@@ -22,7 +23,7 @@ namespace RoslynReflection.Test.Models
         [Test]
         public void Equals_ToSelfIsTrue()
         {
-            var ns = ModuleBuilder.NewBuilder()
+            var ns = SourceModuleBuilder.NewBuilder()
                 .NewNamespace("ns")
                 .Finish()
                 .Namespaces

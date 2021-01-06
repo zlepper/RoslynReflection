@@ -26,14 +26,6 @@ namespace RoslynReflection.Parsers.SourceCode
                     "Unknown TypeDeclaration type")
             };
 
-            foreach (var attributeList in typeDeclaration.AttributeLists)
-            {
-                foreach (var attribute in attributeList.Attributes)
-                {
-                    Console.WriteLine(attribute);
-                }
-            }
-
         }
 
         

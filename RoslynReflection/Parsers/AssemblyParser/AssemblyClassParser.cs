@@ -1,5 +1,6 @@
 ﻿using System;
 using RoslynReflection.Models;
+using RoslynReflection.Models.Assembly;
 
 namespace RoslynReflection.Parsers.AssemblyParser
 {
@@ -14,9 +15,9 @@ namespace RoslynReflection.Parsers.AssemblyParser
             _surroundingType = surroundingType;
         }
 
-        public ScannedClass ParseClass(Type type)
+        public ScannedAssemblyClass ParseClass(Type type)
         {
-            return new(_scannedNamespace, type.Name, _surroundingType);
+            return new(type, _scannedNamespace, _surroundingType);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using NUnit.Framework;
 using RoslynReflection.Builder;
+using RoslynReflection.Builder.Source;
 using RoslynReflection.Models;
 
 namespace RoslynReflection.Test.Models
@@ -11,7 +12,7 @@ namespace RoslynReflection.Test.Models
         [Test]
         public void ModuleRefersToModuleOfClass()
         {
-            var module = ModuleBuilder.NewBuilder()
+            var module = SourceModuleBuilder.NewBuilder()
                 .NewNamespace("ns")
                 .NewClass("MyClass")
                 .Finish();
