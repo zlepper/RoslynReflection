@@ -1,5 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using RoslynReflection.Builder;
+using RoslynReflection.Models;
 using RoslynReflection.Test.Builder;
 
 namespace RoslynReflection.Test.Models
@@ -23,6 +25,32 @@ namespace RoslynReflection.Test.Models
                 .Finish();
             
             Assert.That(left, Is.Not.EqualTo(right));
+        }
+
+        [Test]
+        public void ToStringReturnsSomething()
+        {
+            var klass = ModuleBuilder.NewBuilder()
+                .NewNamespace("ns")
+                .NewClass("MyClass")
+                .Finish()
+                .Classes()
+                .Single();
+            
+            Assert.That(klass.ToString(), Is.Not.Empty);
+        }
+
+        [Test]
+        public void Equals_ReturnsTrueIfReferenceAreTheSame()
+        {
+            var klass = ModuleBuilder.NewBuilder()
+                .NewNamespace("ns")
+                .NewClass("MyClass")
+                .Finish()
+                .Classes()
+                .Single();
+            
+            Assert.That(klass.Equals(klass));
         }
     }
 }
