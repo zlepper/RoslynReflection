@@ -13,8 +13,6 @@ namespace RoslynReflection.Builder
             Namespace = ns;
         }
 
-        internal ScannedModule Module => _parent.Module;
-
         public INamespaceBuilder NewNamespace(string name)
         {
             return _parent.NewNamespace(name);
