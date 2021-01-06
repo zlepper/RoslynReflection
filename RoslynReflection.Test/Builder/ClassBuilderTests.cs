@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
 
@@ -43,12 +42,13 @@ namespace RoslynReflection.Test.Builder
         [Test]
         public void AllowsNavigatingBackUpToCreateNewPropertiesOnParentClass()
         {
-            
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNamespace");
             var expectedParentClass = new ScannedClass(expectedNamespace, "MyClass");
             var unused1 = new ScannedClass(expectedNamespace, "MyFirstInnerClass", expectedParentClass);
             var unused2 = new ScannedClass(expectedNamespace, "MySecondInnerClass", expectedParentClass);
+            var unused3 = new ScannedClass(expectedNamespace, "MyInnerInnerClass", unused2);
+            var unused4 = new ScannedClass(expectedNamespace, "MyThirdInnerClass", expectedParentClass);
             
             
             var actualModule = ModuleBuilder.NewBuilder()
@@ -57,22 +57,13 @@ namespace RoslynReflection.Test.Builder
                 .NewInnerClass("MyFirstInnerClass")
                 .GoBackToParent()
                 .NewInnerClass("MySecondInnerClass")
+                .NewInnerClass("MyInnerInnerClass")
+                .GoBackToParent()
+                .GoBackToParent()
+                .NewInnerClass("MyThirdInnerClass")
                 .Finish();
             
             Assert.That(actualModule, Is.EqualTo(expectedModule));
-        }
-
-        [Test]
-        public void ThrowsExceptionsWhenNavigatingAboveOutermostClass()
-        {
-            Assert.That(() =>
-            {
-                ModuleBuilder
-                    .NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewClass("MyClass")
-                    .GoBackToParent();
-            }, Throws.TypeOf<InvalidOperationException>());
         }
 
         [Test]
@@ -117,8 +108,8 @@ namespace RoslynReflection.Test.Builder
             var expectedModule = new ScannedModule();
             var ns1 = new ScannedNamespace(expectedModule, "ns1");
             var ns2 = new ScannedNamespace(expectedModule, "ns2");
-            var c1 = new ScannedClass(ns1, "C1");
-            var c2 = new ScannedClass(ns2, "C2");
+            var unused1 = new ScannedClass(ns1, "C1");
+            var unused2 = new ScannedClass(ns2, "C2");
 
             var actualModule = ModuleBuilder.NewBuilder()
                 .NewNamespace("ns1")

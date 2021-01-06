@@ -5,19 +5,13 @@ namespace RoslynReflection.Builder
 {
     internal class ClassBuilder : IClassBuilder
     {
-        private readonly ScannedClass _sourceClass;
-        private readonly NamespaceBuilder _namespaceBuilder;
-        private readonly ClassBuilder? _parentClassBuilder;
+        protected readonly ScannedClass _sourceClass;
+        protected readonly NamespaceBuilder _namespaceBuilder;
 
         internal ClassBuilder(NamespaceBuilder parent, ScannedClass sourceClass)
         {
             _namespaceBuilder = parent;
             _sourceClass = sourceClass;
-        }
-
-        private ClassBuilder(NamespaceBuilder parent, ScannedClass sourceClass, ClassBuilder parentClassBuilder) : this(parent, sourceClass)
-        {
-            _parentClassBuilder = parentClassBuilder;
         }
 
         public INamespaceBuilder NewNamespace(string name)
@@ -35,26 +29,40 @@ namespace RoslynReflection.Builder
             return _namespaceBuilder.NewClass(name);
         }
 
-        public IClassBuilder NewInnerClass(string name)
+        public INestedClassBuilder<IClassBuilder> NewInnerClass(string name)
         {
             var c = new ScannedClass(_namespaceBuilder.Namespace, name, _sourceClass);
-            return new ClassBuilder(_namespaceBuilder, c, this);
+            return new NestedClassBuilder<IClassBuilder>(_namespaceBuilder, c, this);
         }
 
-        public IClassBuilder GoBackToParent()
-        {
-            if (_parentClassBuilder == null)
-            {
-                throw new InvalidOperationException("Currently not interacting with a nested class");
-            }
-
-            return _parentClassBuilder;
-        }
 
         public IClassBuilder WithAttribute(object attribute)
         {
             _sourceClass.Attributes.Add(attribute);
             return this;
+        }
+    }
+
+    internal class NestedClassBuilder<TClassBuilder> : ClassBuilder, INestedClassBuilder<TClassBuilder>
+        where TClassBuilder : IClassBuilder
+    {
+        
+        private readonly TClassBuilder _parentClassBuilder;
+
+        internal NestedClassBuilder(NamespaceBuilder parent, ScannedClass sourceClass, TClassBuilder parentClassBuilder) : base(parent, sourceClass)
+        {
+            _parentClassBuilder = parentClassBuilder;
+        }
+
+        public TClassBuilder GoBackToParent()
+        {
+            return _parentClassBuilder;
+        }
+
+        public new INestedClassBuilder<INestedClassBuilder<TClassBuilder>> NewInnerClass(string name)
+        {
+            var c = new ScannedClass(_namespaceBuilder.Namespace, name, _sourceClass);
+            return new NestedClassBuilder<INestedClassBuilder<TClassBuilder>>(_namespaceBuilder, c, this);
         }
     }
 }
