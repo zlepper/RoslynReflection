@@ -157,6 +157,7 @@ namespace RoslynReflection.Test.Models
 
             var available = new AvailableTypes();
             available.AddNamespace(classNamespace);
+            available.AddNamespace(otherNamespace);
             
             Assert.That(available.TryGetType(myClass, "OtherClass.Inner", out var match), Is.True);
             Assert.That(match, Is.Not.Null);

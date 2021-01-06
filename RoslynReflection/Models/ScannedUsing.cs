@@ -13,13 +13,7 @@
             out ScannedType? type)
         {
             if (availableTypes.Namespaces.TryGetValue(Namespace, out var ns))
-                foreach (var t in ns.Types)
-                {
-                    if (t.FullName() != typeName) continue;
-
-                    type = t;
-                    return true;
-                }
+                return ns.TryGetType(typeName, out type);
 
             type = null;
             return false;

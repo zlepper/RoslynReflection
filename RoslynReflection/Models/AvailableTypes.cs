@@ -31,12 +31,30 @@ namespace RoslynReflection.Models
                 }
             }
             
-            // Might be a fully qualified type, so check for that also
-            return TryGetFullyQualifiedType(typeName, out type);
+            return TryFromSelf(fromType, typeName, out type) || TryGetFullyQualifiedType(typeName, out type);
         }
 
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]
-        internal bool TryGetFullyQualifiedType(string typeName, out ScannedType? type)
+        private bool TryFromSelf(ScannedType fromType, string typeName, out ScannedType? type)
+        {
+            if (fromType.Namespace.TryGetType(typeName, out type))
+            {
+                return true;
+            }
+
+            var fullInnerName = fromType.FullName() + "." + typeName;
+            if (fromType.Namespace.TryGetType(fullInnerName, out type))
+            {
+                return true;
+            }
+
+            type = null;
+            return false;
+            
+        }
+
+        [ContractAnnotation("=> true, type: notnull; => false, type: null")]
+        private bool TryGetFullyQualifiedType(string typeName, out ScannedType? type)
         {
             var parts = typeName.Split('.');
             if (parts.Length == 1)

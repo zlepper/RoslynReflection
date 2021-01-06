@@ -1,4 +1,5 @@
 using System.Text;
+using JetBrains.Annotations;
 using RoslynReflection.Collections;
 using RoslynReflection.Extensions;
 
@@ -23,6 +24,21 @@ namespace RoslynReflection.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             return Name == other.Name && Types.Equals(other.Types);
+        }
+
+        [ContractAnnotation("=> true, type: notnull; => false, type: null")]
+        public bool TryGetType(string typeName, out ScannedType? type)
+        {
+            foreach (var t in Types)
+            {
+                if (t.FullName() != typeName) continue;
+
+                type = t;
+                return true;
+            }
+
+            type = null;
+            return false;
         }
 
         public override int GetHashCode()
