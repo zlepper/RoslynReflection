@@ -32,7 +32,7 @@ namespace RoslynReflection.Models
 
         private class AttributeUsageAttributeComparer : IEqualityComparer<AttributeUsageAttribute>
         {
-            public bool Equals(AttributeUsageAttribute x, AttributeUsageAttribute y)
+            public bool Equals(AttributeUsageAttribute? x, AttributeUsageAttribute? y)
             {
                 if (ReferenceEquals(x, y)) return true;
                 if (ReferenceEquals(x, null)) return false;

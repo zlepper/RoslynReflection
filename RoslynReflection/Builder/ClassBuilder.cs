@@ -1,44 +1,43 @@
-﻿using System;
-using RoslynReflection.Models;
+﻿using RoslynReflection.Models;
 
 namespace RoslynReflection.Builder
 {
     internal class ClassBuilder : IClassBuilder
     {
-        protected readonly ScannedClass _sourceClass;
-        protected readonly NamespaceBuilder _namespaceBuilder;
+        protected readonly ScannedClass SourceClass;
+        protected readonly NamespaceBuilder NamespaceBuilder;
 
         internal ClassBuilder(NamespaceBuilder parent, ScannedClass sourceClass)
         {
-            _namespaceBuilder = parent;
-            _sourceClass = sourceClass;
+            NamespaceBuilder = parent;
+            SourceClass = sourceClass;
         }
 
         public INamespaceBuilder NewNamespace(string name)
         {
-            return _namespaceBuilder.NewNamespace(name);
+            return NamespaceBuilder.NewNamespace(name);
         }
 
         public ScannedModule Finish()
         {
-            return _namespaceBuilder.Finish();
+            return NamespaceBuilder.Finish();
         }
 
         public IClassBuilder NewClass(string name)
         {
-            return _namespaceBuilder.NewClass(name);
+            return NamespaceBuilder.NewClass(name);
         }
 
         public INestedClassBuilder<IClassBuilder> NewInnerClass(string name)
         {
-            var c = new ScannedClass(_namespaceBuilder.Namespace, name, _sourceClass);
-            return new NestedClassBuilder<IClassBuilder>(_namespaceBuilder, c, this);
+            var c = new ScannedClass(NamespaceBuilder.Namespace, name, SourceClass);
+            return new NestedClassBuilder<IClassBuilder>(NamespaceBuilder, c, this);
         }
 
 
         public IClassBuilder WithAttribute(object attribute)
         {
-            _sourceClass.Attributes.Add(attribute);
+            SourceClass.Attributes.Add(attribute);
             return this;
         }
     }
@@ -61,8 +60,8 @@ namespace RoslynReflection.Builder
 
         public new INestedClassBuilder<INestedClassBuilder<TClassBuilder>> NewInnerClass(string name)
         {
-            var c = new ScannedClass(_namespaceBuilder.Namespace, name, _sourceClass);
-            return new NestedClassBuilder<INestedClassBuilder<TClassBuilder>>(_namespaceBuilder, c, this);
+            var c = new ScannedClass(NamespaceBuilder.Namespace, name, SourceClass);
+            return new NestedClassBuilder<INestedClassBuilder<TClassBuilder>>(NamespaceBuilder, c, this);
         }
     }
 }

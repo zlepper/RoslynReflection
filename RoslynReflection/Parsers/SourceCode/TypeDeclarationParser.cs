@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Collections;
 using RoslynReflection.Models;

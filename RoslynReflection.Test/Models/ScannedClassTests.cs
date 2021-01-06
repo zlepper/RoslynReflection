@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using RoslynReflection.Builder;
-using RoslynReflection.Models;
 using RoslynReflection.Test.Builder;
 
 namespace RoslynReflection.Test.Models

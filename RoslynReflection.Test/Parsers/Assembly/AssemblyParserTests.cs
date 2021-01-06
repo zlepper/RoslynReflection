@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using ClassWithAttribute;
 using NUnit.Framework;
 using RoslynReflection.Builder;
@@ -56,10 +54,6 @@ namespace RoslynReflection.Test.Parsers.Assembly
                 .WithAttribute(new MyAttribute("Hello World"))
                 .Finish();
 
-            var eq = EqualityComparer<ScannedNamespace>.Default.Equals(result.Namespaces.First(),
-                expected.Namespaces.First());
-            var eq2 = result.Namespaces.GetHashCode() == expected.Namespaces.GetHashCode();
-            
             Assert.That(result, Is.EqualTo(expected));
         }
     }
