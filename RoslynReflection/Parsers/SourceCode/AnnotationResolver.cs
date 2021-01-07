@@ -56,14 +56,19 @@ namespace RoslynReflection.Parsers.SourceCode
 
         private static object? InitializeAttribute(Type type, AttributeSyntax attributeSyntax)
         {
-            if (attributeSyntax.ArgumentList == null)
+            if (attributeSyntax.ArgumentList == null || attributeSyntax.ArgumentList.Arguments.Count == 0)
             {
                 var constructor = type.GetConstructor(Array.Empty<Type>());
                 if (constructor != null)
                 {
                     return constructor.Invoke(Array.Empty<object>());
                 }
+
+                return null;
             }
+
+            var arguments = attributeSyntax.ArgumentList.Arguments;
+            
 
 
 
