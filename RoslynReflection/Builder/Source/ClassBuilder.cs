@@ -5,8 +5,8 @@ namespace RoslynReflection.Builder.Source
 {
     internal class ClassBuilder : IClassBuilder
     {
-        protected readonly ScannedClass SourceClass;
         protected readonly NamespaceBuilder NamespaceBuilder;
+        protected readonly ScannedClass SourceClass;
 
         internal ClassBuilder(NamespaceBuilder parent, ScannedClass sourceClass)
         {
@@ -41,15 +41,27 @@ namespace RoslynReflection.Builder.Source
             SourceClass.Attributes.Add(attribute);
             return this;
         }
+
+        public IClassBuilder WithUsing(string ns)
+        {
+            SourceClass.Usings.Add(new ScannedUsing(ns));
+            return this;
+        }
+
+        public IClassBuilder WithAliasUsing(string ns, string alias)
+        {
+            SourceClass.Usings.Add(new ScannedUsingAlias(ns, alias));
+            return this;
+        }
     }
 
     internal class NestedClassBuilder<TClassBuilder> : ClassBuilder, INestedClassBuilder<TClassBuilder>
         where TClassBuilder : IClassBuilder
     {
-        
         private readonly TClassBuilder _parentClassBuilder;
 
-        internal NestedClassBuilder(NamespaceBuilder parent, ScannedClass sourceClass, TClassBuilder parentClassBuilder) : base(parent, sourceClass)
+        internal NestedClassBuilder(NamespaceBuilder parent, ScannedClass sourceClass, TClassBuilder parentClassBuilder)
+            : base(parent, sourceClass)
         {
             _parentClassBuilder = parentClassBuilder;
         }
@@ -63,6 +75,24 @@ namespace RoslynReflection.Builder.Source
         {
             var c = new ScannedSourceClass(NamespaceBuilder.Namespace, name, SourceClass);
             return new NestedClassBuilder<INestedClassBuilder<TClassBuilder>>(NamespaceBuilder, c, this);
+        }
+
+        public new INestedClassBuilder<TClassBuilder> WithAttribute(object attribute)
+        {
+            base.WithAttribute(attribute);
+            return this;
+        }
+
+        public new INestedClassBuilder<TClassBuilder> WithUsing(string ns)
+        {
+            base.WithUsing(ns);
+            return this;
+        }
+
+        public new INestedClassBuilder<TClassBuilder> WithAliasUsing(string ns, string alias)
+        {
+            base.WithAliasUsing(ns, alias);
+            return this;
         }
     }
 }

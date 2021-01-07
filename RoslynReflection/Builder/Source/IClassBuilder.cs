@@ -15,6 +15,21 @@
         /// <param name="attribute">The attribute instance to pass along</param>
         /// <returns>This builder</returns>
         IClassBuilder WithAttribute(object attribute);
+
+        /// <summary>
+        /// Adds the specified namespace as an import
+        /// </summary>
+        /// <param name="ns"></param>
+        /// <returns></returns>
+        IClassBuilder WithUsing(string ns);
+
+        /// <summary>
+        /// Adds the specified namespace as an alias import
+        /// </summary>
+        /// <param name="ns">Namespace</param>
+        /// <param name="alias">The alias the namespace should have</param>
+        /// <returns></returns>
+        IClassBuilder WithAliasUsing(string ns, string alias);
     }
 
     public interface INestedClassBuilder<out TClassBuilder> : IClassBuilder
@@ -28,5 +43,14 @@
 
         /// <inheritdoc cref="IClassBuilder.NewInnerClass" />
         new INestedClassBuilder<INestedClassBuilder<TClassBuilder>> NewInnerClass(string name);
+
+        /// <inheritdoc cref="IClassBuilder.WithAttribute" />
+        new INestedClassBuilder<TClassBuilder> WithAttribute(object attribute);
+
+        /// <inheritdoc cref="IClassBuilder.WithUsing" />
+        new INestedClassBuilder<TClassBuilder> WithUsing(string ns);
+        
+        /// <inheritdoc cref="IClassBuilder.WithAliasUsing" />
+        new INestedClassBuilder<TClassBuilder> WithAliasUsing(string ns, string alias);
     }
 }

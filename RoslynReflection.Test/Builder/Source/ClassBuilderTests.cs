@@ -2,6 +2,7 @@
 using RoslynReflection.Builder.Source;
 using RoslynReflection.Models;
 using RoslynReflection.Models.Source;
+using RoslynReflection.Test.TestHelpers.TestAttributes;
 
 namespace RoslynReflection.Test.Builder.Source
 {

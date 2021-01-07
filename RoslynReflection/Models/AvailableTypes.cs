@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using RoslynReflection.Extensions;
@@ -8,16 +9,25 @@ namespace RoslynReflection.Models
     internal class AvailableTypes
     {
         internal readonly Dictionary<string, ScannedNamespace> Namespaces = new();
+        private readonly ScannedModule _fakeModule = new();
 
         public void AddNamespace(ScannedNamespace ns)
         {
             if (!Namespaces.TryGetValue(ns.Name, out var existing))
             {
-                existing = new ScannedNamespace(ns.Module, ns.Name);
+                existing = new ScannedNamespace(_fakeModule, ns.Name);
                 Namespaces[ns.Name] = existing;
             }
 
             existing.Types.AddRange(ns.Types);
+        }
+
+        public void AddNamespaces(IEnumerable<ScannedNamespace> namespaces)
+        {
+            foreach (var ns in namespaces)
+            {
+                AddNamespace(ns);
+            }
         }
 
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]

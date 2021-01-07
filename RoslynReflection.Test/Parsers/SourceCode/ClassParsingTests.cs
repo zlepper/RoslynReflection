@@ -2,6 +2,7 @@
 using RoslynReflection.Builder;
 using RoslynReflection.Builder.Source;
 using RoslynReflection.Test.Builder;
+using RoslynReflection.Test.TestHelpers.TestAttributes;
 
 namespace RoslynReflection.Test.Parsers.SourceCode
 {
@@ -91,51 +92,110 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             ));
         }
 
-        [Ignore("Not yet implement")]
         [Test]
-        public void ParsesExternalAnnotations()
+        public void ExtractsUsings_InsideNamespace()
         {
-            var code = @"
-using RoslynReflection.Test.Builder;
+            var code = @"namespace MyNamespace {
+    using System;
 
-namespace MyNamespace {
-    [Sample(""Hello"")]
-    [Another(""World"")]
-    public class MyClass {}
+    public class MyClass { }
 }";
 
             var result = GetResult(code);
-            Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewClass("MyClass")
-                    .WithAttribute(new SampleAttribute("Hello"))
-                    .WithAttribute(new AnotherAttribute("World"))
-                    .Finish()
-            ));
+            
+            Assert.That(result, Is.EqualTo(SourceModuleBuilder.NewBuilder()
+                .NewNamespace("MyNamespace")
+                .NewClass("MyClass")
+                .WithUsing("System")
+                .Finish()));
         }
         
-        [Ignore("Not yet implement")]
         [Test]
-        public void ParsesExternalAnnotations_AsInlineList()
+        public void ExtractsUsings_OutsideNamespace()
         {
-            var code = @"
-using RoslynReflection.Test.Builder;
+            var code = @"using System;
 
 namespace MyNamespace {
-    [Sample(""Hello""), Another(""World"")]
-    pu-blic class MyClass {}
+    public class MyClass { }
 }";
 
             var result = GetResult(code);
-            Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewClass("MyClass")
-                    .WithAttribute(new SampleAttribute("Hello"))
-                    .WithAttribute(new AnotherAttribute("World"))
-                    .Finish()
-            ));
+            
+            Assert.That(result, Is.EqualTo(SourceModuleBuilder.NewBuilder()
+                .NewNamespace("MyNamespace")
+                .NewClass("MyClass")
+                .WithUsing("System")
+                .Finish()));
         }
+        
+        [Test]
+        public void ExtractsUsingsAliases_InsideNamespace()
+        {
+            var code = @"namespace MyNamespace {
+    using S = System;
+
+    public class MyClass { }
+}";
+
+            var result = GetResult(code);
+            
+            Assert.That(result, Is.EqualTo(SourceModuleBuilder.NewBuilder()
+                .NewNamespace("MyNamespace")
+                .NewClass("MyClass")
+                .WithAliasUsing("System", "S")
+                .Finish()));
+        }
+        
+        [Test]
+        public void ExtractsUsingsAliases_OutsideNamespace()
+        {
+            var code = @"using S = System;
+
+namespace MyNamespace {
+    public class MyClass { }
+}";
+
+            var result = GetResult(code);
+            
+            Assert.That(result, Is.EqualTo(SourceModuleBuilder.NewBuilder()
+                .NewNamespace("MyNamespace")
+                .NewClass("MyClass")
+                .WithAliasUsing("System", "S")
+                .Finish()));
+        }
+        
+        [Test]
+        public void ExtractsUsingsSeparatelyInDifferentNamespace()
+        {
+            var code = @"
+using Global;
+
+namespace MyNamespace {
+    using System;
+
+    public class MyClass { }
+}
+
+namespace MyOtherNamespace {
+    using RoslynReflection;
+
+    public class MyOtherClass { }
+}
+";
+
+            var result = GetResult(code);
+            
+            Assert.That(result, Is.EqualTo(SourceModuleBuilder.NewBuilder()
+                .NewNamespace("MyNamespace")
+                .NewClass("MyClass")
+                .WithUsing("Global")
+                .WithUsing("System")
+                .NewNamespace("MyOtherNamespace")
+                .NewClass("MyOtherClass")
+                .WithUsing("Global")
+                .WithUsing("RoslynReflection")
+                .Finish()));
+        }
+
     }
 }

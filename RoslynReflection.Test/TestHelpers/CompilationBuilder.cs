@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,7 +15,21 @@ namespace RoslynReflection.Test.TestHelpers
 
         public CompilationBuilder AddAssemblyFromType<T>()
         {
-            _dependentAssemblies.Add(typeof(T).Assembly);
+            var assembly = typeof(T).Assembly;
+            return AddAssembly(assembly);
+        }
+
+        public CompilationBuilder AddAssembly(Assembly assembly)
+        {
+            if (_dependentAssemblies.Contains(assembly)) return this;
+            
+            foreach (var referencedAssembly in assembly.GetReferencedAssemblies())
+            {
+                var dependentAssembly = Assembly.Load(referencedAssembly);
+                AddAssembly(dependentAssembly);
+            }
+            
+            _dependentAssemblies.Add(assembly);
             return this;
         }
 

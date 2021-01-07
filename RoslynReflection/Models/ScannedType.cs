@@ -4,17 +4,17 @@ using RoslynReflection.Extensions;
 
 namespace RoslynReflection.Models
 {
-    public abstract record ScannedType
+    public abstract record ScannedType : IScannedType
     {
         public ScannedModule Module => Namespace.Module;
-        public readonly ScannedNamespace Namespace;
-        public readonly string Name;
-        public readonly ScannedType? SurroundingType;
+        public ScannedNamespace Namespace { get; }
+        public string Name { get; }
+        public ScannedType? SurroundingType { get; }
 
-        public readonly ValueList<ScannedType> NestedTypes = new();
-        public readonly ValueList<object> Attributes = new(AttributeComparer.Instance);
+        public ValueList<ScannedType> NestedTypes { get; } = new();
+        public ValueList<object> Attributes { get; } = new(AttributeComparer.Instance);
 
-        public readonly ValueList<IScannedUsing> Usings = new();
+        public ValueList<IScannedUsing> Usings { get; } = new();
 
         protected ScannedType(ScannedNamespace ns, string name, ScannedType? surroundingType = null)
         {
@@ -34,7 +34,8 @@ namespace RoslynReflection.Models
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Name == other.Name && Attributes.Equals(other.Attributes) && NestedTypes.Equals(other.NestedTypes) && Usings.Equals(other.Usings);
+            return Name == other.Name && Attributes.Equals(other.Attributes) && NestedTypes.Equals(other.NestedTypes) &&
+                   Usings.Equals(other.Usings);
         }
 
         public override int GetHashCode()
@@ -52,7 +53,7 @@ namespace RoslynReflection.Models
         protected virtual bool PrintMembers(StringBuilder builder)
         {
             InternalPrintMembers(builder.StartAppendingFields());
-            
+
             return true;
         }
 
@@ -64,7 +65,5 @@ namespace RoslynReflection.Models
                 .AppendField(nameof(Attributes), Attributes)
                 .AppendField(nameof(Usings), Usings);
         }
-        
-        
     }
 }

@@ -4,6 +4,7 @@ using RoslynReflection.Builder;
 using RoslynReflection.Builder.Source;
 using RoslynReflection.Models;
 using RoslynReflection.Test.Builder;
+using RoslynReflection.Test.TestHelpers.TestAttributes;
 
 namespace RoslynReflection.Test.Models
 {

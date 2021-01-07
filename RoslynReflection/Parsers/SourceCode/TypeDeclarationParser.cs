@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Collections;
 using RoslynReflection.Models;
@@ -7,11 +8,14 @@ namespace RoslynReflection.Parsers.SourceCode
 {
     internal class TypeDeclarationParser
     {
+        private readonly List<IScannedUsing> _scannedUsings;
         private Lazy<ClassDeclarationParser> _classDeclarationParser;
 
-        internal TypeDeclarationParser(ClassList classList, ScannedType? surroundingType = null)
+        internal TypeDeclarationParser(ClassList classList, List<IScannedUsing> scannedUsings,
+            ScannedType? surroundingType = null)
         {
-            _classDeclarationParser = new(() => new ClassDeclarationParser(classList, surroundingType));
+            _scannedUsings = scannedUsings;
+            _classDeclarationParser = new(() => new ClassDeclarationParser(classList, scannedUsings, surroundingType));
         }
 
         internal void ParseTypeDeclaration(TypeDeclarationSyntax typeDeclaration)
@@ -26,6 +30,7 @@ namespace RoslynReflection.Parsers.SourceCode
                     "Unknown TypeDeclaration type")
             };
 
+            type.Usings.AddRange(_scannedUsings);
         }
 
         

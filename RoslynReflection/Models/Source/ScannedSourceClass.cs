@@ -7,21 +7,22 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace RoslynReflection.Models.Source
 {
-    public record ScannedSourceClass : ScannedClass
+    public record ScannedSourceClass : ScannedClass, IScannedSourceType
     {
-        public readonly ClassDeclarationSyntax DeclarationSyntax;
-        private bool _selfGenerated;
+        public TypeDeclarationSyntax DeclarationSyntax => _classDeclarationSyntax;
+        private readonly ClassDeclarationSyntax _classDeclarationSyntax;
+        
 
         public ScannedSourceClass(ClassDeclarationSyntax declarationSyntax, ScannedNamespace ns, string name,
             ScannedType? surroundingType = null) : base(ns, name, surroundingType)
         {
-            DeclarationSyntax = declarationSyntax;
+            _classDeclarationSyntax = declarationSyntax;
         }
 
         public ScannedSourceClass(ScannedNamespace ns, string name,
             ScannedType? surroundingType = null) : base(ns, name, surroundingType)
         {
-            DeclarationSyntax = (ClassDeclarationSyntax) CompilationUnit()
+            _classDeclarationSyntax = (ClassDeclarationSyntax) CompilationUnit()
                 .WithMembers(SingletonList<MemberDeclarationSyntax>(
                     ClassDeclaration(name)
                         .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
@@ -29,7 +30,6 @@ namespace RoslynReflection.Models.Source
                 .NormalizeWhitespace()
                 .Members
                 .First();
-            _selfGenerated = true;
         }
 
         public virtual bool Equals(ScannedSourceClass? other)

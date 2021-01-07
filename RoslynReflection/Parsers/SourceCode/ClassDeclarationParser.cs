@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Collections;
 using RoslynReflection.Models;
@@ -7,12 +8,15 @@ namespace RoslynReflection.Parsers.SourceCode
 {
     internal class ClassDeclarationParser
     {
-        private ClassList _classList;
-        private ScannedType? _surroundingType;
+        private readonly ClassList _classList;
+        private readonly List<IScannedUsing> _scannedUsings;
+        private readonly ScannedType? _surroundingType;
 
-        public ClassDeclarationParser(ClassList classList, ScannedType? surroundingType = null)
+        public ClassDeclarationParser(ClassList classList, List<IScannedUsing> scannedUsings,
+            ScannedType? surroundingType = null)
         {
             _classList = classList;
+            _scannedUsings = scannedUsings;
             _surroundingType = surroundingType;
         }
 
@@ -22,7 +26,7 @@ namespace RoslynReflection.Parsers.SourceCode
 
             var sourceClass = _classList.GetType(name, classDeclaration, _surroundingType);
 
-            var typeDeclarationParser = new TypeDeclarationParser(_classList, sourceClass);
+            var typeDeclarationParser = new TypeDeclarationParser(_classList, _scannedUsings, sourceClass);
             foreach (var typeDeclaration in classDeclaration.Members.OfType<TypeDeclarationSyntax>())
             {
                 typeDeclarationParser.ParseTypeDeclaration(typeDeclaration);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RoslynReflection.Test.Builder
+namespace RoslynReflection.Test.TestHelpers.TestAttributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class SampleAttribute : Attribute

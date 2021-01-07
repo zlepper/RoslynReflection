@@ -28,13 +28,13 @@ namespace RoslynReflection.Parsers.AssemblyParser
 
         private ScannedType GetConcreteType(Type type)
         {
-            if (type.IsClass)
-            {
+            // if (type.IsClass)
+            // {
                 var parser = new AssemblyClassParser(_scannedNamespace, _surroundingType);
                 return parser.ParseClass(type);
-            }
+            // }
 
-            throw new NotImplementedException("Unsupported type");
+            // throw new NotImplementedException("Unsupported type");
         }
     }
 }

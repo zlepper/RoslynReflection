@@ -4,9 +4,9 @@ using RoslynReflection.Extensions;
 
 namespace RoslynReflection.Models.Assembly
 {
-    public record ScannedAssemblyClass : ScannedClass
+    public record ScannedAssemblyClass : ScannedClass, IScannedAssemblyType
     {
-        public readonly Type Type;
+        public Type Type { get; }
 
         public ScannedAssemblyClass(Type type, ScannedNamespace ns, ScannedType? surroundingType = null) :
             base(ns, type.Name, surroundingType)
