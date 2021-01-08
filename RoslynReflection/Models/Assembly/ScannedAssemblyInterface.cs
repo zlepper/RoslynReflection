@@ -6,8 +6,7 @@ namespace RoslynReflection.Models.Assembly
 {
     public record ScannedAssemblyInterface : ScannedInterface, IScannedAssemblyType
     {
-        public ScannedAssemblyInterface(Type type, ScannedNamespace ns, string name,
-            ScannedType? surroundingType = null) : base(ns, name, surroundingType)
+        public ScannedAssemblyInterface(Type type, ScannedNamespace ns, ScannedType? surroundingType = null) : base(ns, type.Name, surroundingType)
         {
             Type = type;
         }

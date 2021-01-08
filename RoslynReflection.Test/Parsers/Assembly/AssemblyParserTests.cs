@@ -1,10 +1,9 @@
 ﻿using System;
-using ClassWithAttribute;
 using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
 using RoslynReflection.Parsers.AssemblyParser;
-using SimpleClass;
+using ScanableAssembly;
 
 namespace RoslynReflection.Test.Parsers.Assembly
 {
@@ -22,40 +21,24 @@ namespace RoslynReflection.Test.Parsers.Assembly
         {
             var result = ParseAssemblyFromClass<ClassWithoutNamespace>();
 
-            Assert.That(result, Is.EqualTo(new ScannedModule()
+            var expected = new ScannedModule()
                 .AddNamespace("")
                 .AddAssemblyClass<ClassWithoutNamespace>()
                 .Module
-            ));
-        }
-
-        [Test]
-        public void ParsesClassWithNamespace()
-        {
-            var result = ParseAssemblyFromClass<MySimpleClass>();
-
-            Assert.That(result, Is.EqualTo(new ScannedModule()
-                .AddNamespace("SimpleClass")
-                .AddAssemblyClass<MySimpleClass>()
-                .Module
-            ));
-        }
-
-        [Test]
-        public void ExtractsAttributesOnClasses()
-        {
-            var result = ParseAssemblyFromClass<ClassWithAttribute.ClassWithAttribute>();
-
-            var expected = new ScannedModule()
-                .AddNamespace(nameof(ClassWithAttribute))
+                .AddNamespace("ScanableAssembly")
+                .AddAssemblyClass<ClassWithAttribute>()
+                .AddAttribute(new MyAttribute("Hello World"))
+                .Namespace
                 .AddAssemblyClass<MyAttribute>()
                 .AddAttribute(new AttributeUsageAttribute(AttributeTargets.Class))
                 .Namespace
-                .AddAssemblyClass<ClassWithAttribute.ClassWithAttribute>()
-                .AddAttribute(new MyAttribute("Hello World"))
+                .AddAssemblyClass<MySimpleClass>()
+                .Namespace
+                .AddAssemblyInterface<IMySimpleInterface>()
                 .Module;
-
+            
             Assert.That(result, Is.EqualTo(expected));
         }
+
     }
 }

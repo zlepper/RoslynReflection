@@ -18,9 +18,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\RoslynReflection\RoslynReflection.csproj" />
-      <ProjectReference Include="..\TestAssemblies\ClassWithAttribute\ClassWithAttribute.csproj" />
-      <ProjectReference Include="..\TestAssemblies\ClassWithoutNamespace\ClassWithoutNamespace.csproj" />
-      <ProjectReference Include="..\TestAssemblies\SimpleClass\SimpleClass.csproj" />
+      <ProjectReference Include="..\TestAssemblies\ScanableAssembly\ScanableAssembly.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClassWithAttribute
+namespace ScanableAssembly
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class MyAttribute : Attribute

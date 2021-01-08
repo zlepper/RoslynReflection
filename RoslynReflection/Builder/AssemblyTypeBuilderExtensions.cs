@@ -9,5 +9,11 @@ namespace RoslynReflection.Builder
         {
             return new(typeof(T), type.Namespace, type);
         }
+        
+        
+        public static ScannedAssemblyInterface AddNestedAssemblyInterface<T>(this ScannedType type)
+        {
+            return new(typeof(T), type.Namespace, type);
+        }
     }
 }

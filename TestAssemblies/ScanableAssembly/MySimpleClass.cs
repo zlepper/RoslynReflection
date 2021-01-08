@@ -1,4 +1,4 @@
-﻿namespace SimpleClass
+﻿namespace ScanableAssembly
 {
     public class MySimpleClass
     {
