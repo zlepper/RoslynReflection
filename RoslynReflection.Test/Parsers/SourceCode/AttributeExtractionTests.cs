@@ -7,6 +7,7 @@ using RoslynReflection.Test.TestHelpers.TestAttributes;
 
 namespace RoslynReflection.Test.Parsers.SourceCode
 {
+    [Ignore("Not Yet finished")]
     [TestFixture]
     internal class AttributeExtractionTests
     {
