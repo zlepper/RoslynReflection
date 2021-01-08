@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Collections;
 using RoslynReflection.Models;
@@ -15,5 +17,10 @@ namespace RoslynReflection.Parsers.SourceCode
         }
 
         protected override TypeList<ScannedSourceClass, ClassDeclarationSyntax> TypeList => TypeListList.ClassList;
+
+        protected override void ModifySpecifics(ClassDeclarationSyntax typeDeclaration, ScannedSourceClass type)
+        {
+            type.IsAbstract = typeDeclaration.Modifiers.Any(m => m.Kind() == SyntaxKind.AbstractKeyword);
+        }
     }
 }

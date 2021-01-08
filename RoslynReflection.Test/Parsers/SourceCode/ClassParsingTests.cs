@@ -197,5 +197,19 @@ namespace MyOtherNamespace {
                 .Module));
         }
 
+        [Test]
+        public void DetectsAbstractClasses()
+        {
+            var code = @"namespace MyNamespace {
+    public abstract class MyClass {}
+}";
+
+            var result = GetResult(code);
+            Assert.That(result, Is.EqualTo(new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("MyClass")
+                .MakeAbstract()
+                .Module));
+        }
     }
 }

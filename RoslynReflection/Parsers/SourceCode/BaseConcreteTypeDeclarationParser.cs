@@ -35,10 +35,11 @@ namespace RoslynReflection.Parsers.SourceCode
                 typeDeclarationParser.ParseTypeDeclaration(typeDeclaration);
             }
             
+            ModifySpecifics(specificTypeDeclaration, sourceClass);
 
-            
-            
             return sourceClass;
         }
+        
+        protected virtual void ModifySpecifics(TDeclarationSyntax typeDeclaration, TType type) {}
     }
 }

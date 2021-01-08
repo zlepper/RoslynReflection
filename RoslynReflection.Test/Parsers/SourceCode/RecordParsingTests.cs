@@ -90,5 +90,20 @@ namespace RoslynReflection.Test.Parsers.SourceCode
                     .Module
             ));
         }
+        
+        [Test]
+        public void DetectsAbstractRecords()
+        {
+            var code = @"namespace MyNamespace {
+    public abstract record MyRecord {}
+}";
+
+            var result = GetResult(code);
+            Assert.That(result, Is.EqualTo(new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceRecord("MyRecord")
+                .MakeAbstract()
+                .Module));
+        }
     }
 }
