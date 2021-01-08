@@ -17,7 +17,7 @@ namespace RoslynReflection.Test.Parsers.Assembly
         }
 
         [Test]
-        public void ParsesClassWithoutNamespace()
+        public void ParseAssembly()
         {
             var result = ParseAssemblyFromClass<ClassWithoutNamespace>();
 
