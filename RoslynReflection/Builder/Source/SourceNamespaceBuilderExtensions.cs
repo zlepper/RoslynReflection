@@ -14,5 +14,10 @@ namespace RoslynReflection.Builder.Source
         {
             return new(ns, name);
         }
+
+        public static ScannedSourceRecord AddSourceRecord(this ScannedNamespace ns, string name)
+        {
+            return new(ns, name);
+        }
     }
 }

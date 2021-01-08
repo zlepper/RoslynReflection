@@ -35,5 +35,10 @@ namespace RoslynReflection.Builder.Source
         {
             return new(type.Namespace, name, type);
         }
+
+        public static ScannedSourceRecord AddNestedSourceRecord(this ScannedType type, string name)
+        {
+            return new(type.Namespace, name, type);
+        }
     }
 }
