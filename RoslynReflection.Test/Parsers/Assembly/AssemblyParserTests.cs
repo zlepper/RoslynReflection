@@ -2,6 +2,7 @@
 using ClassWithAttribute;
 using NUnit.Framework;
 using RoslynReflection.Builder.Assembly;
+using RoslynReflection.Builder.Source;
 using RoslynReflection.Models;
 using RoslynReflection.Parsers.AssemblyParser;
 using SimpleClass;
@@ -22,10 +23,10 @@ namespace RoslynReflection.Test.Parsers.Assembly
         {
             var result = ParseAssemblyFromClass<ClassWithoutNamespace>();
 
-            Assert.That(result, Is.EqualTo(AssemblyModuleBuilder.NewBuilder()
+            Assert.That(result, Is.EqualTo(new ScannedModule()
                 .AddNamespace("")
-                .NewClass<ClassWithoutNamespace>()
-                .Finish()
+                .AddAssemblyClass<ClassWithoutNamespace>()
+                .Module
             ));
         }
 
@@ -34,10 +35,10 @@ namespace RoslynReflection.Test.Parsers.Assembly
         {
             var result = ParseAssemblyFromClass<MySimpleClass>();
 
-            Assert.That(result, Is.EqualTo(AssemblyModuleBuilder.NewBuilder()
+            Assert.That(result, Is.EqualTo(new ScannedModule()
                 .AddNamespace("SimpleClass")
-                .NewClass<MySimpleClass>()
-                .Finish()
+                .AddAssemblyClass<MySimpleClass>()
+                .Module
             ));
         }
 
@@ -46,13 +47,14 @@ namespace RoslynReflection.Test.Parsers.Assembly
         {
             var result = ParseAssemblyFromClass<ClassWithAttribute.ClassWithAttribute>();
 
-            var expected = AssemblyModuleBuilder.NewBuilder()
+            var expected = new ScannedModule()
                 .AddNamespace(nameof(ClassWithAttribute))
-                .NewClass<MyAttribute>()
-                .WithAttribute(new AttributeUsageAttribute(AttributeTargets.Class))
-                .NewClass<ClassWithAttribute.ClassWithAttribute>()
-                .WithAttribute(new MyAttribute("Hello World"))
-                .Finish();
+                .AddAssemblyClass<MyAttribute>()
+                .AddAttribute(new AttributeUsageAttribute(AttributeTargets.Class))
+                .Namespace
+                .AddAssemblyClass<ClassWithAttribute.ClassWithAttribute>()
+                .AddAttribute(new MyAttribute("Hello World"))
+                .Module;
 
             Assert.That(result, Is.EqualTo(expected));
         }
