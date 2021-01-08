@@ -5,25 +5,24 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace RoslynReflection.Models.Source
 {
-    public record ScannedSourceClass : ScannedClass, IScannedSourceType
+    public record ScannedSourceInterface : ScannedInterface, IScannedSourceType
     {
-        public TypeDeclarationSyntax DeclarationSyntax => _classDeclarationSyntax;
-        private readonly ClassDeclarationSyntax _classDeclarationSyntax;
+        public TypeDeclarationSyntax DeclarationSyntax => _interfaceDeclaration;
+        private readonly InterfaceDeclarationSyntax _interfaceDeclaration;
         
-
-        public ScannedSourceClass(ClassDeclarationSyntax declarationSyntax, ScannedNamespace ns, string name,
+        public ScannedSourceInterface(InterfaceDeclarationSyntax interfaceDeclaration, ScannedNamespace ns, string name,
             ScannedType? surroundingType = null) : base(ns, name, surroundingType)
         {
-            _classDeclarationSyntax = declarationSyntax;
+            _interfaceDeclaration = interfaceDeclaration;
         }
 
-        public ScannedSourceClass(ScannedNamespace ns, string name,
-            ScannedType? surroundingType = null) : base(ns, name, surroundingType)
+        public ScannedSourceInterface(ScannedNamespace ns, string name, ScannedType? surroundingType = null) : base(ns, name, surroundingType)
         {
-            _classDeclarationSyntax = ClassDeclaration(name);
+            _interfaceDeclaration = InterfaceDeclaration(name);
         }
 
-        public virtual bool Equals(ScannedSourceClass? other)
+
+        public virtual bool Equals(ScannedSourceInterface? other)
         {
             return base.Equals(other) ;
         }
@@ -38,5 +37,6 @@ namespace RoslynReflection.Models.Source
             InternalPrintMembers(builder.StartAppendingFields());
             return true;
         }
+
     }
 }

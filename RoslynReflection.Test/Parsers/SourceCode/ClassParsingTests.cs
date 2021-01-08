@@ -1,8 +1,6 @@
 ﻿using NUnit.Framework;
-using RoslynReflection.Builder;
 using RoslynReflection.Builder.Source;
-using RoslynReflection.Test.Builder;
-using RoslynReflection.Test.TestHelpers.TestAttributes;
+using RoslynReflection.Models;
 
 namespace RoslynReflection.Test.Parsers.SourceCode
 {
@@ -21,10 +19,10 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewClass("MyClass")
-                    .Finish()
+                new ScannedModule()
+                    .AddNamespace("MyNamespace")
+                    .AddSourceClass("MyClass")
+                    .Module
             ));
         }
         
@@ -41,11 +39,12 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewClass("MyClass")
-                    .NewClass("MyOtherClass")
-                    .Finish()
+                new ScannedModule()
+                    .AddNamespace("MyNamespace")
+                    .AddSourceClass("MyClass")
+                    .Namespace
+                    .AddSourceClass("MyOtherClass")
+                    .Module
             ));
         }
         
@@ -63,13 +62,13 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewClass("MyClass")
-                    .NewInnerClass("MyInnerClass")
-                    .GoBackToParent()
-                    .NewInnerClass("MySecondInnerClass")
-                    .Finish()
+                new ScannedModule()
+                    .AddNamespace("MyNamespace")
+                    .AddSourceClass("MyClass")
+                    .AddNestedSourceClass("MyInnerClass")
+                    .SurroundingType!
+                    .AddNestedSourceClass("MySecondInnerClass")
+                    .Module
             ));
         }
         
@@ -85,10 +84,10 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewClass("MyClass")
-                    .Finish()
+                new ScannedModule()
+                    .AddNamespace("MyNamespace")
+                    .AddSourceClass("MyClass")
+                    .Module
             ));
         }
 
@@ -103,11 +102,11 @@ namespace RoslynReflection.Test.Parsers.SourceCode
 
             var result = GetResult(code);
             
-            Assert.That(result, Is.EqualTo(SourceModuleBuilder.NewBuilder()
-                .NewNamespace("MyNamespace")
-                .NewClass("MyClass")
-                .WithUsing("System")
-                .Finish()));
+            Assert.That(result, Is.EqualTo(new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("MyClass")
+                .AddUsing("System")
+                .Module));
         }
         
         [Test]
@@ -121,11 +120,11 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             
-            Assert.That(result, Is.EqualTo(SourceModuleBuilder.NewBuilder()
-                .NewNamespace("MyNamespace")
-                .NewClass("MyClass")
-                .WithUsing("System")
-                .Finish()));
+            Assert.That(result, Is.EqualTo(new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("MyClass")
+                .AddUsing("System")
+                .Module));
         }
         
         [Test]
@@ -139,11 +138,11 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             
-            Assert.That(result, Is.EqualTo(SourceModuleBuilder.NewBuilder()
-                .NewNamespace("MyNamespace")
-                .NewClass("MyClass")
-                .WithAliasUsing("System", "S")
-                .Finish()));
+            Assert.That(result, Is.EqualTo(new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("MyClass")
+                .AddUsing("System", "S")
+                .Module));
         }
         
         [Test]
@@ -157,11 +156,11 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             
-            Assert.That(result, Is.EqualTo(SourceModuleBuilder.NewBuilder()
-                .NewNamespace("MyNamespace")
-                .NewClass("MyClass")
-                .WithAliasUsing("System", "S")
-                .Finish()));
+            Assert.That(result, Is.EqualTo(new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("MyClass")
+                .AddUsing("System", "S")
+                .Module));
         }
         
         [Test]
@@ -185,16 +184,17 @@ namespace MyOtherNamespace {
 
             var result = GetResult(code);
             
-            Assert.That(result, Is.EqualTo(SourceModuleBuilder.NewBuilder()
-                .NewNamespace("MyNamespace")
-                .NewClass("MyClass")
-                .WithUsing("Global")
-                .WithUsing("System")
-                .NewNamespace("MyOtherNamespace")
-                .NewClass("MyOtherClass")
-                .WithUsing("Global")
-                .WithUsing("RoslynReflection")
-                .Finish()));
+            Assert.That(result, Is.EqualTo(new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("MyClass")
+                .AddUsing("Global")
+                .AddUsing("System")
+                .Module
+                .AddNamespace("MyOtherNamespace")
+                .AddSourceClass("MyOtherClass")
+                .AddUsing("Global")
+                .AddUsing("RoslynReflection")
+                .Module));
         }
 
     }

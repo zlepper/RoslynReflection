@@ -23,4 +23,8 @@
       <ProjectReference Include="..\TestAssemblies\SimpleClass\SimpleClass.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Models\ScannedTypeTests.cs" />
+    </ItemGroup>
+
 </Project>

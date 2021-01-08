@@ -15,9 +15,9 @@ namespace RoslynReflection.Builder.Assembly
             SourceClass = sourceClass;
         }
 
-        public INamespaceBuilder NewNamespace(string name)
+        public INamespaceBuilder AddNamespace(string name)
         {
-            return NamespaceBuilder.NewNamespace(name);
+            return NamespaceBuilder.AddNamespace(name);
         }
 
         public ScannedModule Finish()

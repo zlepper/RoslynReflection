@@ -11,7 +11,7 @@ namespace RoslynReflection.Builder.Assembly
         {
         }
 
-        public INamespaceBuilder NewNamespace(string name)
+        public INamespaceBuilder AddNamespace(string name)
         {
             var ns = new ScannedNamespace(Module, name);
             return new NamespaceBuilder(this, ns);
@@ -35,7 +35,7 @@ namespace RoslynReflection.Builder.Assembly
         /// Creates a new namespace with the specified name
         /// </summary>
         /// <param name="name">The name of the namespace</param>
-        INamespaceBuilder NewNamespace(string name);
+        INamespaceBuilder AddNamespace(string name);
 
         /// <summary>
         /// Gets the resulting module

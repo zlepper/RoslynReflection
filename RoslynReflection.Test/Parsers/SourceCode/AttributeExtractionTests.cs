@@ -38,13 +38,13 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewClass("MyClass")
-                    .WithUsing("RoslynReflection.Test.TestHelpers.TestAttributes")
-                    .WithAttribute(new SampleAttribute("Hello"))
-                    .WithAttribute(new AnotherAttribute("World"))
-                    .Finish()
+                new ScannedModule()
+                    .AddNamespace("MyNamespace")
+                    .AddSourceClass("MyClass")
+                    .AddUsing("RoslynReflection.Test.TestHelpers.TestAttributes")
+                    .AddAttribute(new SampleAttribute("Hello"))
+                    .AddAttribute(new AnotherAttribute("World"))
+                    .Module
             ));
         }
         
@@ -61,13 +61,13 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewClass("MyClass")
-                    .WithUsing("RoslynReflection.Test.TestHelpers.TestAttributes")
-                    .WithAttribute(new SampleAttribute("Hello"))
-                    .WithAttribute(new AnotherAttribute("World"))
-                    .Finish()
+                new ScannedModule()
+                    .AddNamespace("MyNamespace")
+                    .AddSourceClass("MyClass")
+                    .AddUsing("RoslynReflection.Test.TestHelpers.TestAttributes")
+                    .AddAttribute(new SampleAttribute("Hello"))
+                    .AddAttribute(new AnotherAttribute("World"))
+                    .Module
             ));
         }
         
@@ -84,12 +84,12 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewClass("MyClass")
-                    .WithUsing("RoslynReflection.Test.TestHelpers.TestAttributes")
-                    .WithAttribute(new EmptyAttribute())
-                    .Finish()
+                new ScannedModule()
+                    .AddNamespace("MyNamespace")
+                    .AddSourceClass("MyClass")
+                    .AddUsing("RoslynReflection.Test.TestHelpers.TestAttributes")
+                    .AddAttribute(new EmptyAttribute())
+                    .Module
             ));
         }
         
@@ -106,12 +106,12 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewClass("MyClass")
-                    .WithUsing("RoslynReflection.Test.TestHelpers.TestAttributes")
-                    .WithAttribute(new EmptyAttribute())
-                    .Finish()
+                new ScannedModule()
+                    .AddNamespace("MyNamespace")
+                    .AddSourceClass("MyClass")
+                    .AddUsing("RoslynReflection.Test.TestHelpers.TestAttributes")
+                    .AddAttribute(new EmptyAttribute())
+                    .Module
             ));
         }
     }

@@ -23,7 +23,7 @@ namespace RoslynReflection.Test.Parsers.Assembly
             var result = ParseAssemblyFromClass<ClassWithoutNamespace>();
 
             Assert.That(result, Is.EqualTo(AssemblyModuleBuilder.NewBuilder()
-                .NewNamespace("")
+                .AddNamespace("")
                 .NewClass<ClassWithoutNamespace>()
                 .Finish()
             ));
@@ -35,7 +35,7 @@ namespace RoslynReflection.Test.Parsers.Assembly
             var result = ParseAssemblyFromClass<MySimpleClass>();
 
             Assert.That(result, Is.EqualTo(AssemblyModuleBuilder.NewBuilder()
-                .NewNamespace("SimpleClass")
+                .AddNamespace("SimpleClass")
                 .NewClass<MySimpleClass>()
                 .Finish()
             ));
@@ -47,7 +47,7 @@ namespace RoslynReflection.Test.Parsers.Assembly
             var result = ParseAssemblyFromClass<ClassWithAttribute.ClassWithAttribute>();
 
             var expected = AssemblyModuleBuilder.NewBuilder()
-                .NewNamespace(nameof(ClassWithAttribute))
+                .AddNamespace(nameof(ClassWithAttribute))
                 .NewClass<MyAttribute>()
                 .WithAttribute(new AttributeUsageAttribute(AttributeTargets.Class))
                 .NewClass<ClassWithAttribute.ClassWithAttribute>()

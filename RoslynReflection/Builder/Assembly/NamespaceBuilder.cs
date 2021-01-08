@@ -16,9 +16,9 @@ namespace RoslynReflection.Builder.Assembly
         }
         
         
-        public INamespaceBuilder NewNamespace(string name)
+        public INamespaceBuilder AddNamespace(string name)
         {
-            return _parent.NewNamespace(name);
+            return _parent.AddNamespace(name);
         }
 
         public ScannedModule Finish()

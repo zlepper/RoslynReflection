@@ -1,11 +1,10 @@
 ﻿using NUnit.Framework;
-using RoslynReflection.Builder;
 using RoslynReflection.Builder.Source;
+using RoslynReflection.Models;
 
 namespace RoslynReflection.Test.Parsers.SourceCode
 {
     [TestFixture]
-    // ReSharper disable once InconsistentNaming
     internal class NamespaceParsingTests : BaseSyntaxTreeParserTest
     {
         
@@ -18,9 +17,9 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .Finish()
+                new ScannedModule()
+                    .AddNamespace("MyNamespace")
+                    .Module
             ));
         }
 
@@ -34,10 +33,11 @@ namespace MySecondNamespace";
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewNamespace("MySecondNamespace")
-                    .Finish()
+                new ScannedModule()
+                    .AddNamespace("MyNamespace")
+                    .Module
+                    .AddNamespace("MySecondNamespace")
+                    .Module
             ));
         }
 
@@ -50,10 +50,11 @@ namespace MySecondNamespace";
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                SourceModuleBuilder.NewBuilder()
-                    .NewNamespace("MyNamespace")
-                    .NewNamespace("MyNamespace.MyInnerNamespace")
-                    .Finish()
+                new ScannedModule()
+                    .AddNamespace("MyNamespace")
+                    .Module
+                    .AddNamespace("MyNamespace.MyInnerNamespace")
+                    .Module
             ));
         }
     }

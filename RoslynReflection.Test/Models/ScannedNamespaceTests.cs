@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using NUnit.Framework;
-using RoslynReflection.Builder;
+﻿using NUnit.Framework;
 using RoslynReflection.Builder.Source;
+using RoslynReflection.Models;
 
 namespace RoslynReflection.Test.Models
 {
@@ -11,11 +10,8 @@ namespace RoslynReflection.Test.Models
         [Test]
         public void ToStringReturnsSomething()
         {
-            var ns = SourceModuleBuilder.NewBuilder()
-                .NewNamespace("ns")
-                .Finish()
-                .Namespaces
-                .Single();
+            var ns = new ScannedModule()
+                .AddNamespace("ns");
 
             Assert.That(ns.ToString(), Is.Not.Empty);
         }
@@ -23,11 +19,8 @@ namespace RoslynReflection.Test.Models
         [Test]
         public void Equals_ToSelfIsTrue()
         {
-            var ns = SourceModuleBuilder.NewBuilder()
-                .NewNamespace("ns")
-                .Finish()
-                .Namespaces
-                .Single();
+            var ns = new ScannedModule()
+                .AddNamespace("ns");
 
             Assert.That(ns.Equals(ns), Is.True);
         }

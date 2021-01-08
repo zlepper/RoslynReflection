@@ -16,11 +16,11 @@ namespace RoslynReflection.Test.Builder.Source
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNamespace");
             var _ = new ScannedSourceClass(expectedNamespace, "MyClass");
 
-            var actualModule = SourceModuleBuilder.NewBuilder()
-                .NewNamespace("MyNamespace")
-                .NewClass("MyClass")
-                .Finish();
-            
+            var actualModule = new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("MyClass")
+                .Module;
+
             Assert.That(actualModule, Is.EqualTo(expectedModule));
         }
 
@@ -32,12 +32,12 @@ namespace RoslynReflection.Test.Builder.Source
             var expectedParentClass = new ScannedSourceClass(expectedNamespace, "MyClass");
             var _ = new ScannedSourceClass(expectedNamespace, "MyInnerClass", expectedParentClass);
 
-            var actualModule = SourceModuleBuilder.NewBuilder()
-                .NewNamespace("MyNamespace")
-                .NewClass("MyClass")
-                .NewInnerClass("MyInnerClass")
-                .Finish();
-            
+            var actualModule = new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("MyClass")
+                .AddNestedSourceClass("MyInnerClass")
+                .Module;
+
             Assert.That(actualModule, Is.EqualTo(expectedModule));
         }
 
@@ -51,20 +51,20 @@ namespace RoslynReflection.Test.Builder.Source
             var unused2 = new ScannedSourceClass(expectedNamespace, "MySecondInnerClass", expectedParentClass);
             var unused3 = new ScannedSourceClass(expectedNamespace, "MyInnerInnerClass", unused2);
             var unused4 = new ScannedSourceClass(expectedNamespace, "MyThirdInnerClass", expectedParentClass);
-            
-            
-            var actualModule = SourceModuleBuilder.NewBuilder()
-                .NewNamespace("MyNamespace")
-                .NewClass("MyClass")
-                .NewInnerClass("MyFirstInnerClass")
-                .GoBackToParent()
-                .NewInnerClass("MySecondInnerClass")
-                .NewInnerClass("MyInnerInnerClass")
-                .GoBackToParent()
-                .GoBackToParent()
-                .NewInnerClass("MyThirdInnerClass")
-                .Finish();
-            
+
+
+            var actualModule = new ScannedModule()
+                            .AddNamespace("MyNamespace")
+                            .AddSourceClass("MyClass")
+                            .AddNestedSourceClass("MyFirstInnerClass")
+                            .SurroundingType!
+                        .AddNestedSourceClass("MySecondInnerClass")
+                        .AddNestedSourceClass("MyInnerInnerClass")
+                        .SurroundingType!
+                    .SurroundingType!
+                .AddNestedSourceClass("MyThirdInnerClass")
+                .Module;
+
             Assert.That(actualModule, Is.EqualTo(expectedModule));
         }
 
@@ -77,12 +77,12 @@ namespace RoslynReflection.Test.Builder.Source
             var middle = new ScannedSourceClass(expectedNamespace, "Middle", outer);
             var unused2 = new ScannedSourceClass(expectedNamespace, "Inner", middle);
 
-            var actual = SourceModuleBuilder.NewBuilder()
-                .NewNamespace("MyNs")
-                .NewClass("Outer")
-                .NewInnerClass("Middle")
-                .NewInnerClass("Inner")
-                .Finish();
+            var actual = new ScannedModule()
+                .AddNamespace("MyNs")
+                .AddSourceClass("Outer")
+                .AddNestedSourceClass("Middle")
+                .AddNestedSourceClass("Inner")
+                .Module;
 
             Assert.That(actual, Is.EqualTo(expectedModule));
         }
@@ -95,12 +95,12 @@ namespace RoslynReflection.Test.Builder.Source
             var myClass = new ScannedSourceClass(expectedNamespace, "MyClass");
             myClass.Attributes.Add(new SampleAttribute("hello"));
 
-            var actual = SourceModuleBuilder.NewBuilder()
-                .NewNamespace("MyNs")
-                .NewClass("MyClass")
-                .WithAttribute(new SampleAttribute("hello"))
-                .Finish();
-            
+            var actual = new ScannedModule()
+                .AddNamespace("MyNs")
+                .AddSourceClass("MyClass")
+                .AddAttribute(new SampleAttribute("hello"))
+                .Module;
+
             Assert.That(actual, Is.EqualTo(actual));
         }
 
@@ -113,13 +113,14 @@ namespace RoslynReflection.Test.Builder.Source
             var unused1 = new ScannedSourceClass(ns1, "C1");
             var unused2 = new ScannedSourceClass(ns2, "C2");
 
-            var actualModule = SourceModuleBuilder.NewBuilder()
-                .NewNamespace("ns1")
-                .NewClass("C1")
-                .NewNamespace("ns2")
-                .NewClass("C2")
-                .Finish();
-            
+            var actualModule = new ScannedModule()
+                .AddNamespace("ns1")
+                .AddSourceClass("C1")
+                .Module
+                .AddNamespace("ns2")
+                .AddSourceClass("C2")
+                .Module;
+
             Assert.That(actualModule, Is.EqualTo(expectedModule));
         }
     }

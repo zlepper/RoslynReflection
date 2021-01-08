@@ -266,7 +266,7 @@ namespace RoslynReflection.Test.Models
         {
             var module = new ScannedModule();
             var otherNamespace = new ScannedNamespace(module, "OtherNamespace");
-            var otherClass = new ScannedSourceClass(otherNamespace, "OtherClass");
+            var unused = new ScannedSourceClass(otherNamespace, "OtherClass");
             var otherNamespace2 = new ScannedNamespace(module, "OtherNamespace2");
             var otherClass2 = new ScannedSourceClass(otherNamespace2, "OtherClass");
             var classNamespace = new ScannedNamespace(module, "MyNamespace");
@@ -294,7 +294,7 @@ namespace RoslynReflection.Test.Models
         {
             var module = new ScannedModule();
             var otherNamespace = new ScannedNamespace(module, "OtherNamespace");
-            var otherClass = new ScannedSourceClass(otherNamespace, "OtherClass");
+            var unused = new ScannedSourceClass(otherNamespace, "OtherClass");
             var otherNamespace2 = new ScannedNamespace(module, "OtherNamespace2");
             var otherClass2 = new ScannedSourceClass(otherNamespace2, "OtherClass");
             var classNamespace = new ScannedNamespace(module, "MyNamespace");

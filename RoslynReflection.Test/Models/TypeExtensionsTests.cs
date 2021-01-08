@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using RoslynReflection.Builder;
 using RoslynReflection.Builder.Source;
 using RoslynReflection.Models;
 
@@ -11,11 +10,11 @@ namespace RoslynReflection.Test.Models
     {
         private ScannedModule GetTestModule()
         {
-            return SourceModuleBuilder.NewBuilder()
-                .NewNamespace("MyNamespace")
-                .NewClass("MyClass")
-                .NewInnerClass("MyInnerClass")
-                .Finish();
+            return new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("MyClass")
+                .AddNestedSourceClass("MyInnerClass")
+                .Module;
         }
         
         [Test]
@@ -81,12 +80,9 @@ namespace RoslynReflection.Test.Models
         [Test]
         public void FullyQualifiedName_ForClassWithoutNamespace()
         {
-            var target = SourceModuleBuilder.NewBuilder()
-                .NewNamespace("")
-                .NewClass("MyClass")
-                .Finish()
-                .Classes()
-                .Single();
+            var target = new ScannedModule()
+                .AddNamespace("")
+                .AddSourceClass("MyClass");
             
             Assert.That(target.FullyQualifiedName(), Is.EqualTo("MyClass"));
         }
