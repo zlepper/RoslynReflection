@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
@@ -39,15 +39,8 @@ namespace RoslynReflection.Test.Parsers.Assembly
                 .AddAssemblyRecord<MyRecord>()
                 .Module;
             
-            AddCompilerGeneratedAttributes(expected);
-            
             Assert.That(result, Is.EqualTo(expected));
         }
-
-        private void AddCompilerGeneratedAttributes(ScannedModule module)
-        {
-            
-        } 
     }
     
     
