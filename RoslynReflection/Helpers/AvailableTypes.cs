@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using RoslynReflection.Extensions;
+using RoslynReflection.Models;
 
-namespace RoslynReflection.Models
+namespace RoslynReflection.Helpers
 {
     internal class AvailableTypes
     {

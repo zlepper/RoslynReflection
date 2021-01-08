@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoslynReflection.Helpers;
 using RoslynReflection.Models;
 using RoslynReflection.Models.Assembly;
 using RoslynReflection.Models.Source;

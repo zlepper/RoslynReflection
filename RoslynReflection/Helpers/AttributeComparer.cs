@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RoslynReflection.Models
+namespace RoslynReflection.Helpers
 {
     internal sealed class AttributeComparer : IEqualityComparer<object>
     {

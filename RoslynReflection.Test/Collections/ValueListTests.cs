@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using RoslynReflection.Collections;
+using RoslynReflection.Helpers;
 using RoslynReflection.Models;
 
 namespace RoslynReflection.Test.Collections

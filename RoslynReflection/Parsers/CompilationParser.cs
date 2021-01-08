@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using RoslynReflection.Helpers;
 using RoslynReflection.Models;
 using RoslynReflection.Models.Source;
 using RoslynReflection.Parsers.SourceCode;

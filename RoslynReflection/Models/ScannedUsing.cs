@@ -1,4 +1,6 @@
-﻿namespace RoslynReflection.Models
+﻿using RoslynReflection.Helpers;
+
+namespace RoslynReflection.Models
 {
     public record ScannedUsing : IScannedUsing
     {
