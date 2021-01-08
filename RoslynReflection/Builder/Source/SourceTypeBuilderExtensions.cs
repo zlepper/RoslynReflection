@@ -30,5 +30,10 @@ namespace RoslynReflection.Builder.Source
         {
             return new(type.Namespace, name, type);
         }
+        
+        public static ScannedSourceInterface AddNestedSourceInterface(this ScannedType type, string name)
+        {
+            return new(type.Namespace, name, type);
+        }
     }
 }

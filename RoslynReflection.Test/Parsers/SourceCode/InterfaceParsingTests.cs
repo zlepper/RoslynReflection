@@ -21,18 +21,18 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             Assert.That(result, Is.EqualTo(
                 new ScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceClass("MyClass")
+                    .AddSourceInterface("IMyInterface")
                     .Module
             ));
         }
         
         [Test]
-        public void ExtractsMultipleClasses()
+        public void ExtractsMultipleInterfaces()
         {
             //language=C#
             var code = @"namespace MyNamespace {
-    public class IMyInterface { }
-    public class IMyOtherInterface { }
+    public interface IMyInterface { }
+    public interface IMyOtherInterface { }
 
 }";
 
@@ -41,15 +41,15 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             Assert.That(result, Is.EqualTo(
                 new ScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceClass("MyClass")
+                    .AddSourceInterface("IMyInterface")
                     .Namespace
-                    .AddSourceClass("MyOtherClass")
+                    .AddSourceInterface("IMyOtherInterface")
                     .Module
             ));
         }
         
         [Test]
-        public void ExtractsNestedClasses()
+        public void ExtractsNestedInterfaces()
         {
             //language=C#
             var code = @"namespace MyNamespace {
@@ -64,21 +64,21 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             Assert.That(result, Is.EqualTo(
                 new ScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceClass("MyClass")
-                    .AddNestedSourceClass("MyInnerClass")
+                    .AddSourceInterface("IMyInterface")
+                    .AddNestedSourceInterface("IMyInnerInterface")
                     .SurroundingType!
-                    .AddNestedSourceClass("MySecondInnerClass")
+                    .AddNestedSourceInterface("IMySecondInnerInterface")
                     .Module
             ));
         }
         
         [Test]
-        public void HandlesPartialClasses()
+        public void HandlesPartialInterfaces()
         {
             //language=C#
             var code = @"namespace MyNamespace {
-    public partial Interface IMyInterface { }
-    public partial Interface IMyInterface { }
+    public partial interface IMyInterface { }
+    public partial interface IMyInterface { }
 }";
 
             var result = GetResult(code);
@@ -86,7 +86,7 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             Assert.That(result, Is.EqualTo(
                 new ScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceClass("MyClass")
+                    .AddSourceInterface("IMyInterface")
                     .Module
             ));
         }

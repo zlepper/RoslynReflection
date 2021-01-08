@@ -10,20 +10,22 @@ namespace RoslynReflection.Parsers.SourceCode
     {
         private readonly List<IScannedUsing> _scannedUsings;
         private Lazy<ClassDeclarationParser> _classDeclarationParser;
+        private Lazy<InterfaceDeclarationParser> _interfaceDeclarationParser;
 
-        internal TypeDeclarationParser(ClassList classList, List<IScannedUsing> scannedUsings,
+        internal TypeDeclarationParser(TypeListList typeListList, List<IScannedUsing> scannedUsings,
             ScannedType? surroundingType = null)
         {
             _scannedUsings = scannedUsings;
-            _classDeclarationParser = new(() => new ClassDeclarationParser(classList, scannedUsings, surroundingType));
+            _classDeclarationParser = new(() => new ClassDeclarationParser(typeListList, scannedUsings, surroundingType));
+            _interfaceDeclarationParser = new (() => new InterfaceDeclarationParser(typeListList, scannedUsings, surroundingType));
         }
 
         internal void ParseTypeDeclaration(TypeDeclarationSyntax typeDeclaration)
         {
             ScannedType type = typeDeclaration switch
             {
-                ClassDeclarationSyntax classDecl => _classDeclarationParser.Value.ParseClassDeclaration(classDecl),
-                InterfaceDeclarationSyntax interfaceDeclarationSyntax => throw new NotImplementedException(),
+                ClassDeclarationSyntax classDecl => _classDeclarationParser.Value.ParseDeclaration(classDecl),
+                InterfaceDeclarationSyntax interfaceDecl => _interfaceDeclarationParser.Value.ParseDeclaration(interfaceDecl),
                 RecordDeclarationSyntax recordDeclarationSyntax => throw new NotImplementedException(),
                 StructDeclarationSyntax structDeclarationSyntax => throw new NotImplementedException(),
                 _ => throw new ArgumentOutOfRangeException(nameof(typeDeclaration), typeDeclaration.GetType(),

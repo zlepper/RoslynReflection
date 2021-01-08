@@ -5,7 +5,7 @@ using RoslynReflection.Models;
 
 namespace RoslynReflection.Collections
 {
-    internal abstract class TypeList<TScannedType, TTypeDeclarationSyntax>
+    public abstract class TypeList<TScannedType, TTypeDeclarationSyntax>
         where TScannedType : ScannedType
         where TTypeDeclarationSyntax : TypeDeclarationSyntax
     {
