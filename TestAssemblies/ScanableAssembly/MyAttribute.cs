@@ -27,15 +27,18 @@ namespace ScanableAssembly
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(base.GetHashCode(), MyValue);
+            unchecked
+            {
+                return (base.GetHashCode() * 397) ^ MyValue.GetHashCode();
+            }
         }
 
-        public static bool operator ==(MyAttribute left, MyAttribute right)
+        public static bool operator ==(MyAttribute? left, MyAttribute? right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(MyAttribute left, MyAttribute right)
+        public static bool operator !=(MyAttribute? left, MyAttribute? right)
         {
             return !Equals(left, right);
         }
