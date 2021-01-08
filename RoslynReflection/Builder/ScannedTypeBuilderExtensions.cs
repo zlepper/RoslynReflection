@@ -1,4 +1,5 @@
 ﻿using RoslynReflection.Models;
+using RoslynReflection.Models.Markers;
 
 namespace RoslynReflection.Builder
 {
@@ -8,6 +9,13 @@ namespace RoslynReflection.Builder
             where T : ICanBeAbstract
         {
             type.IsAbstract = true;
+            return type;
+        }
+
+        public static T MakePartial<T>(this T type)
+            where T : ICanBePartial
+        {
+            type.IsPartial = true;
             return type;
         }
     }

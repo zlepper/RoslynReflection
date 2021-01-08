@@ -87,6 +87,7 @@ namespace RoslynReflection.Test.Parsers.SourceCode
                 new ScannedModule()
                     .AddNamespace("MyNamespace")
                     .AddSourceInterface("IMyInterface")
+                    .MakePartial()
                     .Module
             ));
         }

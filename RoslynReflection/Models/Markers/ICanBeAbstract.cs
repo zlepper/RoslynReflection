@@ -1,4 +1,4 @@
-﻿namespace RoslynReflection.Models
+﻿namespace RoslynReflection.Models.Markers
 {
     public interface ICanBeAbstract
     {

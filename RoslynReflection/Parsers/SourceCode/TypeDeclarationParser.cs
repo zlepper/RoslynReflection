@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Collections;
 using RoslynReflection.Models;
+using RoslynReflection.Models.Markers;
 
 namespace RoslynReflection.Parsers.SourceCode
 {
@@ -35,9 +38,28 @@ namespace RoslynReflection.Parsers.SourceCode
                     "Unknown TypeDeclaration type")
             };
 
+            if (type is ICanBePartial canBePartial)
+            {
+                CheckPartial(canBePartial, typeDeclaration);
+            }
+
+            if (type is ICanBeAbstract canBeAbstract)
+            {
+                CheckAbstract(canBeAbstract, typeDeclaration);
+            }
+
             type.Usings.AddRange(_scannedUsings);
         }
 
+        private void CheckPartial(ICanBePartial canBePartial, TypeDeclarationSyntax typeDeclaration)
+        {
+            canBePartial.IsPartial = typeDeclaration.Modifiers.Any(m => m.Kind() == SyntaxKind.PartialKeyword);
+        }
+
+        private void CheckAbstract(ICanBeAbstract canBeAbstract, TypeDeclarationSyntax typeDeclaration)
+        {
+            canBeAbstract.IsAbstract = typeDeclaration.Modifiers.Any(m => m.Kind() == SyntaxKind.AbstractKeyword);
+        }
         
     }
 }
