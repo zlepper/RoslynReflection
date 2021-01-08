@@ -41,6 +41,9 @@ namespace RoslynReflection.Test.Parsers.Assembly
                 .AddAssemblyClass<ParentClass>()
                 .AddNestedAssemblyClass<ParentClass.ChildClass>()
                 .AddNestedAssemblyClass<ParentClass.ChildClass.GrandChildClass>()
+                .Namespace
+                .AddAssemblyClass<AbstractClass>()
+                .MakeAbstract()
                 .Module;
             
             Assert.That(result, Is.EqualTo(expected));

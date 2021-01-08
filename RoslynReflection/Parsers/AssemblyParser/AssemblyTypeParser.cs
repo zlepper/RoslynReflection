@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using RoslynReflection.Models;
+using RoslynReflection.Models.Markers;
 
 namespace RoslynReflection.Parsers.AssemblyParser
 {
@@ -29,6 +30,11 @@ namespace RoslynReflection.Parsers.AssemblyParser
             {
                 if (RoslynReflectionConstants.HiddenNamespaces.Contains(attribute.GetType().Namespace)) continue;
                 scannedType.Attributes.Add(attribute);
+            }
+
+            if (scannedType is ICanBeAbstract canBeAbstract)
+            {
+                canBeAbstract.IsAbstract = type.IsAbstract;
             }
 
             return scannedType;
