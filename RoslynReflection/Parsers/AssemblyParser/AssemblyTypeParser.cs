@@ -8,11 +8,17 @@ namespace RoslynReflection.Parsers.AssemblyParser
     {
         private readonly ScannedNamespace _scannedNamespace;
         private readonly ScannedType? _surroundingType;
+        private readonly Lazy<AssemblyRecordParser> _recordParser;
+        private readonly Lazy<AssemblyClassParser> _classParser;
+        private readonly Lazy<AssemblyInterfaceParser> _interfaceParser;
 
         public AssemblyTypeParser(ScannedNamespace scannedNamespace, ScannedType? surroundingType = null)
         {
             _scannedNamespace = scannedNamespace;
             _surroundingType = surroundingType;
+            _recordParser = new(() => new AssemblyRecordParser(scannedNamespace, surroundingType));
+            _classParser = new(() => new AssemblyClassParser(scannedNamespace, surroundingType));
+            _interfaceParser = new(() => new AssemblyInterfaceParser(scannedNamespace, surroundingType));
         }
 
         internal ScannedType ParseType(Type type)
@@ -30,28 +36,14 @@ namespace RoslynReflection.Parsers.AssemblyParser
 
         private ScannedType GetConcreteType(Type type)
         {
-            if (type.IsClass)
+            return type switch
             {
-                if (type.IsRecord())
-                {
-                    var parser = new AssemblyRecordParser(_scannedNamespace, _surroundingType);
-                    return parser.ParseRecord(type);
-                }
-                else
-                {
-                    var parser = new AssemblyClassParser(_scannedNamespace, _surroundingType);
-                    return parser.ParseClass(type);
-                }
-            }
-
-            if (type.IsInterface)
-            {
-                var parser = new AssemblyInterfaceParser(_scannedNamespace, _surroundingType);
-                return parser.ParseInterface(type);
-            }
-
-            // TODO: Bad fallback for now, until we have support for all sorts of combinations
-            return new AssemblyClassParser(_scannedNamespace, _surroundingType).ParseClass(type);
+                {IsClass: true} t when t.IsRecord() => _recordParser.Value.ParseRecord(t),
+                {IsClass: true} t => _classParser.Value.ParseClass(t),
+                {IsInterface: true} t => _interfaceParser.Value.ParseInterface(t),
+                // TODO: Bad fallback for now, until we have support for all sorts of combinations
+                { } t => _classParser.Value.ParseClass(t)
+            };
         }
     }
 
