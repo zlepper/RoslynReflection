@@ -1,7 +1,7 @@
 ﻿using RoslynReflection.Models;
 using RoslynReflection.Models.Source;
 
-namespace RoslynReflection.Builder.Source
+namespace RoslynReflection.Builder
 {
     public static class SourceNamespaceBuilderExtensions
     {

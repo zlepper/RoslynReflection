@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using RoslynReflection.Builder.Source;
+using RoslynReflection.Builder;
 using RoslynReflection.Models;
 using RoslynReflection.Test.TestHelpers.TestAttributes;
 

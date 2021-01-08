@@ -1,8 +1,7 @@
 ﻿using System;
 using ClassWithAttribute;
 using NUnit.Framework;
-using RoslynReflection.Builder.Assembly;
-using RoslynReflection.Builder.Source;
+using RoslynReflection.Builder;
 using RoslynReflection.Models;
 using RoslynReflection.Parsers.AssemblyParser;
 using SimpleClass;

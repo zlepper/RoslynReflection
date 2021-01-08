@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using RoslynReflection.Builder.Source;
+using RoslynReflection.Builder;
 using RoslynReflection.Models;
 
 namespace RoslynReflection.Test.Models

@@ -1,7 +1,7 @@
 ﻿using RoslynReflection.Models;
 using RoslynReflection.Models.Assembly;
 
-namespace RoslynReflection.Builder.Assembly
+namespace RoslynReflection.Builder
 {
     public static class AssemblyTypeBuilderExtensions
     {

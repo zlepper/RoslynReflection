@@ -1,6 +1,6 @@
 ﻿using RoslynReflection.Models;
 
-namespace RoslynReflection.Builder.Source
+namespace RoslynReflection.Builder
 {
     public static class SourceModuleBuilderExtensions
     {
