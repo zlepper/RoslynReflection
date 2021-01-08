@@ -3,5 +3,5 @@
 // ReSharper disable once CA1050
 public class ClassWithoutNamespace
 {
-    public string Foo { get; set; }
+    public string Foo { get; set; } = null!;
 }

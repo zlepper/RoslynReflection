@@ -11,7 +11,9 @@ namespace RoslynReflection
         /// </summary>
         public static readonly HashSet<string> HiddenNamespaces = new()
         {
-            "JetBrains.Profiler.Core.Instrumentation"
+            "JetBrains.Profiler.Core.Instrumentation",
+            "System.Runtime.CompilerServices",
+            "Microsoft.CodeAnalysis"
         };
 
     }

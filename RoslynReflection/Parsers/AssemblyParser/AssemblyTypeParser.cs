@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using RoslynReflection.Models;
 
 namespace RoslynReflection.Parsers.AssemblyParser
@@ -20,6 +21,7 @@ namespace RoslynReflection.Parsers.AssemblyParser
 
             foreach (var attribute in type.GetCustomAttributes(false))
             {
+                if (RoslynReflectionConstants.HiddenNamespaces.Contains(attribute.GetType().Namespace)) continue;
                 scannedType.Attributes.Add(attribute);
             }
 
@@ -30,8 +32,16 @@ namespace RoslynReflection.Parsers.AssemblyParser
         {
             if (type.IsClass)
             {
-                var parser = new AssemblyClassParser(_scannedNamespace, _surroundingType);
-                return parser.ParseClass(type);
+                if (type.IsRecord())
+                {
+                    var parser = new AssemblyRecordParser(_scannedNamespace, _surroundingType);
+                    return parser.ParseRecord(type);
+                }
+                else
+                {
+                    var parser = new AssemblyClassParser(_scannedNamespace, _surroundingType);
+                    return parser.ParseClass(type);
+                }
             }
 
             if (type.IsInterface)
@@ -42,6 +52,15 @@ namespace RoslynReflection.Parsers.AssemblyParser
 
             // TODO: Bad fallback for now, until we have support for all sorts of combinations
             return new AssemblyClassParser(_scannedNamespace, _surroundingType).ParseClass(type);
+        }
+    }
+
+    internal static class TypeExtensions
+    {
+        internal static bool IsRecord(this Type type)
+        {
+            // "Borrowed" from https://stackoverflow.com/a/64810188/3950006
+            return type.GetMethods().Any(m => m.Name == "<Clone>$");
         }
     }
 }

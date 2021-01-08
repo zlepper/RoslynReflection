@@ -14,5 +14,10 @@ namespace RoslynReflection.Builder
         {
             return new(typeof(T), ns);
         }
+        
+        public static ScannedAssemblyRecord AddAssemblyRecord<T>(this ScannedNamespace ns)
+        {
+            return new(typeof(T), ns);
+        }
     }
 }

@@ -35,10 +35,20 @@ namespace RoslynReflection.Test.Parsers.Assembly
                 .AddAssemblyClass<MySimpleClass>()
                 .Namespace
                 .AddAssemblyInterface<IMySimpleInterface>()
+                .Namespace
+                .AddAssemblyRecord<MyRecord>()
                 .Module;
+            
+            AddCompilerGeneratedAttributes(expected);
             
             Assert.That(result, Is.EqualTo(expected));
         }
 
+        private void AddCompilerGeneratedAttributes(ScannedModule module)
+        {
+            
+        } 
     }
+    
+    
 }

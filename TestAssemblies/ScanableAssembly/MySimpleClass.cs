@@ -2,6 +2,6 @@
 {
     public class MySimpleClass
     {
-        public string Foo { get; set; }
+        public string Foo { get; set; } = null!;
     }
 }
