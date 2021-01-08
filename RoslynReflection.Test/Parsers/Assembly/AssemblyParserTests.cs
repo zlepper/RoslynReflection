@@ -37,6 +37,10 @@ namespace RoslynReflection.Test.Parsers.Assembly
                 .AddAssemblyInterface<IMySimpleInterface>()
                 .Namespace
                 .AddAssemblyRecord<MyRecord>()
+                .Namespace
+                .AddAssemblyClass<ParentClass>()
+                .AddNestedAssemblyClass<ParentClass.ChildClass>()
+                .AddNestedAssemblyClass<ParentClass.ChildClass.GrandChildClass>()
                 .Module;
             
             Assert.That(result, Is.EqualTo(expected));
