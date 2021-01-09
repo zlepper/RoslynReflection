@@ -8,7 +8,7 @@ namespace RoslynReflection.Models
 
         internal void TrimEmptyNamespaces()
         {
-            Namespaces.RemoveAll(ns => ns.Types.Count == 0);
+            Namespaces.RemoveAll(ns => ns.IsEmpty());
         }
     }
 }

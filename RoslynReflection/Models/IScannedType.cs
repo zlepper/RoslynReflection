@@ -11,5 +11,6 @@ namespace RoslynReflection.Models
         ValueList<ScannedType> NestedTypes { get; }
         ValueList<object> Attributes { get; }
         ValueList<IScannedUsing> Usings { get; }
+        ValueList<ScannedInterface> ImplementedInterfaces { get; }
     }
 }

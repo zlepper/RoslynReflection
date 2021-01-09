@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
 using RoslynReflection.Collections;
@@ -9,7 +10,8 @@ namespace RoslynReflection.Models
     {
         public readonly ScannedModule Module;
         public readonly string Name;
-        public readonly ValueList<ScannedType> Types = new();
+        public IEnumerable<ScannedType> Types => _types;
+        private readonly ValueList<ScannedType> _types = new();
 
         public ScannedNamespace(ScannedModule module, string name)
         {
@@ -17,6 +19,11 @@ namespace RoslynReflection.Models
             Name = name;
             
             module.Namespaces.Add(this);
+        }
+
+        internal virtual void AddType(ScannedType type)
+        {
+            _types.Add(type);
         }
 
         public virtual bool Equals(ScannedNamespace? other)
@@ -56,6 +63,11 @@ namespace RoslynReflection.Models
                 .AppendField(nameof(Types), Types);
             
             return true;
+        }
+
+        internal bool IsEmpty()
+        {
+            return _types.Count == 0;
         }
     }
 }

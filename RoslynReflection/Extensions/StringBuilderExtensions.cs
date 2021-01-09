@@ -37,14 +37,14 @@ namespace RoslynReflection.Extensions
                 _stringBuilder.Append(", ");
             }
             
-            internal FieldStringBuilder AppendField(string fieldName, object value)
+            internal FieldStringBuilder AppendField(string fieldName, object? value)
             {
                 AppendFieldSeparator();
                 
                 _stringBuilder
                     .Append(fieldName)
                     .Append(" = ")
-                    .Append(value);
+                    .Append(value ?? "null");
 
                 return this;
             }

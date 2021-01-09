@@ -50,6 +50,9 @@ namespace RoslynReflection.Parsers
             availableTypes.AddNamespaces(result.Dependencies.SelectMany(m => m.Namespaces));
             availableTypes.AddNamespaces(mainModule.Namespaces);
 
+            var typeReferenceResolver = new TypeReferenceResolver(availableTypes);
+            typeReferenceResolver.ResolveUnlinkedTypes(availableTypes.Types);
+
             var annotationResolver = new AnnotationResolver(availableTypes);
             annotationResolver.ResolveAnnotations(mainModule.Types().OfType<IScannedSourceType>());
 

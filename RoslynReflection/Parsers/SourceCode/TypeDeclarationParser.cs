@@ -48,6 +48,8 @@ namespace RoslynReflection.Parsers.SourceCode
                 CheckAbstract(canBeAbstract, typeDeclaration);
             }
 
+            CheckBaseTypes(type, typeDeclaration);
+
             type.Usings.AddRange(_scannedUsings);
         }
 
@@ -59,6 +61,28 @@ namespace RoslynReflection.Parsers.SourceCode
         private void CheckAbstract(ICanBeAbstract canBeAbstract, TypeDeclarationSyntax typeDeclaration)
         {
             canBeAbstract.IsAbstract = typeDeclaration.Modifiers.Any(m => m.Kind() == SyntaxKind.AbstractKeyword);
+        }
+
+        private void CheckBaseTypes(ScannedType scannedType, TypeDeclarationSyntax typeDeclaration)
+        {
+            if (typeDeclaration.BaseList == null)
+            {
+                return;
+            }
+
+            foreach (var baseTypeSyntax in typeDeclaration.BaseList.Types)
+            {
+                if (baseTypeSyntax.Type is IdentifierNameSyntax identifier)
+                {
+                    var name = identifier.Identifier.ValueText;
+                    scannedType.BaseTypes.Add(new UnlinkedType(name.Trim()));
+                }
+                else
+                {
+                    throw new NotImplementedException("Unknown baseTypeSyntax.Type type. Please report a bug.");
+                }
+
+            }
         }
         
     }

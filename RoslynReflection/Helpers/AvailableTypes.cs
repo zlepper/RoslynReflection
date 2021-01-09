@@ -11,6 +11,8 @@ namespace RoslynReflection.Helpers
         internal readonly Dictionary<string, ScannedNamespace> Namespaces = new();
         private readonly ScannedModule _fakeModule = new();
 
+        internal IEnumerable<ScannedType> Types => Namespaces.Values.SelectMany(n => n.Types);
+
         public void AddNamespace(ScannedNamespace ns)
         {
             if (!Namespaces.TryGetValue(ns.Name, out var existing))
@@ -19,7 +21,7 @@ namespace RoslynReflection.Helpers
                 Namespaces[ns.Name] = existing;
             }
 
-            existing.Types.AddRange(ns.Types);
+            existing.AddTypes(ns.Types);
         }
 
         public void AddNamespaces(IEnumerable<ScannedNamespace> namespaces)

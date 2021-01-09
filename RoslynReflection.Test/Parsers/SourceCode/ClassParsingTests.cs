@@ -212,5 +212,26 @@ namespace MyOtherNamespace {
                 .MakeAbstract()
                 .Module));
         }
+
+        [Test]
+        public void CreatesUnlinkedInheritedType()
+        {
+            var code = @"namespace MyNamespace {
+    public class Parent {}
+    public class Child : Parent {}
+}";
+
+            var result = GetResult(code);
+
+            var expected = new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("Parent")
+                .Namespace
+                .AddSourceClass("Child");
+
+            expected.BaseTypes.Add(new UnlinkedType("Parent"));
+            
+            Assert.That(result, Is.EqualTo(expected.Module));
+        }
     }
 }

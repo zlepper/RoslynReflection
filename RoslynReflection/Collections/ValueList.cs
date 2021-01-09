@@ -35,12 +35,12 @@ namespace RoslynReflection.Collections
             return ((IEnumerable) _innerCollection).GetEnumerator();
         }
 
-        public void Add(T item)
+        internal void Add(T item)
         {
             _innerCollection.Add(item);
         }
 
-        public void RemoveAll(Predicate<T> match)
+        internal void RemoveAll(Predicate<T> match)
         {
             _innerCollection.RemoveAll(match);
         }
@@ -86,9 +86,14 @@ namespace RoslynReflection.Collections
             return "[" + string.Join(", ", _innerCollection) + "]";
         }
 
-        public void AddRange(IEnumerable<T> items)
+        internal void AddRange(IEnumerable<T> items)
         {
             _innerCollection.AddRange(items);
+        }
+
+        internal void Clear()
+        {
+            _innerCollection.Clear();
         }
     }
 }

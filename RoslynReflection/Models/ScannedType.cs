@@ -2,10 +2,11 @@ using System.Text;
 using RoslynReflection.Collections;
 using RoslynReflection.Extensions;
 using RoslynReflection.Helpers;
+using RoslynReflection.Models.Markers;
 
 namespace RoslynReflection.Models
 {
-    public abstract record ScannedType : IScannedType
+    public abstract record ScannedType : IScannedType, ICanNavigateToModule
     {
         public ScannedModule Module => Namespace.Module;
         public ScannedNamespace Namespace { get; }
@@ -17,13 +18,17 @@ namespace RoslynReflection.Models
 
         public ValueList<IScannedUsing> Usings { get; } = new();
 
+        internal ValueList<ScannedType> BaseTypes { get; } = new();
+
+        public ValueList<ScannedInterface> ImplementedInterfaces { get; } = new();
+
         protected ScannedType(ScannedNamespace ns, string name, ScannedType? surroundingType = null)
         {
             Namespace = ns;
             Name = name;
             SurroundingType = surroundingType;
 
-            ns.Types.Add(this);
+            ns.AddType(this);
 
             if (surroundingType != null)
             {
@@ -35,8 +40,12 @@ namespace RoslynReflection.Models
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Name == other.Name && Attributes.Equals(other.Attributes) && NestedTypes.Equals(other.NestedTypes) &&
-                   Usings.Equals(other.Usings);
+            return Name == other.Name && 
+                   Attributes.Equals(other.Attributes) && 
+                   NestedTypes.Equals(other.NestedTypes) &&
+                   Usings.Equals(other.Usings) && 
+                   BaseTypes.Equals(other.BaseTypes) &&
+                   ImplementedInterfaces.Equals(other.ImplementedInterfaces);
         }
 
         public override int GetHashCode()
@@ -47,6 +56,8 @@ namespace RoslynReflection.Models
                 hashCode = (hashCode * 397) ^ Attributes.GetHashCode();
                 hashCode = (hashCode * 397) ^ NestedTypes.GetHashCode();
                 hashCode = (hashCode * 397) ^ Usings.GetHashCode();
+                hashCode = (hashCode * 397) ^ BaseTypes.GetHashCode();
+                hashCode = (hashCode * 397) ^ ImplementedInterfaces.GetHashCode();
                 return hashCode;
             }
         }
@@ -58,13 +69,15 @@ namespace RoslynReflection.Models
             return true;
         }
 
-        internal StringBuilderExtensions.FieldStringBuilder InternalPrintMembers(
+        internal virtual StringBuilderExtensions.FieldStringBuilder InternalPrintMembers(
             StringBuilderExtensions.FieldStringBuilder builder)
         {
             return builder.AppendField(nameof(Name), Name)
                 .AppendField(nameof(NestedTypes), NestedTypes)
                 .AppendField(nameof(Attributes), Attributes)
-                .AppendField(nameof(Usings), Usings);
+                .AppendField(nameof(Usings), Usings)
+                .AppendField(nameof(BaseTypes), BaseTypes)
+                .AppendField(nameof(ImplementedInterfaces), ImplementedInterfaces);
         }
     }
 }
