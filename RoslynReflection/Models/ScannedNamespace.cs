@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
@@ -6,7 +7,7 @@ using RoslynReflection.Extensions;
 
 namespace RoslynReflection.Models
 {
-    public record ScannedNamespace
+    public record ScannedNamespace : IComparable<ScannedNamespace>
     {
         public readonly ScannedModule Module;
         public readonly string Name;
@@ -68,6 +69,33 @@ namespace RoslynReflection.Models
         internal bool IsEmpty()
         {
             return _types.Count == 0;
+        }
+
+        public int CompareTo(ScannedNamespace? other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            return string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool operator <(ScannedNamespace? left, ScannedNamespace? right)
+        {
+            return Comparer<ScannedNamespace>.Default.Compare(left, right) < 0;
+        }
+
+        public static bool operator >(ScannedNamespace? left, ScannedNamespace? right)
+        {
+            return Comparer<ScannedNamespace>.Default.Compare(left, right) > 0;
+        }
+
+        public static bool operator <=(ScannedNamespace? left, ScannedNamespace? right)
+        {
+            return Comparer<ScannedNamespace>.Default.Compare(left, right) <= 0;
+        }
+
+        public static bool operator >=(ScannedNamespace? left, ScannedNamespace? right)
+        {
+            return Comparer<ScannedNamespace>.Default.Compare(left, right) >= 0;
         }
     }
 }

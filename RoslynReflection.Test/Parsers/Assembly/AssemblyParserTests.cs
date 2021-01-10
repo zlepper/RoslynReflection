@@ -1,8 +1,11 @@
 using System;
+using System.Linq;
 using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
+using RoslynReflection.Parsers;
 using RoslynReflection.Parsers.AssemblyParser;
+using RoslynReflection.Test.TestHelpers;
 using ScanableAssembly;
 
 namespace RoslynReflection.Test.Parsers.Assembly
@@ -12,8 +15,11 @@ namespace RoslynReflection.Test.Parsers.Assembly
     {
         private ScannedModule ParseAssemblyFromClass<T>()
         {
-            var parser = new AssemblyParser();
-            return parser.ParseAssembly(typeof(T).Assembly);
+            var compilation = new CompilationBuilder()
+                .AddAssemblyFromType<T>()
+                .CreateCompilation();
+
+            return CompilationParser.ParseCompilation(compilation).DependsOn.Single(m => m.Name == typeof(T).Assembly.GetName().Name);
         }
 
         [Test]
@@ -21,7 +27,8 @@ namespace RoslynReflection.Test.Parsers.Assembly
         {
             var result = ParseAssemblyFromClass<ClassWithoutNamespace>();
 
-            var expected = new ScannedModule()
+            var expected = new ScannedModule(typeof(ClassWithoutNamespace).Assembly.GetName().Name!)
+                .AddSingleDependency(result.DependsOn.Single())
                 .AddNamespace("")
                 .AddAssemblyClass<ClassWithoutNamespace>()
                 .Module
@@ -31,6 +38,7 @@ namespace RoslynReflection.Test.Parsers.Assembly
                 .Namespace
                 .AddAssemblyClass<MyAttribute>()
                 .AddAttribute(new AttributeUsageAttribute(AttributeTargets.Class))
+                .AddBaseAssemblyClass().SetBaseType<Attribute>()
                 .Namespace
                 .AddAssemblyClass<MySimpleClass>()
                 .Namespace
@@ -44,6 +52,11 @@ namespace RoslynReflection.Test.Parsers.Assembly
                 .Namespace
                 .AddAssemblyClass<AbstractClass>()
                 .MakeAbstract()
+                .Namespace
+                .AddAssemblyClass<BaseClass>()
+                .Namespace
+                .AddAssemblyClass<SubClass>()
+                .AddBaseAssemblyClass().SetBaseType<BaseClass>()
                 .Module;
             
             Assert.That(result, Is.EqualTo(expected));

@@ -45,7 +45,7 @@ namespace RoslynReflection.Builder
         
         private static ScannedType GetType<T>(T type, string fullname) where T : ICanNavigateToModule
         {
-            var parentType = type.Module.Types().SingleOrDefault(t => t.FullyQualifiedName() == fullname);
+            var parentType = type.Module.GetAllAvailableTypes().SingleOrDefault(t => t.FullyQualifiedName() == fullname);
 
             if (parentType == null)
             {

@@ -19,9 +19,7 @@ namespace RoslynReflection.Test.Parsers.SourceCode
                 .AddAssemblyFromType<AttributeExtractionTests>()
                 .CreateCompilation();
 
-            var result = CompilationParser.ParseCompilation(compilation);
-
-            return result.MainModule;
+            return CompilationParser.ParseCompilation(compilation);
         }
         
         [Test]

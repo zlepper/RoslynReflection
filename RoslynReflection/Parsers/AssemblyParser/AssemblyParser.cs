@@ -9,20 +9,23 @@ namespace RoslynReflection.Parsers.AssemblyParser
 {
     internal class AssemblyParser
     {
-        private ScannedModule _module = new();
+        private readonly Assembly _assembly;
+        private ScannedModule _module;
         private NamespaceList _namespaceList;
         private Dictionary<Type, ScannedType> _typeDict = new();
         private ScannedNamespace _rootNamespace;
         
-        internal AssemblyParser()
+        internal AssemblyParser(Assembly assembly)
         {
+            _assembly = assembly;
+            _module = new(assembly.GetName().Name);
             _namespaceList = new(_module);
             _rootNamespace = new(_module, "");
         }
         
-        internal ScannedModule ParseAssembly(Assembly assembly)
+        internal ScannedModule ParseAssembly()
         {
-            foreach (var type in GetPossibleTypes(assembly))
+            foreach (var type in GetPossibleTypes(_assembly))
             {
                 if (RoslynReflectionConstants.HiddenNamespaces.Contains(type.Namespace)) continue;
                 AddType(type);

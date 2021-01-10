@@ -1,8 +1,11 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
 using RoslynReflection.Parsers;
+using RoslynReflection.Parsers.AssemblyParser;
 using RoslynReflection.Test.TestHelpers;
+using ScanableAssembly;
 
 namespace RoslynReflection.Test.Parsers
 {
@@ -15,9 +18,7 @@ namespace RoslynReflection.Test.Parsers
                 .AddCode(code)
                 .CreateCompilation();
 
-            var result = CompilationParser.ParseCompilation(compilation);
-
-            return result.MainModule;
+            return CompilationParser.ParseCompilation(compilation);
         }
         
         [Test]
@@ -128,6 +129,44 @@ namespace RoslynReflection.Test.Parsers
                 .Namespace
                 .AddSourceInterface("IChildInterface")
                 .ImplementInterface("MyNamespace.IBaseInterface")
+                .Module;
+            
+            Assert.That(result, Is.EqualTo(expected));
+        }
+        
+        private ScannedModule ParseAssemblyFromClass<T>()
+        {
+            var compilation = new CompilationBuilder()
+                .AddAssemblyFromType<T>()
+                .CreateCompilation();
+
+            var assemblyName = typeof(T).Assembly.GetName().Name;
+            
+            return CompilationParser.ParseCompilation(compilation).DependsOn.Single(m => m.Name == assemblyName);
+        }
+        
+        [Test]
+        public void FindsClassToExtendInExternalModule()
+        {
+            var code = @"namespace MyNamespace {
+    using ScanableAssembly;
+
+    public class MyClass : BaseClass {}
+}";
+
+            var compilation = new CompilationBuilder()
+                .AddCode(code)
+                .AddAssemblyFromType<BaseClass>()
+                .CreateCompilation();
+
+            var result = CompilationParser.ParseCompilation(compilation);
+
+            var expected = new ScannedModule()
+                .AddDependency(ParseAssemblyFromClass<BaseClass>())
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("MyClass")
+                .AddUsing("ScanableAssembly")
+                .InheritFrom("ScanableAssembly.BaseClass")
                 .Module;
             
             Assert.That(result, Is.EqualTo(expected));

@@ -38,7 +38,7 @@ namespace RoslynReflection.Models
             return base.InternalPrintMembers(builder)
                 .AppendField(nameof(IsAbstract), IsAbstract)
                 .AppendField(nameof(IsPartial), IsPartial)
-                .AppendField(nameof(ParentType), ParentType?.FullyQualifiedName());
+                .AppendField(nameof(ParentType), ParentType.ToSimpleRepresentation());
         }
     }
 }

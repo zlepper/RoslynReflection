@@ -8,5 +8,12 @@ namespace RoslynReflection.Builder
         {
             return new(module, name);
         }
+
+        public static ScannedModule AddDependency(this ScannedModule module, ScannedModule other)
+        {
+            module.DependsOn.Add(other);
+            module.DependsOn.AddRange(other.GetAllDependencies());
+            return module;
+        }
     }
 }

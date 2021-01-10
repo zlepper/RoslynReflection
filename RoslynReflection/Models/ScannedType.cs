@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using RoslynReflection.Collections;
 using RoslynReflection.Extensions;
@@ -6,7 +10,7 @@ using RoslynReflection.Models.Markers;
 
 namespace RoslynReflection.Models
 {
-    public abstract record ScannedType : IScannedType, ICanNavigateToModule
+    public abstract record ScannedType : IScannedType, ICanNavigateToModule, IComparable<ScannedType>, IHaveSimpleRepresentation
     {
         public ScannedModule Module => Namespace.Module;
         public ScannedNamespace Namespace { get; }
@@ -24,6 +28,8 @@ namespace RoslynReflection.Models
 
         protected ScannedType(ScannedNamespace ns, string name, ScannedType? surroundingType = null)
         {
+            Guard.AgainstNull(ns, nameof(ns));
+            Guard.AgainstNull(name, nameof(name));
             Namespace = ns;
             Name = name;
             SurroundingType = surroundingType;
@@ -54,12 +60,17 @@ namespace RoslynReflection.Models
             {
                 var hashCode = Name.GetHashCode();
                 hashCode = (hashCode * 397) ^ Attributes.GetHashCode();
-                hashCode = (hashCode * 397) ^ NestedTypes.GetHashCode();
+                // hashCode = (hashCode * 397) ^ NestedTypes.GetHashCode();
                 hashCode = (hashCode * 397) ^ Usings.GetHashCode();
-                hashCode = (hashCode * 397) ^ BaseTypes.GetHashCode();
+                // hashCode = (hashCode * 397) ^ BaseTypes.GetHashCode();
                 hashCode = (hashCode * 397) ^ ImplementedInterfaces.GetHashCode();
                 return hashCode;
             }
+        }
+
+        string IHaveSimpleRepresentation.ToSimpleRepresentation()
+        {
+            return this.FullyQualifiedName();
         }
 
         protected virtual bool PrintMembers(StringBuilder builder)
@@ -73,11 +84,38 @@ namespace RoslynReflection.Models
             StringBuilderExtensions.FieldStringBuilder builder)
         {
             return builder.AppendField(nameof(Name), Name)
-                .AppendField(nameof(NestedTypes), NestedTypes)
+                .AppendField(nameof(NestedTypes), NestedTypes.ToSimpleRepresentation())
                 .AppendField(nameof(Attributes), Attributes)
                 .AppendField(nameof(Usings), Usings)
-                .AppendField(nameof(BaseTypes), BaseTypes)
-                .AppendField(nameof(ImplementedInterfaces), ImplementedInterfaces);
+                .AppendField(nameof(BaseTypes), BaseTypes.ToSimpleRepresentation())
+                .AppendField(nameof(ImplementedInterfaces), ImplementedInterfaces.OrderBy(i => i).ToSimpleRepresentation());
+        }
+
+        public int CompareTo(ScannedType? other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            return string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool operator <(ScannedType? left, ScannedType? right)
+        {
+            return Comparer<ScannedType>.Default.Compare(left, right) < 0;
+        }
+
+        public static bool operator >(ScannedType? left, ScannedType? right)
+        {
+            return Comparer<ScannedType>.Default.Compare(left, right) > 0;
+        }
+
+        public static bool operator <=(ScannedType? left, ScannedType? right)
+        {
+            return Comparer<ScannedType>.Default.Compare(left, right) <= 0;
+        }
+
+        public static bool operator >=(ScannedType? left, ScannedType? right)
+        {
+            return Comparer<ScannedType>.Default.Compare(left, right) >= 0;
         }
     }
 }

@@ -83,7 +83,7 @@ namespace RoslynReflection.Collections
 
         public override string ToString()
         {
-            return "[" + string.Join(", ", _innerCollection) + "]";
+            return "[ " + string.Join(", ", _innerCollection.OrderBy(i => i )) + " ]";
         }
 
         internal void AddRange(IEnumerable<T> items)

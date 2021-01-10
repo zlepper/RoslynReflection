@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -13,9 +14,7 @@ namespace RoslynReflection.Parsers
 {
     public class CompilationParser
     {
-        
-        
-        public static CompilationAnalysisResult ParseCompilation(Compilation compilation)
+        public static ScannedModule ParseCompilation(Compilation compilation)
         {
             var parser = new CompilationParser(compilation);
             return parser.Parse();
@@ -29,26 +28,30 @@ namespace RoslynReflection.Parsers
             _compilation = compilation;
         }
 
-        private CompilationAnalysisResult Parse()
+        private ScannedModule Parse()
         {
             var mainTask = Task.Run(ParseMainModule);
 
-            var assemblyTasks = _compilation.ReferencedAssemblyNames
-                .Select(reference => Task.Run(() => ParseAssembly(reference)))
-                .ToList();
 
+            var assemblyResults = ParseAssemblies().GetAwaiter().GetResult();
 
-            // ReSharper disable once CoVariantArrayConversion
-            Task.WaitAll(assemblyTasks.Concat(new []{mainTask}).ToArray());
+            var mainModule = mainTask.GetAwaiter().GetResult();
 
-            var mainModule = mainTask.Result;
-
-            var result = new CompilationAnalysisResult(mainModule);
-            result.Dependencies.AddRange(assemblyTasks.Select(t => t.Result));
+            var assemblyDict = assemblyResults.ToDictionary(r => r.OwnName);
+            
+            foreach (var item in assemblyDict)
+            {
+                foreach (var assemblyName in item.Value.DependsOn)
+                {
+                    var match = assemblyDict[assemblyName.Name];
+                    item.Value.Module.DependsOn.Add(match.Module);
+                }
+                
+                mainModule.DependsOn.Add(item.Value.Module);
+            }
 
             var availableTypes = new AvailableTypes();
-            availableTypes.AddNamespaces(result.Dependencies.SelectMany(m => m.Namespaces));
-            availableTypes.AddNamespaces(mainModule.Namespaces);
+            availableTypes.AddNamespaces(mainModule.GetAllAvailableNamespaces());
 
             var typeReferenceResolver = new TypeReferenceResolver(availableTypes);
             typeReferenceResolver.ResolveUnlinkedTypes(availableTypes.Types);
@@ -56,15 +59,32 @@ namespace RoslynReflection.Parsers
             var annotationResolver = new AnnotationResolver(availableTypes);
             annotationResolver.ResolveAnnotations(mainModule.Types().OfType<IScannedSourceType>());
 
-            return result;
+            return mainModule;
         }
 
-        private ScannedModule ParseAssembly(AssemblyIdentity assemblyIdentity)
+        private AssemblyParseResult ParseAssembly(Assembly assembly)
         {
-            var assembly = Assembly.Load(assemblyIdentity.ToString());
-            var parser = new AssemblyParser.AssemblyParser();
-            return parser.ParseAssembly(assembly);
+            var parser = new AssemblyParser.AssemblyParser(assembly);
+            var module = parser.ParseAssembly();
+
+            var dependsOn = assembly.GetReferencedAssemblies().ToImmutableHashSet();
+
+            return new(module, assembly.GetName().Name, dependsOn);
         }
+
+        private async Task<List<AssemblyParseResult>> ParseAssemblies()
+        {
+            var assemblies = await AssemblyLoader.GetAssemblies(_compilation.ReferencedAssemblyNames);
+
+            var tasks = assemblies.Select(assembly => Task.Run(() => ParseAssembly(assembly)));
+
+            var results = await Task.WhenAll(tasks);
+
+            return results.ToList();
+        }
+
+
+        private record AssemblyParseResult(ScannedModule Module, string OwnName, ImmutableHashSet<AssemblyName> DependsOn);
         
         private ScannedModule ParseMainModule()
         {

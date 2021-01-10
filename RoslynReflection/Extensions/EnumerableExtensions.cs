@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using RoslynReflection.Collections;
+using RoslynReflection.Models.Markers;
 
 namespace RoslynReflection.Extensions
 {
@@ -8,7 +11,7 @@ namespace RoslynReflection.Extensions
         internal static IEnumerable<T> SkipLast<T>(this IEnumerable<T> source, int n)
         {
             if (n < 0)
-                throw new ArgumentOutOfRangeException(nameof(n), 
+                throw new ArgumentOutOfRangeException(nameof(n),
                     "Argument n should be non-negative.");
 
             return InternalSkipLast(source, n);
@@ -30,6 +33,20 @@ namespace RoslynReflection.Extensions
         internal static string JoinToString<T>(this IEnumerable<T> source, string separator)
         {
             return string.Join(separator, source);
+        }
+
+        internal static string ToSimpleRepresentation<T>(this IEnumerable<T> enumerable)
+            where T : IHaveSimpleRepresentation
+        {
+            return "[ " + enumerable.Select(v => v.ToSimpleRepresentation()).JoinToString(", ") + " ]";
+        }
+
+        internal static ValueList<T> ToValueList<T>(this IEnumerable<T> enumerable)
+        where T : notnull
+        {
+            var list = new ValueList<T>();
+            list.AddRange(enumerable);
+            return list;
         }
     }
 }

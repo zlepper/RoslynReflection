@@ -21,6 +21,7 @@ namespace RoslynReflection.Test.TestHelpers
         public CompilationBuilder AddAssembly(Assembly assembly)
         {
             if (_dependentAssemblies.Contains(assembly)) return this;
+            _dependentAssemblies.Add(assembly);
 
             foreach (var referencedAssembly in assembly.GetReferencedAssemblies())
             {
@@ -28,7 +29,6 @@ namespace RoslynReflection.Test.TestHelpers
                 AddAssembly(dependentAssembly);
             }
 
-            _dependentAssemblies.Add(assembly);
             return this;
         }
 

@@ -1,8 +1,10 @@
-﻿using RoslynReflection.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using RoslynReflection.Helpers;
 
 namespace RoslynReflection.Models
 {
-    public record ScannedUsing : IScannedUsing
+    public record ScannedUsing : IScannedUsing, IComparable<ScannedUsing>
     {
         public readonly string Namespace;
 
@@ -19,6 +21,33 @@ namespace RoslynReflection.Models
 
             type = null;
             return false;
+        }
+
+        public int CompareTo(ScannedUsing? other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            return string.Compare(Namespace, other.Namespace, StringComparison.Ordinal);
+        }
+
+        public static bool operator <(ScannedUsing? left, ScannedUsing? right)
+        {
+            return Comparer<ScannedUsing>.Default.Compare(left, right) < 0;
+        }
+
+        public static bool operator >(ScannedUsing? left, ScannedUsing? right)
+        {
+            return Comparer<ScannedUsing>.Default.Compare(left, right) > 0;
+        }
+
+        public static bool operator <=(ScannedUsing? left, ScannedUsing? right)
+        {
+            return Comparer<ScannedUsing>.Default.Compare(left, right) <= 0;
+        }
+
+        public static bool operator >=(ScannedUsing? left, ScannedUsing? right)
+        {
+            return Comparer<ScannedUsing>.Default.Compare(left, right) >= 0;
         }
     }
 }
