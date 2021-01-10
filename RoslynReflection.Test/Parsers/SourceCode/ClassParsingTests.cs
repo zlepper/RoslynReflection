@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
+using RoslynReflection.Models.Source;
 
 namespace RoslynReflection.Test.Parsers.SourceCode
 {
@@ -232,6 +233,24 @@ namespace MyOtherNamespace {
             expected.BaseTypes.Add(new UnlinkedType("Parent"));
             
             Assert.That(result, Is.EqualTo(expected.Module));
+        }
+
+        [Test]
+        public void ParsesGenericClass()
+        {
+            var code = @"namespace MyNamespace {
+    public class GenericClass<T> {}
+}";
+
+            var result = GetResult(code);
+
+            var expectedModule = new ScannedModule();
+            var ns = expectedModule.AddNamespace("MyNamespace");
+            var expectedClass = ns.AddSourceClass("GenericClass");
+            var _ = new GenericTypeArgument(expectedClass, "T");
+
+            Assert.That(result, Is.EqualTo(expectedModule));
+
         }
     }
 }

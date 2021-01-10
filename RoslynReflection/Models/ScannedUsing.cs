@@ -30,6 +30,8 @@ namespace RoslynReflection.Models
             return string.Compare(Namespace, other.Namespace, StringComparison.Ordinal);
         }
 
+        
+#pragma warning disable 8604
         public static bool operator <(ScannedUsing? left, ScannedUsing? right)
         {
             return Comparer<ScannedUsing>.Default.Compare(left, right) < 0;
@@ -49,5 +51,7 @@ namespace RoslynReflection.Models
         {
             return Comparer<ScannedUsing>.Default.Compare(left, right) >= 0;
         }
+        
+#pragma warning restore 8604
     }
 }

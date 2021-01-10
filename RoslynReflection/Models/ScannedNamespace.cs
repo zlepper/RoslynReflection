@@ -78,6 +78,7 @@ namespace RoslynReflection.Models
             return string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
         }
 
+#pragma warning disable 8604
         public static bool operator <(ScannedNamespace? left, ScannedNamespace? right)
         {
             return Comparer<ScannedNamespace>.Default.Compare(left, right) < 0;
@@ -97,5 +98,6 @@ namespace RoslynReflection.Models
         {
             return Comparer<ScannedNamespace>.Default.Compare(left, right) >= 0;
         }
+#pragma warning restore 8604
     }
 }

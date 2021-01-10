@@ -26,6 +26,8 @@ namespace RoslynReflection.Models
 
         public ValueList<ScannedInterface> ImplementedInterfaces { get; } = new();
 
+        public ValueList<GenericTypeArgument> GenericTypeArguments { get; } = new();
+
         protected ScannedType(ScannedNamespace ns, string name, ScannedType? surroundingType = null)
         {
             Guard.AgainstNull(ns, nameof(ns));
@@ -51,7 +53,8 @@ namespace RoslynReflection.Models
                    NestedTypes.Equals(other.NestedTypes) &&
                    Usings.Equals(other.Usings) && 
                    BaseTypes.Equals(other.BaseTypes) &&
-                   ImplementedInterfaces.Equals(other.ImplementedInterfaces);
+                   ImplementedInterfaces.Equals(other.ImplementedInterfaces) &&
+                   GenericTypeArguments.Equals(other.GenericTypeArguments);
         }
 
         public override int GetHashCode()
@@ -88,7 +91,8 @@ namespace RoslynReflection.Models
                 .AppendField(nameof(Attributes), Attributes)
                 .AppendField(nameof(Usings), Usings)
                 .AppendField(nameof(BaseTypes), BaseTypes.ToSimpleRepresentation())
-                .AppendField(nameof(ImplementedInterfaces), ImplementedInterfaces.OrderBy(i => i).ToSimpleRepresentation());
+                .AppendField(nameof(ImplementedInterfaces), ImplementedInterfaces.OrderBy(i => i).ToSimpleRepresentation())
+                .AppendField(nameof(GenericTypeArguments), GenericTypeArguments.OrderBy(a => a).ToSimpleRepresentation());
         }
 
         public int CompareTo(ScannedType? other)
@@ -98,6 +102,7 @@ namespace RoslynReflection.Models
             return string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
         }
 
+#pragma warning disable 8604
         public static bool operator <(ScannedType? left, ScannedType? right)
         {
             return Comparer<ScannedType>.Default.Compare(left, right) < 0;
@@ -117,5 +122,6 @@ namespace RoslynReflection.Models
         {
             return Comparer<ScannedType>.Default.Compare(left, right) >= 0;
         }
+#pragma warning restore 8604
     }
 }

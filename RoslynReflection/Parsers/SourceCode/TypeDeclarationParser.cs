@@ -37,30 +37,35 @@ namespace RoslynReflection.Parsers.SourceCode
                 _ => throw new ArgumentOutOfRangeException(nameof(typeDeclaration), typeDeclaration.GetType(),
                     "Unknown TypeDeclaration type")
             };
+            
+            type.Usings.AddRange(_scannedUsings);
+            
+            CheckPartial(type, typeDeclaration);
 
+            CheckAbstract(type, typeDeclaration);
+
+            CheckBaseTypes(type, typeDeclaration);
+            
+            CheckTypeParameters(type, typeDeclaration);
+            
+            // typeDeclaration.type
+        }
+
+        private void CheckPartial(ScannedType type, TypeDeclarationSyntax typeDeclaration)
+        {
             if (type is ICanBePartial canBePartial)
             {
-                CheckPartial(canBePartial, typeDeclaration);
+                canBePartial.IsPartial = typeDeclaration.Modifiers.Any(m => m.Kind() == SyntaxKind.PartialKeyword);
             }
+        }
+
+        private void CheckAbstract(ScannedType type, TypeDeclarationSyntax typeDeclaration)
+        {
 
             if (type is ICanBeAbstract canBeAbstract)
             {
-                CheckAbstract(canBeAbstract, typeDeclaration);
+                canBeAbstract.IsAbstract = typeDeclaration.Modifiers.Any(m => m.Kind() == SyntaxKind.AbstractKeyword);
             }
-
-            CheckBaseTypes(type, typeDeclaration);
-
-            type.Usings.AddRange(_scannedUsings);
-        }
-
-        private void CheckPartial(ICanBePartial canBePartial, TypeDeclarationSyntax typeDeclaration)
-        {
-            canBePartial.IsPartial = typeDeclaration.Modifiers.Any(m => m.Kind() == SyntaxKind.PartialKeyword);
-        }
-
-        private void CheckAbstract(ICanBeAbstract canBeAbstract, TypeDeclarationSyntax typeDeclaration)
-        {
-            canBeAbstract.IsAbstract = typeDeclaration.Modifiers.Any(m => m.Kind() == SyntaxKind.AbstractKeyword);
         }
 
         private void CheckBaseTypes(ScannedType scannedType, TypeDeclarationSyntax typeDeclaration)
@@ -84,6 +89,19 @@ namespace RoslynReflection.Parsers.SourceCode
 
             }
         }
-        
+
+        private void CheckTypeParameters(ScannedType type, TypeDeclarationSyntax typeDeclaration)
+        {
+            if (typeDeclaration.TypeParameterList == null)
+            {
+                return;
+            }
+
+            foreach (var typeParameterSyntax in typeDeclaration.TypeParameterList.Parameters)
+            {
+                var name = typeParameterSyntax.Identifier.Text.Trim();
+                var _ = new GenericTypeArgument(type, name);
+            }
+        }
     }
 }
