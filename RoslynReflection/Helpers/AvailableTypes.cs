@@ -13,6 +13,16 @@ namespace RoslynReflection.Helpers
 
         internal IEnumerable<ScannedType> Types => Namespaces.Values.SelectMany(n => n.Types);
 
+        public AvailableTypes()
+        {
+            
+        }
+
+        public AvailableTypes(IScannedType type)
+        {
+            AddNamespaces(type.Module.Namespaces);
+        }
+        
         public void AddNamespace(ScannedNamespace ns)
         {
             if (!Namespaces.TryGetValue(ns.Name, out var existing))
@@ -33,7 +43,7 @@ namespace RoslynReflection.Helpers
         }
 
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]
-        internal bool TryGetType(ScannedType fromType, string typeName, out ScannedType? type)
+        internal bool TryGetType(IScannedType fromType, string typeName, out ScannedType? type)
         {
             foreach (var usingStatement in fromType.Usings)
             {
@@ -47,7 +57,7 @@ namespace RoslynReflection.Helpers
         }
 
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]
-        private bool TryFromSelf(ScannedType fromType, string typeName, out ScannedType? type)
+        private bool TryFromSelf(IScannedType fromType, string typeName, out ScannedType? type)
         {
             if (fromType.Namespace.TryGetType(typeName, out type))
             {

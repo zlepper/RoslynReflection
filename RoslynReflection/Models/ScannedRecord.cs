@@ -11,7 +11,7 @@ namespace RoslynReflection.Models
 
         public bool IsAbstract { get; set; }
         public bool IsPartial { get; set; }
-        public ScannedType? ParentType { get; set; }
+        public ITypeReference? ParentType { get; set; }
 
         public virtual bool Equals(ScannedRecord? other)
         {

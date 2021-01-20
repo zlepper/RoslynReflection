@@ -6,13 +6,13 @@ using RoslynReflection.Models.Markers;
 
 namespace RoslynReflection.Models
 {
-    public record GenericTypeArgument : IHaveSimpleRepresentation, IComparable<GenericTypeArgument>
+    public record GenericTypeParameter : IHaveSimpleRepresentation, IComparable<GenericTypeParameter>
     {
         public readonly string Name;
         
         public readonly ScannedType For;
 
-        public GenericTypeArgument(ScannedType @for, string name)
+        public GenericTypeParameter(ScannedType @for, string name)
         {
             For = @for;
             Name = name;
@@ -30,7 +30,7 @@ namespace RoslynReflection.Models
             return true;
         }
 
-        public virtual bool Equals(GenericTypeArgument? other)
+        public virtual bool Equals(GenericTypeParameter? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -42,7 +42,7 @@ namespace RoslynReflection.Models
             return Name.GetHashCode();
         }
 
-        public int CompareTo(GenericTypeArgument? other)
+        public int CompareTo(GenericTypeParameter? other)
         {
             if (ReferenceEquals(this, other)) return 0;
             if (ReferenceEquals(null, other)) return 1;
@@ -50,24 +50,24 @@ namespace RoslynReflection.Models
         }
 
 #pragma warning disable 8604
-        public static bool operator <(GenericTypeArgument? left, GenericTypeArgument? right)
+        public static bool operator <(GenericTypeParameter? left, GenericTypeParameter? right)
         {
-            return Comparer<GenericTypeArgument>.Default.Compare(left, right) < 0;
+            return Comparer<GenericTypeParameter>.Default.Compare(left, right) < 0;
         }
 
-        public static bool operator >(GenericTypeArgument? left, GenericTypeArgument? right)
+        public static bool operator >(GenericTypeParameter? left, GenericTypeParameter? right)
         {
-            return Comparer<GenericTypeArgument>.Default.Compare(left, right) > 0;
+            return Comparer<GenericTypeParameter>.Default.Compare(left, right) > 0;
         }
 
-        public static bool operator <=(GenericTypeArgument? left, GenericTypeArgument? right)
+        public static bool operator <=(GenericTypeParameter? left, GenericTypeParameter? right)
         {
-            return Comparer<GenericTypeArgument>.Default.Compare(left, right) <= 0;
+            return Comparer<GenericTypeParameter>.Default.Compare(left, right) <= 0;
         }
 
-        public static bool operator >=(GenericTypeArgument? left, GenericTypeArgument? right)
+        public static bool operator >=(GenericTypeParameter? left, GenericTypeParameter? right)
         {
-            return Comparer<GenericTypeArgument>.Default.Compare(left, right) >= 0;
+            return Comparer<GenericTypeParameter>.Default.Compare(left, right) >= 0;
         }
 #pragma warning restore 8604
     }

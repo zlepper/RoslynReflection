@@ -84,7 +84,27 @@ namespace RoslynReflection.Parsers.SourceCode
                 }
                 else
                 {
-                    throw new NotImplementedException("Unknown baseTypeSyntax.Type type. Please report a bug.");
+                    if (baseTypeSyntax.Type is GenericNameSyntax nameSyntax)
+                    {
+                        if (nameSyntax.IsUnboundGenericName)
+                        {
+                            throw new NotImplementedException(
+                                "Support for unbound generic types is currently not implemented");
+                        }
+
+                        var name = nameSyntax.Identifier.ValueText;
+                        
+                        foreach (var typeArgumentSyntax in nameSyntax.TypeArgumentList.Arguments)
+                        {
+                            Console.WriteLine(typeArgumentSyntax);
+                        }
+                        
+                        Console.WriteLine(nameSyntax);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException("Unknown baseTypeSyntax.Type type. Please report a bug.");
+                    }
                 }
 
             }
@@ -100,7 +120,7 @@ namespace RoslynReflection.Parsers.SourceCode
             foreach (var typeParameterSyntax in typeDeclaration.TypeParameterList.Parameters)
             {
                 var name = typeParameterSyntax.Identifier.Text.Trim();
-                var _ = new GenericTypeArgument(type, name);
+                var _ = new GenericTypeParameter(type, name);
             }
         }
     }

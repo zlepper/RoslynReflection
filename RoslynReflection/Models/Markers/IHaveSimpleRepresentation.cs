@@ -1,7 +1,7 @@
 ﻿namespace RoslynReflection.Models.Markers
 {
-    internal interface IHaveSimpleRepresentation
+    public interface IHaveSimpleRepresentation
     {
-        internal string ToSimpleRepresentation();
+        public string ToSimpleRepresentation();
     }
 }

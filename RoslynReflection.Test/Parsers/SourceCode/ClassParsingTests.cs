@@ -244,13 +244,38 @@ namespace MyOtherNamespace {
 
             var result = GetResult(code);
 
-            var expectedModule = new ScannedModule();
-            var ns = expectedModule.AddNamespace("MyNamespace");
-            var expectedClass = ns.AddSourceClass("GenericClass");
-            var _ = new GenericTypeArgument(expectedClass, "T");
+            var expectedModule = new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("GenericClass")
+                .WithGenericTypeArgument("T")
+                .Module;
 
             Assert.That(result, Is.EqualTo(expectedModule));
+        }
 
+        [Test]
+        public void ParsesGenericExtendingGeneric()
+        {
+            
+            var code = @"namespace MyNamespace {
+    public class BaseGenericClass<T> {}
+    public class ChildGenericClass<T> : BaseGenericClass<T> {}
+}";
+
+
+            var expectedModule = new ScannedModule()
+                .AddNamespace("MyNamespace")
+                .AddSourceClass("BaseGenericClass")
+                .WithGenericTypeArgument("T")
+                .Namespace
+                .AddSourceClass("ChildGenericClass")
+                .WithGenericTypeArgument("T")
+                .InheritFromGenericType("MyNamespace.BaseGenericClass", "T")
+                .Module;
+            
+            var result = GetResult(code);
+
+            Assert.That(result, Is.EqualTo(expectedModule));
         }
     }
 }

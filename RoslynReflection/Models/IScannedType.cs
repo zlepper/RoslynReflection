@@ -12,6 +12,6 @@ namespace RoslynReflection.Models
         ValueList<object> Attributes { get; }
         ValueList<IScannedUsing> Usings { get; }
         ValueList<ScannedInterface> ImplementedInterfaces { get; }
-        ValueList<GenericTypeArgument> GenericTypeArguments { get; }
+        ValueList<GenericTypeParameter> GenericTypeArguments { get; }
     }
 }

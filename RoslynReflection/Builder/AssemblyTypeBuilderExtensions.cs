@@ -47,7 +47,7 @@ namespace RoslynReflection.Builder
                         $"Cannot find scanned type matching '{typeof(TBase)}'. Is it added as a dependency?");
                 }
 
-                _assignable.ParentType = matchedType as ScannedType;
+                _assignable.ParentType = new TypeReference((ScannedType)matchedType);
 
                 return _assignable;
             }

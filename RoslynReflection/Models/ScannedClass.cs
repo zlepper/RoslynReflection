@@ -12,7 +12,7 @@ namespace RoslynReflection.Models
         }
 
         public bool IsPartial { get; set; }
-        public ScannedType? ParentType { get; set; }
+        public ITypeReference? ParentType { get; set; }
 
         public virtual bool Equals(ScannedClass? other)
         {

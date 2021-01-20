@@ -39,7 +39,7 @@ namespace RoslynReflection.Parsers
                     // c# compiler will handle those.
                     if (type is ICanInherit canInherit)
                     {
-                        canInherit.ParentType = actualType;
+                        canInherit.ParentType = new TypeReference(actualType!);
                     }
                 }
             }

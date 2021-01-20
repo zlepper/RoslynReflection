@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace RoslynReflection.Models.Markers
+﻿namespace RoslynReflection.Models.Markers
 {
-    public interface ICanInherit : ICanNavigateToModule
+    public interface ICanInherit : IScannedType
     {
-        public ScannedType? ParentType { get; set; }
+        public ITypeReference? ParentType { get; set; }
     }
 }

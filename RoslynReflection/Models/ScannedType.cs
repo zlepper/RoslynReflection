@@ -10,7 +10,7 @@ using RoslynReflection.Models.Markers;
 
 namespace RoslynReflection.Models
 {
-    public abstract record ScannedType : IScannedType, ICanNavigateToModule, IComparable<ScannedType>, IHaveSimpleRepresentation
+    public abstract record ScannedType : IScannedType, IComparable<ScannedType>, IHaveSimpleRepresentation
     {
         public ScannedModule Module => Namespace.Module;
         public ScannedNamespace Namespace { get; }
@@ -26,7 +26,7 @@ namespace RoslynReflection.Models
 
         public ValueList<ScannedInterface> ImplementedInterfaces { get; } = new();
 
-        public ValueList<GenericTypeArgument> GenericTypeArguments { get; } = new();
+        public ValueList<GenericTypeParameter> GenericTypeArguments { get; } = new();
 
         protected ScannedType(ScannedNamespace ns, string name, ScannedType? surroundingType = null)
         {
