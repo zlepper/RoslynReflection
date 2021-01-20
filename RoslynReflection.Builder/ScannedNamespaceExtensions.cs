@@ -6,7 +6,10 @@ namespace RoslynReflection.Builder
     {
         public static ScannedType AddClass(this ScannedNamespace ns, string name)
         {
-            return new (name, ns);
+            return new(name, ns)
+            {
+                IsClass = true
+            };
         }
         
     }

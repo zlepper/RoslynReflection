@@ -33,7 +33,7 @@ namespace RoslynReflection.Models
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             return Name == other.Name && Namespaces.Equals(other.Namespaces) && 
-                   DependsOn.Select(dep => dep.ToSimpleRepresentation()).ToValueList().Equals(other.DependsOn.Select(dep => dep.ToSimpleRepresentation()).ToValueList());
+                   DependsOn.Select(dep => dep.NullSafeToSimpleRepresentation()).ToValueList().Equals(other.DependsOn.Select(dep => dep.NullSafeToSimpleRepresentation()).ToValueList());
         }
 
         public override int GetHashCode()
@@ -42,7 +42,7 @@ namespace RoslynReflection.Models
             {
                 var hashCode = Name.GetHashCode();
                 hashCode = (hashCode * 397) ^ Namespaces.GetHashCode();
-                hashCode = (hashCode * 397) ^ DependsOn.Select(dep => dep.ToSimpleRepresentation()).ToValueList().GetHashCode();
+                hashCode = (hashCode * 397) ^ DependsOn.Select(dep => dep.NullSafeToSimpleRepresentation()).ToValueList().GetHashCode();
                 return hashCode;
             }
         }

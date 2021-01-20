@@ -95,7 +95,8 @@ namespace RoslynReflection.Models
                 .AppendNonDefaultField(nameof(IsInterface), IsInterface)
                 .AppendNonDefaultField(nameof(IsRecord), IsRecord)
                 .AppendNonDefaultField(nameof(IsPartial), IsPartial)
-                .AppendNonDefaultField(nameof(BaseType), BaseType, t => t.ToSimpleRepresentation());
+                .AppendNonDefaultField(nameof(SurroundingType), SurroundingType == null ? default : SurroundingType.FullyQualifiedName())
+                .AppendNonDefaultField(nameof(BaseType), BaseType, t => t.NullSafeToSimpleRepresentation());
         }
 
         public int CompareTo(ScannedType? other)

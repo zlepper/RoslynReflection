@@ -3,7 +3,7 @@ using RoslynReflection.Builder;
 using RoslynReflection.Models;
 using RoslynReflection.Test.TestHelpers.TestAttributes;
 
-namespace RoslynReflection.Test.Builder.Source
+namespace RoslynReflection.Test.Builder
 {
     [TestFixture]
     public class ClassBuilderTests
@@ -37,7 +37,7 @@ namespace RoslynReflection.Test.Builder.Source
             };
             var _ = new ScannedType("MyInnerClass", expectedNamespace)
             {
-                BaseType = expectedParentClass,
+                SurroundingType = expectedParentClass,
                 IsClass = true
             };
 
@@ -55,25 +55,28 @@ namespace RoslynReflection.Test.Builder.Source
         {
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNamespace");
-            var expectedParentClass = new ScannedType("MyClass", expectedNamespace);
+            var expectedParentClass = new ScannedType("MyClass", expectedNamespace)
+            {
+                IsClass = true
+            };
             var unused1 = new ScannedType("MyFirstInnerClass", expectedNamespace)
             {
-                BaseType = expectedParentClass,
+                SurroundingType = expectedParentClass,
                 IsClass = true
             };
             var unused2 = new ScannedType("MySecondInnerClass", expectedNamespace)
             {
-                BaseType = expectedParentClass,
+                SurroundingType = expectedParentClass,
                 IsClass = true
             };
             var unused3 = new ScannedType("MyInnerInnerClass", expectedNamespace)
             {
-                BaseType = unused2,
+                SurroundingType = unused2,
                 IsClass = true
             };
             var unused4 = new ScannedType("MyThirdInnerClass", expectedNamespace)
             {
-                BaseType = expectedParentClass,
+                SurroundingType = expectedParentClass,
                 IsClass = true
             };
 
@@ -104,12 +107,12 @@ namespace RoslynReflection.Test.Builder.Source
             };
             var middle = new ScannedType("Middle", expectedNamespace)
             {
-                BaseType = outer,
+                SurroundingType = outer,
                 IsClass = true
             };
             var unused2 = new ScannedType("Inner", expectedNamespace)
             {
-                BaseType = middle,
+                SurroundingType = middle,
                 IsClass = true
             };
 

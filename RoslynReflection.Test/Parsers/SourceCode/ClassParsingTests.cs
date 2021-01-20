@@ -230,7 +230,8 @@ namespace MyOtherNamespace {
                 .AddNamespace("MyNamespace")
                 .AddType("Parent")
                 .Namespace
-                .AddType("Child");
+                .AddType("Child")
+                .Module;
 
             Assert.That(result, Is.EqualTo(expected));
         }
