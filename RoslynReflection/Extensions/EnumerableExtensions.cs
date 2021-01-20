@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using RoslynReflection.Collections;
-using RoslynReflection.Models.Markers;
+using RoslynReflection.Models;
 
 namespace RoslynReflection.Extensions
 {

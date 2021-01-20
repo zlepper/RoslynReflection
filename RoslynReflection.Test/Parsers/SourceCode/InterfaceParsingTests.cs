@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using RoslynReflection.Builder;
-using RoslynReflection.Models;
+using RoslynReflection.Parsers.SourceCode.Models;
+using RoslynReflection.Test.TestHelpers.Extensions;
 
 namespace RoslynReflection.Test.Parsers.SourceCode
 {
@@ -19,9 +20,9 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceInterface("IMyInterface")
+                    .AddType("IMyInterface")
                     .Module
             ));
         }
@@ -39,11 +40,11 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceInterface("IMyInterface")
+                    .AddType("IMyInterface")
                     .Namespace
-                    .AddSourceInterface("IMyOtherInterface")
+                    .AddType("IMyOtherInterface")
                     .Module
             ));
         }
@@ -62,16 +63,17 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceInterface("IMyInterface")
-                    .AddNestedSourceInterface("IMyInnerInterface")
+                    .AddType("IMyInterface")
+                    .AddNestedType("IMyInnerInterface")
                     .SurroundingType!
-                    .AddNestedSourceInterface("IMySecondInnerInterface")
+                    .AddNestedType("IMySecondInnerInterface")
                     .Module
             ));
         }
         
+        /*
         [Test]
         public void HandlesPartialInterfaces()
         {
@@ -84,12 +86,12 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceInterface("IMyInterface")
+                    .AddType("IMyInterface")
                     .MakePartial()
                     .Module
             ));
-        }
+        }*/
     }
 }

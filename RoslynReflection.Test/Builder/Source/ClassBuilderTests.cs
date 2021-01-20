@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
-using RoslynReflection.Models.Source;
 using RoslynReflection.Test.TestHelpers.TestAttributes;
 
 namespace RoslynReflection.Test.Builder.Source
@@ -14,11 +13,14 @@ namespace RoslynReflection.Test.Builder.Source
         {
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNamespace");
-            var _ = new ScannedSourceClass(expectedNamespace, "MyClass");
+            var _ = new ScannedType("MyClass", expectedNamespace)
+            {
+                IsClass = true
+            };
 
             var actualModule = new ScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("MyClass")
+                .AddClass("MyClass")
                 .Module;
 
             Assert.That(actualModule, Is.EqualTo(expectedModule));
@@ -29,13 +31,20 @@ namespace RoslynReflection.Test.Builder.Source
         {
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNamespace");
-            var expectedParentClass = new ScannedSourceClass(expectedNamespace, "MyClass");
-            var _ = new ScannedSourceClass(expectedNamespace, "MyInnerClass", expectedParentClass);
+            var expectedParentClass = new ScannedType("MyClass", expectedNamespace)
+            {
+                IsClass = true
+            };
+            var _ = new ScannedType("MyInnerClass", expectedNamespace)
+            {
+                BaseType = expectedParentClass,
+                IsClass = true
+            };
 
             var actualModule = new ScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("MyClass")
-                .AddNestedSourceClass("MyInnerClass")
+                .AddClass("MyClass")
+                .AddNestedClass("MyInnerClass")
                 .Module;
 
             Assert.That(actualModule, Is.EqualTo(expectedModule));
@@ -46,23 +55,39 @@ namespace RoslynReflection.Test.Builder.Source
         {
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNamespace");
-            var expectedParentClass = new ScannedSourceClass(expectedNamespace, "MyClass");
-            var unused1 = new ScannedSourceClass(expectedNamespace, "MyFirstInnerClass", expectedParentClass);
-            var unused2 = new ScannedSourceClass(expectedNamespace, "MySecondInnerClass", expectedParentClass);
-            var unused3 = new ScannedSourceClass(expectedNamespace, "MyInnerInnerClass", unused2);
-            var unused4 = new ScannedSourceClass(expectedNamespace, "MyThirdInnerClass", expectedParentClass);
+            var expectedParentClass = new ScannedType("MyClass", expectedNamespace);
+            var unused1 = new ScannedType("MyFirstInnerClass", expectedNamespace)
+            {
+                BaseType = expectedParentClass,
+                IsClass = true
+            };
+            var unused2 = new ScannedType("MySecondInnerClass", expectedNamespace)
+            {
+                BaseType = expectedParentClass,
+                IsClass = true
+            };
+            var unused3 = new ScannedType("MyInnerInnerClass", expectedNamespace)
+            {
+                BaseType = unused2,
+                IsClass = true
+            };
+            var unused4 = new ScannedType("MyThirdInnerClass", expectedNamespace)
+            {
+                BaseType = expectedParentClass,
+                IsClass = true
+            };
 
 
             var actualModule = new ScannedModule()
                             .AddNamespace("MyNamespace")
-                            .AddSourceClass("MyClass")
-                            .AddNestedSourceClass("MyFirstInnerClass")
+                            .AddClass("MyClass")
+                            .AddNestedClass("MyFirstInnerClass")
                             .SurroundingType!
-                        .AddNestedSourceClass("MySecondInnerClass")
-                        .AddNestedSourceClass("MyInnerInnerClass")
+                        .AddNestedClass("MySecondInnerClass")
+                        .AddNestedClass("MyInnerInnerClass")
                         .SurroundingType!
                     .SurroundingType!
-                .AddNestedSourceClass("MyThirdInnerClass")
+                .AddNestedClass("MyThirdInnerClass")
                 .Module;
 
             Assert.That(actualModule, Is.EqualTo(expectedModule));
@@ -73,15 +98,26 @@ namespace RoslynReflection.Test.Builder.Source
         {
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNs");
-            var outer = new ScannedSourceClass(expectedNamespace, "Outer");
-            var middle = new ScannedSourceClass(expectedNamespace, "Middle", outer);
-            var unused2 = new ScannedSourceClass(expectedNamespace, "Inner", middle);
+            var outer = new ScannedType("Outer", expectedNamespace)
+            {
+                IsClass = true,
+            };
+            var middle = new ScannedType("Middle", expectedNamespace)
+            {
+                BaseType = outer,
+                IsClass = true
+            };
+            var unused2 = new ScannedType("Inner", expectedNamespace)
+            {
+                BaseType = middle,
+                IsClass = true
+            };
 
             var actual = new ScannedModule()
                 .AddNamespace("MyNs")
-                .AddSourceClass("Outer")
-                .AddNestedSourceClass("Middle")
-                .AddNestedSourceClass("Inner")
+                .AddClass("Outer")
+                .AddNestedClass("Middle")
+                .AddNestedClass("Inner")
                 .Module;
 
             Assert.That(actual, Is.EqualTo(expectedModule));
@@ -92,12 +128,15 @@ namespace RoslynReflection.Test.Builder.Source
         {
             var expectedModule = new ScannedModule();
             var expectedNamespace = new ScannedNamespace(expectedModule, "MyNs");
-            var myClass = new ScannedSourceClass(expectedNamespace, "MyClass");
-            myClass.Attributes.Add(new SampleAttribute("hello"));
+            var _ = new ScannedType("MyClass", expectedNamespace)
+            {
+                IsClass = true,
+                Attributes = {new SampleAttribute("hello")}
+            };
 
             var actual = new ScannedModule()
                 .AddNamespace("MyNs")
-                .AddSourceClass("MyClass")
+                .AddClass("MyClass")
                 .AddAttribute(new SampleAttribute("hello"))
                 .Module;
 
@@ -110,15 +149,21 @@ namespace RoslynReflection.Test.Builder.Source
             var expectedModule = new ScannedModule();
             var ns1 = new ScannedNamespace(expectedModule, "ns1");
             var ns2 = new ScannedNamespace(expectedModule, "ns2");
-            var unused1 = new ScannedSourceClass(ns1, "C1");
-            var unused2 = new ScannedSourceClass(ns2, "C2");
+            var unused1 = new ScannedType("C1", ns1)
+            {
+                IsClass = true,
+            };
+            var unused2 = new ScannedType("C2", ns2)
+            {
+                IsClass = true,
+            };
 
             var actualModule = new ScannedModule()
                 .AddNamespace("ns1")
-                .AddSourceClass("C1")
+                .AddClass("C1")
                 .Module
                 .AddNamespace("ns2")
-                .AddSourceClass("C2")
+                .AddClass("C2")
                 .Module;
 
             Assert.That(actualModule, Is.EqualTo(expectedModule));

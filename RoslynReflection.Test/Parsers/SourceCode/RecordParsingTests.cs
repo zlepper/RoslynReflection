@@ -1,6 +1,8 @@
 ﻿using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
+using RoslynReflection.Parsers.SourceCode.Models;
+using RoslynReflection.Test.TestHelpers.Extensions;
 
 namespace RoslynReflection.Test.Parsers.SourceCode
 {
@@ -19,9 +21,9 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceRecord("MyRecord")
+                    .AddType("MyRecord")
                     .Module
             ));
         }
@@ -39,11 +41,11 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceRecord("MyRecord")
+                    .AddType("MyRecord")
                     .Namespace
-                    .AddSourceRecord("IMyOtherInterface")
+                    .AddType("IMyOtherInterface")
                     .Module
             ));
         }
@@ -62,16 +64,17 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceRecord("MyRecord")
-                    .AddNestedSourceRecord("MyInnerRecord")
+                    .AddType("MyRecord")
+                    .AddNestedType("MyInnerRecord")
                     .SurroundingType!
-                    .AddNestedSourceRecord("MySecondInnerRecord")
+                    .AddNestedType("MySecondInnerRecord")
                     .Module
             ));
         }
         
+        /*
         [Test]
         public void HandlesPartialRecords()
         {
@@ -84,9 +87,9 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceRecord("MyRecord")
+                    .AddType("MyRecord")
                     .MakePartial()
                     .Module
             ));
@@ -100,11 +103,11 @@ namespace RoslynReflection.Test.Parsers.SourceCode
 }";
 
             var result = GetResult(code);
-            Assert.That(result, Is.EqualTo(new ScannedModule()
+            Assert.That(result, Is.EqualTo(new RawScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceRecord("MyRecord")
+                .AddType("MyRecord")
                 .MakeAbstract()
                 .Module));
-        }
+        }*/
     }
 }

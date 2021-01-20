@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
-using RoslynReflection.Builder;
-using RoslynReflection.Models;
-using RoslynReflection.Models.Source;
+using RoslynReflection.Parsers.SourceCode.Models;
+using RoslynReflection.Test.TestHelpers.Extensions;
 
 namespace RoslynReflection.Test.Parsers.SourceCode
 {
@@ -20,9 +19,9 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceClass("MyClass")
+                    .AddType("MyClass")
                     .Module
             ));
         }
@@ -40,11 +39,11 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceClass("MyClass")
+                    .AddType("MyClass")
                     .Namespace
-                    .AddSourceClass("MyOtherClass")
+                    .AddType("MyOtherClass")
                     .Module
             ));
         }
@@ -63,16 +62,17 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceClass("MyClass")
-                    .AddNestedSourceClass("MyInnerClass")
+                    .AddType("MyClass")
+                    .AddNestedType("MyInnerClass")
                     .SurroundingType!
-                    .AddNestedSourceClass("MySecondInnerClass")
+                    .AddNestedType("MySecondInnerClass")
                     .Module
             ));
         }
         
+        /*
         [Test]
         public void HandlesPartialClasses()
         {
@@ -85,14 +85,14 @@ namespace RoslynReflection.Test.Parsers.SourceCode
             var result = GetResult(code);
 
             Assert.That(result, Is.EqualTo(
-                new ScannedModule()
+                new RawScannedModule()
                     .AddNamespace("MyNamespace")
-                    .AddSourceClass("MyClass")
+                    .AddType("MyClass")
                     .MakePartial()
                     .Module
             ));
         }
-
+*/
         [Test]
         public void ExtractsUsings_InsideNamespace()
         {
@@ -104,9 +104,9 @@ namespace RoslynReflection.Test.Parsers.SourceCode
 
             var result = GetResult(code);
             
-            Assert.That(result, Is.EqualTo(new ScannedModule()
+            Assert.That(result, Is.EqualTo(new RawScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("MyClass")
+                .AddType("MyClass")
                 .AddUsing("System")
                 .Module));
         }
@@ -122,9 +122,9 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             
-            Assert.That(result, Is.EqualTo(new ScannedModule()
+            Assert.That(result, Is.EqualTo(new RawScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("MyClass")
+                .AddType("MyClass")
                 .AddUsing("System")
                 .Module));
         }
@@ -140,10 +140,10 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             
-            Assert.That(result, Is.EqualTo(new ScannedModule()
+            Assert.That(result, Is.EqualTo(new RawScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("MyClass")
-                .AddUsing("System", "S")
+                .AddType("MyClass")
+                .AddUsingAlias("System", "S")
                 .Module));
         }
         
@@ -158,10 +158,10 @@ namespace MyNamespace {
 
             var result = GetResult(code);
             
-            Assert.That(result, Is.EqualTo(new ScannedModule()
+            Assert.That(result, Is.EqualTo(new RawScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("MyClass")
-                .AddUsing("System", "S")
+                .AddType("MyClass")
+                .AddUsingAlias("System", "S")
                 .Module));
         }
         
@@ -186,19 +186,20 @@ namespace MyOtherNamespace {
 
             var result = GetResult(code);
             
-            Assert.That(result, Is.EqualTo(new ScannedModule()
+            Assert.That(result, Is.EqualTo(new RawScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("MyClass")
+                .AddType("MyClass")
                 .AddUsing("Global")
                 .AddUsing("System")
                 .Module
                 .AddNamespace("MyOtherNamespace")
-                .AddSourceClass("MyOtherClass")
+                .AddType("MyOtherClass")
                 .AddUsing("Global")
                 .AddUsing("RoslynReflection")
                 .Module));
         }
 
+        /*
         [Test]
         public void DetectsAbstractClasses()
         {
@@ -207,12 +208,13 @@ namespace MyOtherNamespace {
 }";
 
             var result = GetResult(code);
-            Assert.That(result, Is.EqualTo(new ScannedModule()
+            Assert.That(result, Is.EqualTo(new RawScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("MyClass")
+                .AddType("MyClass")
                 .MakeAbstract()
                 .Module));
         }
+        */
 
         [Test]
         public void CreatesUnlinkedInheritedType()
@@ -224,15 +226,13 @@ namespace MyOtherNamespace {
 
             var result = GetResult(code);
 
-            var expected = new ScannedModule()
+            var expected = new RawScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("Parent")
+                .AddType("Parent")
                 .Namespace
-                .AddSourceClass("Child");
+                .AddType("Child");
 
-            expected.BaseTypes.Add(new UnlinkedType("Parent"));
-            
-            Assert.That(result, Is.EqualTo(expected.Module));
+            Assert.That(result, Is.EqualTo(expected));
         }
 
         [Test]
@@ -244,10 +244,9 @@ namespace MyOtherNamespace {
 
             var result = GetResult(code);
 
-            var expectedModule = new ScannedModule()
+            var expectedModule = new RawScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("GenericClass")
-                .WithGenericTypeArgument("T")
+                .AddType("GenericClass")
                 .Module;
 
             Assert.That(result, Is.EqualTo(expectedModule));
@@ -263,14 +262,11 @@ namespace MyOtherNamespace {
 }";
 
 
-            var expectedModule = new ScannedModule()
+            var expectedModule = new RawScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("BaseGenericClass")
-                .WithGenericTypeArgument("T")
+                .AddType("BaseGenericClass")
                 .Namespace
-                .AddSourceClass("ChildGenericClass")
-                .WithGenericTypeArgument("T")
-                .InheritFromGenericType("MyNamespace.BaseGenericClass", "T")
+                .AddType("ChildGenericClass")
                 .Module;
             
             var result = GetResult(code);

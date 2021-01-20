@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace RoslynReflection.Extensions
@@ -47,6 +49,20 @@ namespace RoslynReflection.Extensions
                     .Append(value ?? "null");
 
                 return this;
+            }
+
+            internal FieldStringBuilder AppendNonDefaultField<T>(string fieldname, T value)
+            {
+                if (EqualityComparer<T>.Default.Equals(value, default!)) return this;
+
+                return AppendField(fieldname, value);
+            }
+            
+            internal FieldStringBuilder AppendNonDefaultField<T>(string fieldname, T value, Func<T, string> format)
+            {
+                if (EqualityComparer<T>.Default.Equals(value, default!)) return this;
+
+                return AppendField(fieldname, format(value));
             }
         }
     }

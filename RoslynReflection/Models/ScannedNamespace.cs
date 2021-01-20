@@ -4,10 +4,12 @@ using System.Text;
 using JetBrains.Annotations;
 using RoslynReflection.Collections;
 using RoslynReflection.Extensions;
+using RoslynReflection.Helpers;
+using RoslynReflection.Models.Extensions;
 
 namespace RoslynReflection.Models
 {
-    public record ScannedNamespace : IComparable<ScannedNamespace>
+    public record ScannedNamespace : IComparable<ScannedNamespace>, IHaveSimpleRepresentation
     {
         public readonly ScannedModule Module;
         public readonly string Name;
@@ -16,13 +18,16 @@ namespace RoslynReflection.Models
 
         public ScannedNamespace(ScannedModule module, string name)
         {
+            Guard.AgainstNull(module, nameof(module));
+            Guard.AgainstNull(name, nameof(name));
+            
             Module = module;
             Name = name;
             
             module.Namespaces.Add(this);
         }
 
-        internal virtual void AddType(ScannedType type)
+        internal void AddType(ScannedType type)
         {
             _types.Add(type);
         }
@@ -55,6 +60,11 @@ namespace RoslynReflection.Models
             {
                 return (Name.GetHashCode() * 397) ^ Types.GetHashCode();
             }
+        }
+
+        string IHaveSimpleRepresentation.ToSimpleRepresentation()
+        {
+            return Name;
         }
 
         protected virtual bool PrintMembers(StringBuilder builder)

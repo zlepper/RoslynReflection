@@ -2,19 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using RoslynReflection.Collections;
 using RoslynReflection.Models;
+using RoslynReflection.Parsers.AssemblyParser.Collections;
 
 namespace RoslynReflection.Parsers.AssemblyParser
 {
     internal class AssemblyParser
     {
         private readonly Assembly _assembly;
-        private ScannedModule _module;
-        private NamespaceList _namespaceList;
-        private Dictionary<Type, ScannedType> _typeDict = new();
-        private ScannedNamespace _rootNamespace;
-        
+        private readonly ScannedModule _module;
+        private readonly NamespaceList _namespaceList;
+        private readonly ScannedNamespace _rootNamespace;
+
         internal AssemblyParser(Assembly assembly)
         {
             _assembly = assembly;
@@ -22,7 +21,7 @@ namespace RoslynReflection.Parsers.AssemblyParser
             _namespaceList = new(_module);
             _rootNamespace = new(_module, "");
         }
-        
+
         internal ScannedModule ParseAssembly()
         {
             foreach (var type in GetPossibleTypes(_assembly))
@@ -30,7 +29,7 @@ namespace RoslynReflection.Parsers.AssemblyParser
                 if (RoslynReflectionConstants.HiddenNamespaces.Contains(type.Namespace)) continue;
                 AddType(type);
             }
-            
+
             _module.TrimEmptyNamespaces();
 
             return _module;
@@ -38,16 +37,12 @@ namespace RoslynReflection.Parsers.AssemblyParser
 
         private ScannedType AddType(Type type)
         {
-            if(_typeDict.TryGetValue(type, out var existing)) return existing;
-                
-            var ns = type.Namespace == null 
-                ? _rootNamespace 
+            var ns = type.Namespace == null
+                ? _rootNamespace
                 : _namespaceList.GetNamespace(type.Namespace);
 
-            var surroundingType = type.DeclaringType == null ? null : AddType(type.DeclaringType);
-
-            var typeParser = new AssemblyTypeParser(ns, surroundingType);
-            return _typeDict[type] = typeParser.ParseType(type);
+            var typeParser = new AssemblyTypeParser(ns);
+            return typeParser.ParseType(type);
         }
 
         private static IEnumerable<Type> GetPossibleTypes(Assembly assembly)

@@ -1,4 +1,4 @@
-﻿using RoslynReflection.Models.Markers;
+﻿using RoslynReflection.Models;
 
 namespace RoslynReflection.Extensions
 {

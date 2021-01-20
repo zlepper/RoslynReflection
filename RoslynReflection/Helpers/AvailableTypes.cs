@@ -3,6 +3,8 @@ using System.Linq;
 using JetBrains.Annotations;
 using RoslynReflection.Extensions;
 using RoslynReflection.Models;
+using RoslynReflection.Models.Extensions;
+using RoslynReflection.Parsers.SourceCode.Models;
 
 namespace RoslynReflection.Helpers
 {
@@ -18,7 +20,7 @@ namespace RoslynReflection.Helpers
             
         }
 
-        public AvailableTypes(IScannedType type)
+        public AvailableTypes(ScannedType type)
         {
             AddNamespaces(type.Module.Namespaces);
         }
@@ -43,7 +45,7 @@ namespace RoslynReflection.Helpers
         }
 
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]
-        internal bool TryGetType(IScannedType fromType, string typeName, out ScannedType? type)
+        internal bool TryGetType(RawScannedType fromType, string typeName, out ScannedType? type)
         {
             foreach (var usingStatement in fromType.Usings)
             {
@@ -57,15 +59,16 @@ namespace RoslynReflection.Helpers
         }
 
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]
-        private bool TryFromSelf(IScannedType fromType, string typeName, out ScannedType? type)
+        private bool TryFromSelf(RawScannedType fromType, string typeName, out ScannedType? type)
         {
-            if (fromType.Namespace.TryGetType(typeName, out type))
+            var ns = Namespaces[fromType.Namespace.Name];
+            if (ns.TryGetType(typeName, out type))
             {
                 return true;
             }
 
             var fullInnerName = fromType.FullName() + "." + typeName;
-            if (fromType.Namespace.TryGetType(fullInnerName, out type))
+            if (ns.TryGetType(fullInnerName, out type))
             {
                 return true;
             }

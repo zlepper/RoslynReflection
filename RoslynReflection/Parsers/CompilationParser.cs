@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
@@ -7,25 +6,25 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using RoslynReflection.Helpers;
 using RoslynReflection.Models;
-using RoslynReflection.Models.Source;
+using RoslynReflection.Models.Extensions;
 using RoslynReflection.Parsers.SourceCode;
+using RoslynReflection.Parsers.SourceCode.Models;
 
 namespace RoslynReflection.Parsers
 {
     public class CompilationParser
     {
+        private readonly Compilation _compilation;
+
+        private CompilationParser(Compilation compilation)
+        {
+            _compilation = compilation;
+        }
+
         public static ScannedModule ParseCompilation(Compilation compilation)
         {
             var parser = new CompilationParser(compilation);
             return parser.Parse();
-            
-        }
-
-        private Compilation _compilation;
-        
-        private CompilationParser(Compilation compilation)
-        {
-            _compilation = compilation;
         }
 
         private ScannedModule Parse()
@@ -38,7 +37,7 @@ namespace RoslynReflection.Parsers
             var mainModule = mainTask.GetAwaiter().GetResult();
 
             var assemblyDict = assemblyResults.ToDictionary(r => r.OwnName);
-            
+
             foreach (var item in assemblyDict)
             {
                 foreach (var assemblyName in item.Value.DependsOn)
@@ -46,18 +45,18 @@ namespace RoslynReflection.Parsers
                     var match = assemblyDict[assemblyName.Name];
                     item.Value.Module.DependsOn.Add(match.Module);
                 }
-                
+
                 mainModule.DependsOn.Add(item.Value.Module);
             }
 
             var availableTypes = new AvailableTypes();
             availableTypes.AddNamespaces(mainModule.GetAllAvailableNamespaces());
 
-            var typeReferenceResolver = new TypeReferenceResolver(availableTypes);
-            typeReferenceResolver.ResolveUnlinkedTypes(availableTypes.Types);
+            // var typeReferenceResolver = new TypeReferenceResolver(availableTypes);
+            // typeReferenceResolver.ResolveUnlinkedTypes(availableTypes.Types);
 
-            var annotationResolver = new AnnotationResolver(availableTypes);
-            annotationResolver.ResolveAnnotations(mainModule.Types().OfType<IScannedSourceType>());
+            // var annotationResolver = new AnnotationResolver(availableTypes);
+            // annotationResolver.ResolveAnnotations(mainModule.Types().);
 
             return mainModule;
         }
@@ -83,21 +82,22 @@ namespace RoslynReflection.Parsers
             return results.ToList();
         }
 
-
-        private record AssemblyParseResult(ScannedModule Module, string OwnName, ImmutableHashSet<AssemblyName> DependsOn);
-        
         private ScannedModule ParseMainModule()
         {
             var mainModule = new ScannedModule();
 
-            var syntaxTreeParser = new SyntaxTreeParser(mainModule);
+            var rawModule = new RawScannedModule();
             
-            foreach (var syntaxTree in _compilation.SyntaxTrees)
-            {
-                syntaxTreeParser.ParseSyntaxTree(syntaxTree);
-            }
+            var syntaxTreeParser = new SyntaxTreeParser(rawModule);
+
+            foreach (var syntaxTree in _compilation.SyntaxTrees) syntaxTreeParser.ParseSyntaxTree(syntaxTree);
+
 
             return mainModule;
         }
+
+
+        private record AssemblyParseResult(ScannedModule Module, string OwnName,
+            ImmutableHashSet<AssemblyName> DependsOn);
     }
 }

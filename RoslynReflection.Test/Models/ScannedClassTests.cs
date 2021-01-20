@@ -13,13 +13,13 @@ namespace RoslynReflection.Test.Models
         {
             var left = new ScannedModule()
                 .AddNamespace("ns")
-                .AddSourceClass("MyClass")
+                .AddClass("MyClass")
                 .AddAttribute(new SampleAttribute("hello"))
                 .Module;
 
             var right = new ScannedModule()
                 .AddNamespace("ns")
-                .AddSourceClass("MyClass")
+                .AddClass("MyClass")
                 .AddAttribute(new SampleAttribute("world"))
                 .Module;
 
@@ -31,7 +31,7 @@ namespace RoslynReflection.Test.Models
         {
             var klass = new ScannedModule()
                 .AddNamespace("ns")
-                .AddSourceClass("MyClass");
+                .AddClass("MyClass");
 
             Assert.That(klass.ToString(), Is.Not.Empty);
         }
@@ -41,7 +41,7 @@ namespace RoslynReflection.Test.Models
         {
             var klass = new ScannedModule()
                 .AddNamespace("ns")
-                .AddSourceClass("MyClass");
+                .AddClass("MyClass");
 
             Assert.That(klass.Equals(klass));
         }

@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Models;
+using RoslynReflection.Parsers.SourceCode.Models;
 
 namespace RoslynReflection.Parsers.SourceCode
 {

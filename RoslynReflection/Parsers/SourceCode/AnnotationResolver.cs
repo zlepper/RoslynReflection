@@ -4,35 +4,31 @@ using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Helpers;
 using RoslynReflection.Models;
-using RoslynReflection.Models.Assembly;
-using RoslynReflection.Models.Source;
+using RoslynReflection.Parsers.SourceCode.Models;
 
 namespace RoslynReflection.Parsers.SourceCode
 {
     internal class AnnotationResolver
     {
-        private AvailableTypes _availableTypes;
+        private readonly AvailableTypes _availableTypes;
 
         public AnnotationResolver(AvailableTypes availableTypes)
         {
             _availableTypes = availableTypes;
         }
 
-        public void ResolveAnnotations(IEnumerable<IScannedSourceType> sourceTypes)
+        public void ResolveAnnotations(IEnumerable<RawScannedType> sourceTypes)
         {
-            foreach (var type in sourceTypes)
-            {
-                ResolveAnnotations(type);
-            }
+            foreach (var type in sourceTypes) ResolveAnnotations(type);
         }
 
-        private void ResolveAnnotations(IScannedSourceType sourceType)
+        private void ResolveAnnotations(RawScannedType sourceType)
         {
-            var attributes = sourceType.DeclarationSyntax.AttributeLists.SelectMany(l => l.Attributes);
+            var attributes = sourceType.TypeDeclarationSyntax.SelectMany(s => s.AttributeLists)
+                .SelectMany(l => l.Attributes);
             foreach (var attribute in attributes)
-            {
-                ResolveAnnotation(attribute, (ScannedType)sourceType);
-            }
+                throw new NotImplementedException("TODO");
+            // ResolveAnnotation(attribute, sourceType);
         }
 
         private void ResolveAnnotation(AttributeSyntax attribute, ScannedType sourceType)
@@ -40,19 +36,18 @@ namespace RoslynReflection.Parsers.SourceCode
             var attributeName = attribute.Name.GetText().ToString();
 
             var alternativeName = attributeName + "Attribute";
-            
-            if (_availableTypes.TryGetType(sourceType, attributeName, out var attributeType) || 
-                _availableTypes.TryGetType(sourceType, alternativeName, out attributeType))
-            {
-                if (attributeType is IScannedAssemblyType assemblyType)
-                {
-                    var attributeInstance = InitializeAttribute(assemblyType.Type, attribute);
-                    if (attributeInstance != null)
-                    {
-                        sourceType.Attributes.Add(attributeInstance);
-                    }
-                }
-            }
+
+            // if (_availableTypes.TryGetType(sourceType, attributeName, out var attributeType) ||
+                // _availableTypes.TryGetType(sourceType, alternativeName, out attributeType))
+                throw new NotImplementedException("TODO:");
+            // if (attributeType is IScannedAssemblyType assemblyType)
+            // {
+            //     var attributeInstance = InitializeAttribute(assemblyType.Type, attribute);
+            //     if (attributeInstance != null)
+            //     {
+            //         sourceType.Attributes.Add(attributeInstance);
+            //     }
+            // }
         }
 
         private static object? InitializeAttribute(Type type, AttributeSyntax attributeSyntax)
@@ -60,17 +55,12 @@ namespace RoslynReflection.Parsers.SourceCode
             if (attributeSyntax.ArgumentList == null || attributeSyntax.ArgumentList.Arguments.Count == 0)
             {
                 var constructor = type.GetConstructor(Array.Empty<Type>());
-                if (constructor != null)
-                {
-                    return constructor.Invoke(Array.Empty<object>());
-                }
+                if (constructor != null) return constructor.Invoke(Array.Empty<object>());
 
                 return null;
             }
 
             var arguments = attributeSyntax.ArgumentList.Arguments;
-            
-
 
 
             return null;

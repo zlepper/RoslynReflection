@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
+using RoslynReflection.Models.Extensions;
 
 namespace RoslynReflection.Test.Models
 {
@@ -12,8 +13,8 @@ namespace RoslynReflection.Test.Models
         {
             return new ScannedModule()
                 .AddNamespace("MyNamespace")
-                .AddSourceClass("MyClass")
-                .AddNestedSourceClass("MyInnerClass")
+                .AddClass("MyClass")
+                .AddNestedClass("MyInnerClass")
                 .Module;
         }
         
@@ -82,7 +83,7 @@ namespace RoslynReflection.Test.Models
         {
             var target = new ScannedModule()
                 .AddNamespace("")
-                .AddSourceClass("MyClass");
+                .AddClass("MyClass");
             
             Assert.That(target.FullyQualifiedName(), Is.EqualTo("MyClass"));
         }

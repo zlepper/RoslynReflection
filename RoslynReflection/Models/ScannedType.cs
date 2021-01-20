@@ -1,60 +1,61 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using RoslynReflection.Collections;
 using RoslynReflection.Extensions;
 using RoslynReflection.Helpers;
-using RoslynReflection.Models.Markers;
+using RoslynReflection.Models.Extensions;
+using RoslynReflection.Parsers.SourceCode.Models;
 
 namespace RoslynReflection.Models
 {
-    public abstract record ScannedType : IScannedType, IComparable<ScannedType>, IHaveSimpleRepresentation
+    public record ScannedType : IHaveSimpleRepresentation, IComparable<ScannedType>
     {
         public ScannedModule Module => Namespace.Module;
+
         public ScannedNamespace Namespace { get; }
         public string Name { get; }
-        public ScannedType? SurroundingType { get; }
 
-        public ValueList<ScannedType> NestedTypes { get; } = new();
+        public ScannedType? SurroundingType { get; internal set; }
         public ValueList<object> Attributes { get; } = new(AttributeComparer.Instance);
+        public ScannedType? BaseType { get; internal set; }
+        public ValueList<ScannedType> ImplementedInterfaces { get; } = new();
+        public ValueList<ScannedType> NestedTypes { get; } = new();
 
-        public ValueList<IScannedUsing> Usings { get; } = new();
+        public bool IsClass { get; internal set; }
+        public bool IsInterface { get; internal set; }
+        public bool IsRecord { get; internal set; }
+        public bool IsPartial { get; internal set; }
 
-        internal ValueList<ScannedType> BaseTypes { get; } = new();
+        internal Type? ClrType;
+        internal RawScannedType? RawScannedType;
 
-        public ValueList<ScannedInterface> ImplementedInterfaces { get; } = new();
 
-        public ValueList<GenericTypeParameter> GenericTypeArguments { get; } = new();
-
-        protected ScannedType(ScannedNamespace ns, string name, ScannedType? surroundingType = null)
+        public ScannedType(string name, ScannedNamespace scannedNamespace)
         {
-            Guard.AgainstNull(ns, nameof(ns));
             Guard.AgainstNull(name, nameof(name));
-            Namespace = ns;
+            Guard.AgainstNull(scannedNamespace, nameof(scannedNamespace));
+            
             Name = name;
-            SurroundingType = surroundingType;
+            Namespace = scannedNamespace;
 
-            ns.AddType(this);
-
-            if (surroundingType != null)
-            {
-                surroundingType.NestedTypes.Add(this);
-            }
+            scannedNamespace.AddType(this);
         }
 
         public virtual bool Equals(ScannedType? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Name == other.Name && 
-                   Attributes.Equals(other.Attributes) && 
+            return Name == other.Name &&
+                   IsClass == other.IsClass &&
+                   IsInterface == other.IsInterface &&
+                   IsRecord == other.IsRecord &&
+                   IsPartial == other.IsPartial &&
+                   Attributes.Equals(other.Attributes) &&
                    NestedTypes.Equals(other.NestedTypes) &&
-                   Usings.Equals(other.Usings) && 
-                   BaseTypes.Equals(other.BaseTypes) &&
                    ImplementedInterfaces.Equals(other.ImplementedInterfaces) &&
-                   GenericTypeArguments.Equals(other.GenericTypeArguments);
+                   BaseType.NullSafeEquals(other.BaseType);
         }
 
         public override int GetHashCode()
@@ -64,7 +65,6 @@ namespace RoslynReflection.Models
                 var hashCode = Name.GetHashCode();
                 hashCode = (hashCode * 397) ^ Attributes.GetHashCode();
                 // hashCode = (hashCode * 397) ^ NestedTypes.GetHashCode();
-                hashCode = (hashCode * 397) ^ Usings.GetHashCode();
                 // hashCode = (hashCode * 397) ^ BaseTypes.GetHashCode();
                 hashCode = (hashCode * 397) ^ ImplementedInterfaces.GetHashCode();
                 return hashCode;
@@ -89,10 +89,13 @@ namespace RoslynReflection.Models
             return builder.AppendField(nameof(Name), Name)
                 .AppendField(nameof(NestedTypes), NestedTypes.ToSimpleRepresentation())
                 .AppendField(nameof(Attributes), Attributes)
-                .AppendField(nameof(Usings), Usings)
-                .AppendField(nameof(BaseTypes), BaseTypes.ToSimpleRepresentation())
-                .AppendField(nameof(ImplementedInterfaces), ImplementedInterfaces.OrderBy(i => i).ToSimpleRepresentation())
-                .AppendField(nameof(GenericTypeArguments), GenericTypeArguments.OrderBy(a => a).ToSimpleRepresentation());
+                .AppendField(nameof(ImplementedInterfaces),
+                    ImplementedInterfaces.OrderBy(i => i).ToSimpleRepresentation())
+                .AppendNonDefaultField(nameof(IsClass), IsClass)
+                .AppendNonDefaultField(nameof(IsInterface), IsInterface)
+                .AppendNonDefaultField(nameof(IsRecord), IsRecord)
+                .AppendNonDefaultField(nameof(IsPartial), IsPartial)
+                .AppendNonDefaultField(nameof(BaseType), BaseType, t => t.ToSimpleRepresentation());
         }
 
         public int CompareTo(ScannedType? other)

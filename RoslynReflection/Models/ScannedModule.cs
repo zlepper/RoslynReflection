@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using RoslynReflection.Collections;
 using RoslynReflection.Extensions;
-using RoslynReflection.Models.Markers;
+using RoslynReflection.Helpers;
 
 namespace RoslynReflection.Models
 {
@@ -18,6 +18,8 @@ namespace RoslynReflection.Models
 
         public ScannedModule(string name = "MainCompilationModule")
         {
+            Guard.AgainstNull(name, nameof(name));
+            
             Name = name;
         }
 

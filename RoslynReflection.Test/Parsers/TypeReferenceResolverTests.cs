@@ -9,6 +9,7 @@ using ScanableAssembly;
 
 namespace RoslynReflection.Test.Parsers
 {
+    /*
     [TestFixture]
     public class TypeReferenceResolverTests
     {
@@ -171,5 +172,5 @@ namespace RoslynReflection.Test.Parsers
             
             Assert.That(result, Is.EqualTo(expected));
         }
-    }
+    }*/
 }
