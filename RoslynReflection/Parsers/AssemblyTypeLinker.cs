@@ -25,7 +25,7 @@ namespace RoslynReflection.Parsers
                 type.IsPartial = false;
                 type.IsRecord = clrType.IsRecord();
                 type.Attributes.AddRange(clrType.GetCustomAttributes()
-                    .Where(o => !RoslynReflection.RoslynReflectionConstants.HiddenNamespaces.Contains(o.GetType().Namespace)));
+                    .Where(o => !RoslynReflectionConstants.HiddenNamespaces.Contains(o.GetType().Namespace)));
             }
         }
     }
