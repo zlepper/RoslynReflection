@@ -39,5 +39,16 @@ namespace RoslynReflection.Parsers.SourceCode.Models
             
             return true;
         }
+
+        public string NameAsPrefix()
+        {
+            
+            if (Name == "")
+            {
+                return "";
+            }
+
+            return Name + ".";
+        }
     }
 }

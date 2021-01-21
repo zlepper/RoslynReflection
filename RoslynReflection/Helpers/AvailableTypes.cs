@@ -25,6 +25,11 @@ namespace RoslynReflection.Helpers
             AddNamespaces(type.Module.Namespaces);
         }
         
+        public AvailableTypes(ScannedModule module)
+        {
+            AddNamespaces(module.Namespaces);
+        }
+        
         public void AddNamespace(ScannedNamespace ns)
         {
             if (!Namespaces.TryGetValue(ns.Name, out var existing))

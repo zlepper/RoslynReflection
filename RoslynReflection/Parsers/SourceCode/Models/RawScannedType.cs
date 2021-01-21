@@ -73,5 +73,10 @@ namespace RoslynReflection.Parsers.SourceCode.Models
 
             return $"{SurroundingType.FullName()}.{Name}";
         }
+        
+        public string FullyQualifiedName()
+        {
+            return $"{Namespace.NameAsPrefix()}{FullName()}";
+        }
     }
 }
