@@ -49,6 +49,8 @@ namespace RoslynReflection.Parsers
                 mainModule.DependsOn.Add(item.Value.Module);
             }
 
+            AssemblyTypeLinker.LinkAssemblyTypes(mainModule.GetAllDependencies());
+            
             var availableTypes = new AvailableTypes();
             availableTypes.AddNamespaces(mainModule.GetAllAvailableNamespaces());
 

@@ -17,8 +17,8 @@ namespace RoslynReflection.Models
         public ScannedNamespace Namespace { get; }
         public string Name { get; }
 
-        public ScannedType? SurroundingType { get; internal set; }
-        public ValueList<object> Attributes { get; } = new(AttributeComparer.Instance);
+        public ScannedType? SurroundingType { get; }
+        public ValueList<object> Attributes { get; } = new(AttributeComparer.Instance, AttributeComparer.Instance);
         public ScannedType? BaseType { get; internal set; }
         public ValueList<ScannedType> ImplementedInterfaces { get; } = new();
         public ValueList<ScannedType> NestedTypes { get; } = new();
@@ -26,13 +26,16 @@ namespace RoslynReflection.Models
         public bool IsClass { get; internal set; }
         public bool IsInterface { get; internal set; }
         public bool IsRecord { get; internal set; }
+        
         public bool IsPartial { get; internal set; }
+        
+        public bool IsAbstract { get; internal set; }
 
         internal Type? ClrType;
         internal RawScannedType? RawScannedType;
 
 
-        public ScannedType(string name, ScannedNamespace scannedNamespace)
+        public ScannedType(string name, ScannedNamespace scannedNamespace, ScannedType? surroundingType)
         {
             Guard.AgainstNull(name, nameof(name));
             Guard.AgainstNull(scannedNamespace, nameof(scannedNamespace));
@@ -41,6 +44,12 @@ namespace RoslynReflection.Models
             Namespace = scannedNamespace;
 
             scannedNamespace.AddType(this);
+
+            SurroundingType = surroundingType;
+            if (surroundingType != null)
+            {
+                surroundingType.NestedTypes.Add(this);
+            }
         }
 
         public virtual bool Equals(ScannedType? other)

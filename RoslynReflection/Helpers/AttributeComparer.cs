@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RoslynReflection.Helpers
 {
-    internal sealed class AttributeComparer : IEqualityComparer<object>
+    internal sealed class AttributeComparer : IEqualityComparer<object>, IComparer<object>
     {
         private readonly AttributeUsageAttributeComparer _attributeUsageAttributeComparer = new();
         
@@ -51,6 +51,11 @@ namespace RoslynReflection.Helpers
                     return hashCode;
                 }
             }
+        }
+
+        public int Compare(object x, object y)
+        {
+            return x.GetHashCode() - y.GetHashCode();
         }
     }
 }

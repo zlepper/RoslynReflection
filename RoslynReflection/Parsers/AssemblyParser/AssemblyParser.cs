@@ -13,6 +13,7 @@ namespace RoslynReflection.Parsers.AssemblyParser
         private readonly ScannedModule _module;
         private readonly NamespaceList _namespaceList;
         private readonly ScannedNamespace _rootNamespace;
+        private readonly Dictionary<Type, ScannedType> _typeDict = new();
 
         internal AssemblyParser(Assembly assembly)
         {
@@ -37,12 +38,16 @@ namespace RoslynReflection.Parsers.AssemblyParser
 
         private ScannedType AddType(Type type)
         {
-            var ns = type.Namespace == null
-                ? _rootNamespace
+            if(_typeDict.TryGetValue(type, out var existing)) return existing;
+                
+            var ns = type.Namespace == null 
+                ? _rootNamespace 
                 : _namespaceList.GetNamespace(type.Namespace);
 
-            var typeParser = new AssemblyTypeParser(ns);
-            return typeParser.ParseType(type);
+            var surroundingType = type.DeclaringType == null ? null : AddType(type.DeclaringType);
+
+            var typeParser = new AssemblyTypeParser(ns, surroundingType);
+            return _typeDict[type] = typeParser.ParseType(type);
         }
 
         private static IEnumerable<Type> GetPossibleTypes(Assembly assembly)

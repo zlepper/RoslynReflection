@@ -11,17 +11,20 @@ namespace RoslynReflection.Collections
     {
         private readonly List<T> _innerCollection;
 
-        private readonly IEqualityComparer<T> _comparer;
+        private readonly IEqualityComparer<T> _equalityComparer;
 
+        private readonly IComparer<T> _comparer;
         public int Count => _innerCollection.Count;
+        
 
-        public ValueList(IEqualityComparer<T> comparer)
+        public ValueList(IEqualityComparer<T> equalityComparer, IComparer<T> comparer)
         {
+            _equalityComparer = equalityComparer;
             _comparer = comparer;
             _innerCollection = new();
         }
         
-        public ValueList() : this(EqualityComparer<T>.Default)
+        public ValueList() : this(EqualityComparer<T>.Default, Comparer<T>.Default)
         {
         }
 
@@ -52,8 +55,8 @@ namespace RoslynReflection.Collections
                 return false;
             }
 
-            var t = _innerCollection.ToImmutableHashSet(_comparer);
-            var o = other.ToImmutableHashSet(_comparer);
+            var t = _innerCollection.ToImmutableHashSet(_equalityComparer);
+            var o = other.ToImmutableHashSet(_equalityComparer);
 
             return t.SetEquals(o);
         }
@@ -83,7 +86,7 @@ namespace RoslynReflection.Collections
 
         public override string ToString()
         {
-            return "[ " + string.Join(", ", _innerCollection.OrderBy(i => i )) + " ]";
+            return "[ " + string.Join(", ", _innerCollection.OrderBy(k => k, _comparer)) + " ]";
         }
 
         internal void AddRange(IEnumerable<T> items)

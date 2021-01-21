@@ -1,6 +1,7 @@
 ﻿using System;
 using RoslynReflection.Helpers;
 using RoslynReflection.Models;
+using RoslynReflection.Parsers.AssemblyParser;
 
 namespace RoslynReflection.Builder
 {
@@ -11,10 +12,32 @@ namespace RoslynReflection.Builder
             Guard.AgainstNull(type, nameof(type));
             Guard.AgainstNull(name, nameof(name));
             
-            return new(name, type.Namespace)
+            return new(name, type.Namespace, type)
             {
-                SurroundingType = type,
                 IsClass = true
+            };
+        }
+
+        public static ScannedType AddNestedInterface(this ScannedType type, string name)
+        {
+            Guard.AgainstNull(type, nameof(type));
+            Guard.AgainstNull(name, nameof(name));
+
+            return new ScannedType(name, type.Namespace, type)
+            {
+                IsInterface = true
+            };
+        }
+
+        public static ScannedType AddNestedRecord(this ScannedType type, string name)
+        {
+            Guard.AgainstNull(type, nameof(type));
+            Guard.AgainstNull(name, nameof(name));
+
+            return new ScannedType(name, type.Namespace, type)
+            {
+                IsClass = true,
+                IsRecord = true,
             };
         }
 
@@ -32,6 +55,14 @@ namespace RoslynReflection.Builder
             Guard.AgainstNull(type, nameof(type));
             
             type.IsPartial = true;
+            return type;
+        }
+
+        public static ScannedType MakeAbstract(this ScannedType type)
+        {
+            Guard.AgainstNull(type, nameof(type));
+
+            type.IsAbstract = true;
             return type;
         }
     }

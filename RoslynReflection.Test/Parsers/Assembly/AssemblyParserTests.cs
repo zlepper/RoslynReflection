@@ -28,36 +28,36 @@ namespace RoslynReflection.Test.Parsers.Assembly
             var result = ParseAssemblyFromClass<ClassWithoutNamespace>();
 
             var expected = new ScannedModule(typeof(ClassWithoutNamespace).Assembly.GetName().Name!)
-/*                .AddSingleDependency(result.DependsOn.Single())
+                .AddSingleDependency(result.DependsOn.Single())
                 .AddNamespace("")
-                .AddAssemblyClass<ClassWithoutNamespace>()
+                .AddClass(nameof(ClassWithoutNamespace))
                 .Module
                 .AddNamespace("ScanableAssembly")
-                .AddAssemblyClass<ClassWithAttribute>()
+                .AddClass(nameof(ClassWithAttribute))
                 .AddAttribute(new MyAttribute("Hello World"))
                 .Namespace
-                .AddAssemblyClass<MyAttribute>()
+                .AddClass(nameof(MyAttribute))
                 .AddAttribute(new AttributeUsageAttribute(AttributeTargets.Class))
-                .AddBaseAssemblyClass().SetBaseType<Attribute>()
+                // .AddBaseAssemblyClass().SetBaseType<Attribute>()
                 .Namespace
-                .AddAssemblyClass<MySimpleClass>()
+                .AddClass(nameof(MySimpleClass))
                 .Namespace
-                .AddAssemblyInterface<IMySimpleInterface>()
+                .AddInterface(nameof(IMySimpleInterface))
                 .Namespace
-                .AddAssemblyRecord<MyRecord>()
+                .AddRecord(nameof(MyRecord))
                 .Namespace
-                .AddAssemblyClass<ParentClass>()
-                .AddNestedAssemblyClass<ParentClass.ChildClass>()
-                .AddNestedAssemblyClass<ParentClass.ChildClass.GrandChildClass>()
+                .AddClass(nameof(ParentClass))
+                .AddNestedClass(nameof(ParentClass.ChildClass))
+                .AddNestedClass(nameof(ParentClass.ChildClass.GrandChildClass))
                 .Namespace
-                .AddAssemblyClass<AbstractClass>()
+                .AddClass(nameof(AbstractClass))
                 .MakeAbstract()
                 .Namespace
-                .AddAssemblyClass<BaseClass>()
+                .AddClass(nameof(BaseClass))
                 .Namespace
-                .AddAssemblyClass<SubClass>()
-                .AddBaseAssemblyClass().SetBaseType<BaseClass>()
-                .Module*/; 
+                .AddClass(nameof(SubClass))
+                // .AddBaseAssemblyClass().SetBaseType<BaseClass>()
+                .Module; 
             
             Assert.That(result, Is.EqualTo(expected));
         }

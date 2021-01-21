@@ -39,9 +39,9 @@ namespace RoslynReflection.Test.Collections
         [Test]
         public void ComparesAttributeUsageAttributes()
         {
-            var list1 = new ValueList<object>(AttributeComparer.Instance)
+            var list1 = new ValueList<object>(AttributeComparer.Instance, AttributeComparer.Instance)
                 {new AttributeUsageAttribute(AttributeTargets.Class)};
-            var list2 = new ValueList<object>(AttributeComparer.Instance)
+            var list2 = new ValueList<object>(AttributeComparer.Instance, AttributeComparer.Instance)
                 {new AttributeUsageAttribute(AttributeTargets.Class)};
             
             Assert.That(list1.Equals(list2), Is.True);
