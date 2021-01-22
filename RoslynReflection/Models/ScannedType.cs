@@ -30,6 +30,8 @@ namespace RoslynReflection.Models
         public bool IsPartial { get; internal set; }
         
         public bool IsAbstract { get; internal set; }
+        
+        public bool IsSealed { get; internal set; }
 
         internal Type? ClrType;
         internal RawScannedType? RawScannedType;

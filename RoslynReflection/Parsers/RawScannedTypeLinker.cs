@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Models;
@@ -31,16 +32,15 @@ namespace RoslynReflection.Parsers
 
             var declarations = raw.TypeDeclarationSyntax;
 
-            type.IsPartial = declarations.Count > 1 ||
-                             declarations[0].Modifiers.Any(m => m.Kind() == SyntaxKind.PartialKeyword);
+            type.IsPartial = declarations.Count > 1 || declarations[0].Modifiers.HasKeyword(SyntaxKind.PartialKeyword);
 
             foreach (var declaration in declarations)
             {
                 type.IsRecord = declaration is RecordDeclarationSyntax;
                 type.IsClass = type.IsRecord || declaration is ClassDeclarationSyntax;
                 type.IsInterface = declaration is InterfaceDeclarationSyntax;
-                type.IsAbstract = type.IsAbstract ||
-                                  declaration.Modifiers.Any(m => m.Kind() == SyntaxKind.AbstractKeyword);
+                type.IsAbstract = type.IsAbstract || declaration.Modifiers.HasKeyword(SyntaxKind.AbstractKeyword);
+                type.IsSealed = type.IsSealed || declaration.Modifiers.HasKeyword(SyntaxKind.SealedKeyword);
             }
         }
 
@@ -79,11 +79,11 @@ namespace RoslynReflection.Parsers
         }
     }
 
-    public abstract partial class MyClass
+    internal static class SyntaxExtensions
     {
-    }
-
-    public partial class MyClass
-    {
+        internal static bool HasKeyword(this SyntaxTokenList modifiers, SyntaxKind syntaxKind)
+        {
+            return modifiers.Any(m => m.Kind() == syntaxKind);
+        }
     }
 }

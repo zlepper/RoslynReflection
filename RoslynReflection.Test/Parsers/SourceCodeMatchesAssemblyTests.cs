@@ -171,10 +171,21 @@ namespace RoslynReflection.Test.Parsers
             var (raw, compiled) = result.GetType("MyNamespace.MyClass");
             
             TripleAssert(raw.IsAbstract, compiled.IsAbstract, compiled.ClrType!.IsAbstract, Is.True);
-            Assert.That(raw.IsPartial);
+            Assert.That(raw.IsPartial, Is.True);
         }
 
-        
+        [Test]
+        public void DetectsSealedClass()
+        {
+            var code = @"namespace MyNamespace {
+    public sealed class MyClass {}
+}";
+            
+            var result = AnalyzeCode(code);
+
+            var (raw, compiled) = result.GetType("MyNamespace.MyClass");
+            TripleAssert(raw.IsSealed, compiled.IsSealed, compiled.ClrType!.IsSealed, Is.True);
+        }
 
         private static void TripleAssert<T>(T value1, T value2, T value3, IResolveConstraint expression)
         {
