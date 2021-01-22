@@ -199,23 +199,6 @@ namespace MyOtherNamespace {
                 .Module));
         }
 
-        /*
-        [Test]
-        public void DetectsAbstractClasses()
-        {
-            var code = @"namespace MyNamespace {
-    public abstract class MyClass {}
-}";
-
-            var result = GetResult(code);
-            Assert.That(result, Is.EqualTo(new RawScannedModule()
-                .AddNamespace("MyNamespace")
-                .AddType("MyClass")
-                .MakeAbstract()
-                .Module));
-        }
-        */
-
         [Test]
         public void CreatesUnlinkedInheritedType()
         {

@@ -73,41 +73,5 @@ namespace RoslynReflection.Test.Parsers.SourceCode
                     .Module
             ));
         }
-        
-        /*
-        [Test]
-        public void HandlesPartialRecords()
-        {
-            //language=C#
-            var code = @"namespace MyNamespace {
-    public partial record MyRecord { }
-    public partial record MyRecord { }
-}";
-
-            var result = GetResult(code);
-
-            Assert.That(result, Is.EqualTo(
-                new RawScannedModule()
-                    .AddNamespace("MyNamespace")
-                    .AddType("MyRecord")
-                    .MakePartial()
-                    .Module
-            ));
-        }
-        
-        [Test]
-        public void DetectsAbstractRecords()
-        {
-            var code = @"namespace MyNamespace {
-    public abstract record MyRecord {}
-}";
-
-            var result = GetResult(code);
-            Assert.That(result, Is.EqualTo(new RawScannedModule()
-                .AddNamespace("MyNamespace")
-                .AddType("MyRecord")
-                .MakeAbstract()
-                .Module));
-        }*/
     }
 }

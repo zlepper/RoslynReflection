@@ -72,26 +72,5 @@ namespace RoslynReflection.Test.Parsers.SourceCode
                     .Module
             ));
         }
-        
-        /*
-        [Test]
-        public void HandlesPartialInterfaces()
-        {
-            //language=C#
-            var code = @"namespace MyNamespace {
-    public partial interface IMyInterface { }
-    public partial interface IMyInterface { }
-}";
-
-            var result = GetResult(code);
-
-            Assert.That(result, Is.EqualTo(
-                new RawScannedModule()
-                    .AddNamespace("MyNamespace")
-                    .AddType("IMyInterface")
-                    .MakePartial()
-                    .Module
-            ));
-        }*/
     }
 }
