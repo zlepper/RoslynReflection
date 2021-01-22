@@ -5,16 +5,17 @@ using System.Text;
 using RoslynReflection.Collections;
 using RoslynReflection.Extensions;
 using RoslynReflection.Helpers;
+using RoslynReflection.Models.Markers;
 
 namespace RoslynReflection.Models
 {
-    public record ScannedModule : IComparable<ScannedModule>, IHaveSimpleRepresentation
+    public record ScannedModule : IComparable<ScannedModule>, IHaveSimpleRepresentation, IHaveDependencies
     {
         public readonly string Name;
         
         public readonly ValueList<ScannedNamespace> Namespaces = new();
 
-        public readonly ValueList<ScannedModule> DependsOn = new();
+        public ValueList<ScannedModule> DependsOn { get; } = new();
 
         public ScannedModule(string name = "MainCompilationModule")
         {

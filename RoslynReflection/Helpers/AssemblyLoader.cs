@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -9,6 +11,8 @@ namespace RoslynReflection.Helpers
     {
         internal static async Task<IEnumerable<Assembly>> GetAssemblies(IEnumerable<AssemblyIdentity> assemblyIdentities)
         {
+            var alreadyLoadedAssemblies= AppDomain.CurrentDomain.GetAssemblies().ToDictionary(a => a.GetName());
+
             var tasks = new List<Task<Assembly>>();
             var alreadyScannedAssemblies = new HashSet<string>();
             var allAssemblies = new HashSet<Assembly>();
@@ -19,8 +23,15 @@ namespace RoslynReflection.Helpers
                 var assemblyName = new AssemblyName(assemblyIdentity.ToString());
 
                 alreadyScannedAssemblies.Add(assemblyName.Name);
-                
-                tasks.Add(LoadAssembly(assemblyName));
+
+                if (alreadyLoadedAssemblies.TryGetValue(assemblyName, out var alreadyLoaded))
+                {
+                    tasks.Add(Task.FromResult(alreadyLoaded));
+                }
+                else
+                {
+                    tasks.Add(LoadAssembly(assemblyName));
+                }
             }
 
             while (tasks.Count != 0)
@@ -37,7 +48,14 @@ namespace RoslynReflection.Helpers
                         if(alreadyScannedAssemblies.Contains(referencedAssembly.Name)) continue;
                         alreadyScannedAssemblies.Add(referencedAssembly.Name);
                         
-                        tasks.Add(LoadAssembly(referencedAssembly));
+                        if (alreadyLoadedAssemblies.TryGetValue(referencedAssembly, out var alreadyLoaded))
+                        {
+                            tasks.Add(Task.FromResult(alreadyLoaded));
+                        }
+                        else
+                        {
+                            tasks.Add(LoadAssembly(referencedAssembly));
+                        }
                     }
                 }
                 

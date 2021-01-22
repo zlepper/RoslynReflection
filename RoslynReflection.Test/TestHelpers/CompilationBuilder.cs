@@ -43,7 +43,7 @@ namespace RoslynReflection.Test.TestHelpers
             var syntaxTrees = _codeTrees.Select(c => CSharpSyntaxTree.ParseText(c));
             var references = _dependentAssemblies.Select(a => MetadataReference.CreateFromFile(a.Location));
 
-            var assemblyName = Path.GetTempFileName();
+            var assemblyName = Path.GetFileName(Path.GetTempFileName()).Replace(".tmp", ".dll");
 
             return CSharpCompilation.Create(assemblyName, syntaxTrees, references,
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));

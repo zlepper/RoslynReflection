@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using RoslynReflection.Models.Markers;
 
 namespace RoslynReflection.Models.Extensions
 {
@@ -29,11 +30,16 @@ namespace RoslynReflection.Models.Extensions
                 .Concat(module.Namespaces);
         }
 
-        public static IEnumerable<ScannedModule> GetAllDependencies(this ScannedModule module)
+        public static IEnumerable<ScannedModule> GetAllDependencies(this IHaveDependencies module)
         {
             var modules = new HashSet<ScannedModule>();
             var queue = new Queue<ScannedModule>();
-            queue.Enqueue(module);
+            
+            foreach (var dep in module.DependsOn)
+            {
+                modules.Add(dep);
+                queue.Enqueue(dep);
+            }
 
             while (queue.Count != 0)
             {

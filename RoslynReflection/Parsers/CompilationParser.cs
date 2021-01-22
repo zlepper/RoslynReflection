@@ -34,7 +34,7 @@ namespace RoslynReflection.Parsers
 
             var assemblyResults = ParseAssemblies().GetAwaiter().GetResult();
 
-            var mainModule = mainTask.GetAwaiter().GetResult();
+            var rawMainModule = mainTask.GetAwaiter().GetResult();
 
             var assemblyDict = assemblyResults.ToDictionary(r => r.OwnName);
 
@@ -46,13 +46,14 @@ namespace RoslynReflection.Parsers
                     item.Value.Module.DependsOn.Add(match.Module);
                 }
 
-                mainModule.DependsOn.Add(item.Value.Module);
+                rawMainModule.DependsOn.Add(item.Value.Module);
             }
 
-            AssemblyTypeLinker.LinkAssemblyTypes(mainModule.GetAllDependencies());
+            AssemblyTypeLinker.LinkAssemblyTypes(rawMainModule.GetAllDependencies());
+
+            var mainModule = RawScannedTypeLinker.LinkRawTypes(rawMainModule);
             
-            var availableTypes = new AvailableTypes();
-            availableTypes.AddNamespaces(mainModule.GetAllAvailableNamespaces());
+            var availableTypes = new AvailableTypes(mainModule);
 
             // var typeReferenceResolver = new TypeReferenceResolver(availableTypes);
             // typeReferenceResolver.ResolveUnlinkedTypes(availableTypes.Types);
@@ -84,18 +85,15 @@ namespace RoslynReflection.Parsers
             return results.ToList();
         }
 
-        private ScannedModule ParseMainModule()
+        private RawScannedModule ParseMainModule()
         {
-            var mainModule = new ScannedModule();
-
             var rawModule = new RawScannedModule();
             
             var syntaxTreeParser = new SyntaxTreeParser(rawModule);
 
             foreach (var syntaxTree in _compilation.SyntaxTrees) syntaxTreeParser.ParseSyntaxTree(syntaxTree);
 
-
-            return mainModule;
+            return rawModule;
         }
 
 

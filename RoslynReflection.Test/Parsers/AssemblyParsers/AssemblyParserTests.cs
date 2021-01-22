@@ -4,11 +4,10 @@ using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
 using RoslynReflection.Parsers;
-using RoslynReflection.Parsers.AssemblyParser;
 using RoslynReflection.Test.TestHelpers;
 using ScanableAssembly;
 
-namespace RoslynReflection.Test.Parsers.Assembly
+namespace RoslynReflection.Test.Parsers.AssemblyParsers
 {
     [TestFixture]
     public class AssemblyParserTests
