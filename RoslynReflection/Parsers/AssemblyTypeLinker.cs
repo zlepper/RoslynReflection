@@ -24,8 +24,10 @@ namespace RoslynReflection.Parsers
                 type.IsInterface = clrType.IsInterface;
                 type.IsPartial = false;
                 type.IsRecord = clrType.IsRecord();
+                type.IsAbstract = clrType.IsAbstract;
                 type.Attributes.AddRange(clrType.GetCustomAttributes()
                     .Where(o => !RoslynReflectionConstants.HiddenNamespaces.Contains(o.GetType().Namespace)));
+                
             }
         }
     }

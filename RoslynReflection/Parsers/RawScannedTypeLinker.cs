@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynReflection.Models;
 using RoslynReflection.Models.Extensions;
@@ -12,9 +13,9 @@ namespace RoslynReflection.Parsers
         internal static ScannedModule LinkRawTypes(RawScannedModule module)
         {
             var fullModule = GetUnlinkedScannedModule(module);
-            
+
             fullModule.DependsOn.AddRange(module.DependsOn);
-            
+
             foreach (var scannedType in fullModule.Types())
             {
                 SetTypeDetails(scannedType);
@@ -30,16 +31,19 @@ namespace RoslynReflection.Parsers
 
             var declarations = raw.TypeDeclarationSyntax;
 
-            type.IsPartial = declarations.Count > 1;
-            
+            type.IsPartial = declarations.Count > 1 ||
+                             declarations[0].Modifiers.Any(m => m.Kind() == SyntaxKind.PartialKeyword);
+
             foreach (var declaration in declarations)
             {
                 type.IsRecord = declaration is RecordDeclarationSyntax;
                 type.IsClass = type.IsRecord || declaration is ClassDeclarationSyntax;
                 type.IsInterface = declaration is InterfaceDeclarationSyntax;
+                type.IsAbstract = type.IsAbstract ||
+                                  declaration.Modifiers.Any(m => m.Kind() == SyntaxKind.AbstractKeyword);
             }
         }
-        
+
 
         internal static ScannedModule GetUnlinkedScannedModule(RawScannedModule rawModule)
         {
@@ -58,7 +62,8 @@ namespace RoslynReflection.Parsers
             return scannedModule;
         }
 
-        private static ScannedType CreateScannedType(ScannedNamespace ns, RawScannedType rawType, ScannedType? surroundingType)
+        private static ScannedType CreateScannedType(ScannedNamespace ns, RawScannedType rawType,
+            ScannedType? surroundingType)
         {
             var type = new ScannedType(rawType.Name, ns, surroundingType)
             {
@@ -72,5 +77,13 @@ namespace RoslynReflection.Parsers
 
             return type;
         }
+    }
+
+    public abstract partial class MyClass
+    {
+    }
+
+    public partial class MyClass
+    {
     }
 }

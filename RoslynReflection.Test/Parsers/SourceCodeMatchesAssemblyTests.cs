@@ -8,6 +8,7 @@ using NUnit.Framework.Constraints;
 using RoslynReflection.Models;
 using RoslynReflection.Models.Extensions;
 using RoslynReflection.Parsers;
+using RoslynReflection.Parsers.AssemblyParser;
 using RoslynReflection.Test.TestHelpers;
 
 namespace RoslynReflection.Test.Parsers
@@ -95,6 +96,85 @@ namespace RoslynReflection.Test.Parsers
             TripleAssert(raw.IsClass, compiled.IsClass, compiled.ClrType!.IsClass, Is.False);
             TripleAssert(raw.IsInterface, compiled.IsInterface, compiled.ClrType!.IsInterface, Is.True);
         }
+
+        [Test]
+        public void DetectsRecord()
+        {
+            var code = @"namespace MyNamespace {
+    public record MyRecord {}
+}";
+            
+            var result = AnalyzeCode(code);
+
+            var (raw, compiled) = result.GetType("MyNamespace.MyRecord");
+            
+            TripleAssert(raw.IsClass, compiled.IsClass, compiled.ClrType!.IsClass, Is.True);
+            TripleAssert(raw.IsInterface, compiled.IsInterface, compiled.ClrType!.IsInterface, Is.False);
+            TripleAssert(raw.IsRecord, compiled.IsRecord, compiled.ClrType!.IsRecord(), Is.True);
+        }
+
+        [Test]
+        public void DetectsPartial()
+        {
+            var code = @"namespace MyNamespace {
+    public partial class MyClass {}
+    public partial class MyClass {}
+}";
+            
+            var result = AnalyzeCode(code);
+
+            var (raw, _) = result.GetType("MyNamespace.MyClass");
+            
+            Assert.That(raw.IsPartial, Is.True);
+        }
+
+        [Test]
+        public void DetectsPartialWhenOnlyOneClass()
+        {
+            var code = @"namespace MyNamespace {
+    public partial class MyClass {}
+}";
+            
+            var result = AnalyzeCode(code);
+
+            var (raw, _) = result.GetType("MyNamespace.MyClass");
+            
+            Assert.That(raw.IsPartial, Is.True);
+        }
+
+        [Test]
+        public void DetectsAbstractClass()
+        {
+            var code = @"namespace MyNamespace {
+    public abstract class MyClass {}
+}";
+            
+            var result = AnalyzeCode(code);
+
+            var (raw, compiled) = result.GetType("MyNamespace.MyClass");
+            
+            TripleAssert(raw.IsAbstract, compiled.IsAbstract, compiled.ClrType!.IsAbstract, Is.True);
+        }
+
+        
+
+        [Test]
+        public void DetectsAbstractPartialClass()
+        {
+            var code = @"namespace MyNamespace {
+    public abstract partial class MyClass {}
+    public partial class MyClass {}
+}";
+            
+            var result = AnalyzeCode(code);
+
+            var (raw, compiled) = result.GetType("MyNamespace.MyClass");
+            
+            TripleAssert(raw.IsAbstract, compiled.IsAbstract, compiled.ClrType!.IsAbstract, Is.True);
+            Assert.That(raw.IsPartial);
+        }
+
+        
 
         private static void TripleAssert<T>(T value1, T value2, T value3, IResolveConstraint expression)
         {
