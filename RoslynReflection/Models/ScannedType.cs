@@ -32,6 +32,18 @@ namespace RoslynReflection.Models
         public bool IsAbstract { get; internal set; }
         
         public bool IsSealed { get; internal set; }
+        
+        public bool ContainsGenericParameters { get; internal set; }
+        public bool IsConstructedGenericType { get; internal set; }
+        public bool IsGenericType { get; internal set; }
+        public bool IsGenericTypeDefinition { get; internal set; }
+
+        public ValueList<ScannedType> GenericTypeArguments { get; } = new();
+        public ValueList<ScannedType> GenericTypeParameters { get; } = new();
+        
+        public bool IsGenericParameter { get; internal set; }
+        public int GenericParameterPosition { get; internal set; } = -1;
+        
 
         internal Type? ClrType;
         internal RawScannedType? RawScannedType;

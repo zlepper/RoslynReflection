@@ -51,7 +51,7 @@ namespace RoslynReflection.Parsers
 
             AssemblyTypeLinker.LinkAssemblyTypes(rawMainModule.GetAllDependencies());
 
-            var mainModule = RawScannedTypeLinker.LinkRawTypes(rawMainModule);
+            var mainModule = RawScannedTypeConstructor.LinkRawTypes(rawMainModule);
             
             var availableTypes = new AvailableTypes(mainModule);
 

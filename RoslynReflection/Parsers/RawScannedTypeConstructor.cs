@@ -9,7 +9,7 @@ using RoslynReflection.Parsers.SourceCode.Models;
 
 namespace RoslynReflection.Parsers
 {
-    internal class RawScannedTypeLinker
+    internal class RawScannedTypeConstructor
     {
         internal static ScannedModule LinkRawTypes(RawScannedModule module)
         {

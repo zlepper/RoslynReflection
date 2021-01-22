@@ -16,7 +16,13 @@ namespace RoslynReflection.Parsers.AssemblyParser
 
         internal ScannedType ParseType(Type type)
         {
-            var scannedType = new ScannedType(type.Name, _scannedNamespace, _surroundingType)
+            string name = type.Name;
+            if (name.Contains("`"))
+            {
+                name = name.Substring(0, name.IndexOf('`'));
+            }
+
+            var scannedType = new ScannedType(name, _scannedNamespace, _surroundingType)
             {
                 ClrType = type
             };

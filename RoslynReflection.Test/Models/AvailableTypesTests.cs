@@ -20,7 +20,7 @@ namespace RoslynReflection.Test.Models
                 .AddUsing("OtherNamespace");
 
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, otherClass.Name, out var match), Is.True);
@@ -37,7 +37,7 @@ namespace RoslynReflection.Test.Models
             var myClass = module.AddNamespace("MyNamespace")
                 .AddType("MyClass");
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, otherClass.Name, out var match), Is.False);
@@ -53,7 +53,7 @@ namespace RoslynReflection.Test.Models
             var myClass = module.AddNamespace("MyNamespace")
                 .AddType("MyClass");
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, otherClass.FullyQualifiedName(), out var match), Is.True);
@@ -69,7 +69,7 @@ namespace RoslynReflection.Test.Models
             var otherClass = classNamespace.AddType("OtherClass");
             var myClass = classNamespace.AddType("MyClass");
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, otherClass.Name, out var match), Is.True);
@@ -85,7 +85,7 @@ namespace RoslynReflection.Test.Models
             var myClass = classNamespace.AddType("MyClass");
             var inner = myClass.AddNestedType("Inner");
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, inner.Name, out var match), Is.True);
@@ -103,7 +103,7 @@ namespace RoslynReflection.Test.Models
             var innerInner = inner.AddNestedType("InnerInner");
 
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, "Inner.InnerInner", out var match), Is.True);
@@ -120,7 +120,7 @@ namespace RoslynReflection.Test.Models
             var inner = otherClass.AddNestedType("Inner");
             var myClass = classNamespace.AddType("MyClass");
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, "OtherClass.Inner", out var match), Is.True);
@@ -139,7 +139,7 @@ namespace RoslynReflection.Test.Models
             var myClass = classNamespace.AddType("MyClass")
                 .AddUsing(otherNamespace.Name);
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, "OtherClass.Inner", out var match), Is.True);
@@ -158,7 +158,7 @@ namespace RoslynReflection.Test.Models
                 .AddUsingAlias("OtherNamespace", "MyThing");
 
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, $"MyThing.{otherClass.Name}", out var match), Is.True);
@@ -176,7 +176,7 @@ namespace RoslynReflection.Test.Models
             var myClass = classNamespace.AddType("MyClass")
                 .AddUsingAlias("OtherNamespace", "MyThing");
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, $"MyThing.Inner.{otherClass.Name}", out var match), Is.True);
@@ -194,7 +194,7 @@ namespace RoslynReflection.Test.Models
             var myClass = classNamespace.AddType("MyClass")
                 .AddUsingAlias("OtherNamespace.Inner", "MyThing");
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, $"MyThing.{otherClass.Name}", out var match), Is.True);
@@ -214,7 +214,7 @@ namespace RoslynReflection.Test.Models
                 .AddUsingAlias("OtherNamespace", "MyThing");
             var module = myClass.Module;
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, "MyThing.NoExist", out var match), Is.False);
@@ -236,7 +236,7 @@ namespace RoslynReflection.Test.Models
                 .AddUsingAlias("OtherNamespace2", "MyThing2");
 
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
 
@@ -261,7 +261,7 @@ namespace RoslynReflection.Test.Models
                 .AddUsingAlias("OtherNamespace", "MyThing2")
                 .AddUsing("OtherNamespace2");
 
-            var scannedModule = RawScannedTypeLinker.GetUnlinkedScannedModule(module);
+            var scannedModule = RawScannedTypeConstructor.GetUnlinkedScannedModule(module);
             var available = new AvailableTypes(scannedModule);
 
             Assert.That(available.TryGetType(myClass, $"{otherClass2.Name}", out var match), Is.True);

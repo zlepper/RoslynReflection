@@ -79,7 +79,7 @@ namespace RoslynReflection.Test.Parsers
 
             var (raw, compiled) = result.GetType("MyNamespace.MyClass");
             
-            TripleAssert(raw.IsClass, compiled.IsClass, compiled.ClrType!.IsClass, Is.True);
+            AssertValues(raw.IsClass, compiled.IsClass, compiled.ClrType!.IsClass, Is.True);
         }
 
         [Test]
@@ -93,8 +93,8 @@ namespace RoslynReflection.Test.Parsers
 
             var (raw, compiled) = result.GetType("MyNamespace.IMyInterface");
             
-            TripleAssert(raw.IsClass, compiled.IsClass, compiled.ClrType!.IsClass, Is.False);
-            TripleAssert(raw.IsInterface, compiled.IsInterface, compiled.ClrType!.IsInterface, Is.True);
+            AssertValues(raw.IsClass, compiled.IsClass, compiled.ClrType!.IsClass, Is.False);
+            AssertValues(raw.IsInterface, compiled.IsInterface, compiled.ClrType!.IsInterface, Is.True);
         }
 
         [Test]
@@ -108,9 +108,9 @@ namespace RoslynReflection.Test.Parsers
 
             var (raw, compiled) = result.GetType("MyNamespace.MyRecord");
             
-            TripleAssert(raw.IsClass, compiled.IsClass, compiled.ClrType!.IsClass, Is.True);
-            TripleAssert(raw.IsInterface, compiled.IsInterface, compiled.ClrType!.IsInterface, Is.False);
-            TripleAssert(raw.IsRecord, compiled.IsRecord, compiled.ClrType!.IsRecord(), Is.True);
+            AssertValues(raw.IsClass, compiled.IsClass, compiled.ClrType!.IsClass, Is.True);
+            AssertValues(raw.IsInterface, compiled.IsInterface, compiled.ClrType!.IsInterface, Is.False);
+            AssertValues(raw.IsRecord, compiled.IsRecord, compiled.ClrType!.IsRecord(), Is.True);
         }
 
         [Test]
@@ -153,7 +153,7 @@ namespace RoslynReflection.Test.Parsers
 
             var (raw, compiled) = result.GetType("MyNamespace.MyClass");
             
-            TripleAssert(raw.IsAbstract, compiled.IsAbstract, compiled.ClrType!.IsAbstract, Is.True);
+            AssertValues(raw.IsAbstract, compiled.IsAbstract, compiled.ClrType!.IsAbstract, Is.True);
         }
 
         
@@ -170,7 +170,7 @@ namespace RoslynReflection.Test.Parsers
 
             var (raw, compiled) = result.GetType("MyNamespace.MyClass");
             
-            TripleAssert(raw.IsAbstract, compiled.IsAbstract, compiled.ClrType!.IsAbstract, Is.True);
+            AssertValues(raw.IsAbstract, compiled.IsAbstract, compiled.ClrType!.IsAbstract, Is.True);
             Assert.That(raw.IsPartial, Is.True);
         }
 
@@ -184,14 +184,57 @@ namespace RoslynReflection.Test.Parsers
             var result = AnalyzeCode(code);
 
             var (raw, compiled) = result.GetType("MyNamespace.MyClass");
-            TripleAssert(raw.IsSealed, compiled.IsSealed, compiled.ClrType!.IsSealed, Is.True);
+            AssertValues(raw.IsSealed, compiled.IsSealed, compiled.ClrType!.IsSealed, Is.True);
         }
 
-        private static void TripleAssert<T>(T value1, T value2, T value3, IResolveConstraint expression)
+        [Test]
+        public void ParsesGenericTypes()
+        {
+            
+            var code = @"namespace MyNamespace {
+    public class MyClass<T> {}
+}";
+
+            var result = AnalyzeCode(code);
+            
+            var (raw, compiled) = result.GetType("MyNamespace.MyClass");
+            
+            AssertValues(raw.ContainsGenericParameters, compiled.ContainsGenericParameters, compiled.ClrType!.ContainsGenericParameters, Is.True);
+            AssertValues(raw.IsConstructedGenericType, compiled.IsConstructedGenericType, compiled.ClrType!.IsConstructedGenericType, Is.False);
+            AssertValues(raw.IsGenericType, compiled.IsGenericType, compiled.ClrType!.IsGenericType, Is.True);
+            AssertValues(raw.IsGenericTypeDefinition, compiled.IsGenericTypeDefinition, compiled.ClrType!.IsGenericTypeDefinition, Is.True);
+        }
+
+        [Explicit("Will always fail")]
+        [Test]
+        public void Expirimentation()
+        {
+            
+            
+            
+            
+            var typEmpty = typeof(MyClass<>);
+            var typInt = typeof(MyClass<int>);
+
+            Console.WriteLine(typEmpty);
+            Console.WriteLine(typInt);
+            
+            throw new Exception("You forgot to delete this!!");
+        }
+
+        private static void AssertValues<T>(T value1, T value2, T value3, IResolveConstraint expression)
         {
             Assert.That(value1, expression);
             Assert.That(value2, expression);
             Assert.That(value3, expression);
         }
+        
+        private static void AssertValues<T>(T value1, T value2, IResolveConstraint expression)
+        {
+            Assert.That(value1, expression);
+            Assert.That(value2, expression);
+        }
     }
+    
+    public class MyClass<T> {}
 }
