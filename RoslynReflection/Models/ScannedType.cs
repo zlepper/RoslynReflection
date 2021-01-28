@@ -17,7 +17,7 @@ namespace RoslynReflection.Models
         public ScannedNamespace Namespace { get; }
         public string Name { get; }
 
-        public ScannedType? SurroundingType { get; }
+        public ScannedType? DeclaringType { get; }
         public ValueList<object> Attributes { get; } = new(AttributeComparer.Instance, AttributeComparer.Instance);
         public ScannedType? BaseType { get; internal set; }
         public ValueList<ScannedType> ImplementedInterfaces { get; } = new();
@@ -49,7 +49,7 @@ namespace RoslynReflection.Models
         internal RawScannedType? RawScannedType;
 
 
-        public ScannedType(string name, ScannedNamespace scannedNamespace, ScannedType? surroundingType)
+        public ScannedType(string name, ScannedNamespace scannedNamespace, ScannedType? declaringType)
         {
             Guard.AgainstNull(name, nameof(name));
             Guard.AgainstNull(scannedNamespace, nameof(scannedNamespace));
@@ -59,11 +59,7 @@ namespace RoslynReflection.Models
 
             scannedNamespace.AddType(this);
 
-            SurroundingType = surroundingType;
-            if (surroundingType != null)
-            {
-                surroundingType.NestedTypes.Add(this);
-            }
+            DeclaringType = declaringType;
         }
 
         public virtual bool Equals(ScannedType? other)
@@ -118,7 +114,7 @@ namespace RoslynReflection.Models
                 .AppendNonDefaultField(nameof(IsInterface), IsInterface)
                 .AppendNonDefaultField(nameof(IsRecord), IsRecord)
                 .AppendNonDefaultField(nameof(IsPartial), IsPartial)
-                .AppendNonDefaultField(nameof(SurroundingType), SurroundingType == null ? default : SurroundingType.FullyQualifiedName())
+                .AppendNonDefaultField(nameof(DeclaringType), DeclaringType == null ? default : DeclaringType.FullyQualifiedName())
                 .AppendNonDefaultField(nameof(BaseType), BaseType, t => t.NullSafeToSimpleRepresentation());
         }
 

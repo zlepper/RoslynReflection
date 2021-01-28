@@ -222,17 +222,17 @@ namespace RoslynReflection.Test.Parsers
             throw new Exception("You forgot to delete this!!");
         }
 
-        private static void AssertValues<T>(T value1, T value2, T value3, IResolveConstraint expression)
+        private static void AssertValues<T>(T rawValue, T compiledValue, T reflectionValue, IResolveConstraint expression)
         {
-            Assert.That(value1, expression);
-            Assert.That(value2, expression);
-            Assert.That(value3, expression);
+            Assert.That(rawValue, expression);
+            Assert.That(compiledValue, expression);
+            Assert.That(reflectionValue, expression);
         }
         
-        private static void AssertValues<T>(T value1, T value2, IResolveConstraint expression)
+        private static void AssertValues<T>(T rawValue, T compiledValue, IResolveConstraint expression)
         {
-            Assert.That(value1, expression);
-            Assert.That(value2, expression);
+            Assert.That(rawValue, expression);
+            Assert.That(compiledValue, expression);
         }
     }
     

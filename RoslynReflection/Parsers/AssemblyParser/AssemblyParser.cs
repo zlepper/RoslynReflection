@@ -44,9 +44,9 @@ namespace RoslynReflection.Parsers.AssemblyParser
                 ? _rootNamespace 
                 : _namespaceList.GetNamespace(type.Namespace);
 
-            var surroundingType = type.DeclaringType == null ? null : AddType(type.DeclaringType);
+            var declaringType = type.DeclaringType == null ? null : AddType(type.DeclaringType);
 
-            var typeParser = new AssemblyTypeParser(ns, surroundingType);
+            var typeParser = new AssemblyTypeParser(ns, declaringType);
             return _typeDict[type] = typeParser.ParseType(type);
         }
 

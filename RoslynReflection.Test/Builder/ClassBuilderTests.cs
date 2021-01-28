@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Runtime.CompilerServices;
+using NUnit.Framework;
 using RoslynReflection.Builder;
 using RoslynReflection.Models;
 using RoslynReflection.Test.TestHelpers.TestAttributes;
@@ -35,10 +36,11 @@ namespace RoslynReflection.Test.Builder
             {
                 IsClass = true
             };
-            var _ = new ScannedType("MyInnerClass", expectedNamespace, expectedParentClass)
+            var innerClass = new ScannedType("MyInnerClass", expectedNamespace, expectedParentClass)
             {
                 IsClass = true
             };
+            expectedParentClass.NestedTypes.Add(innerClass);
 
             var actualModule = new ScannedModule()
                 .AddNamespace("MyNamespace")
@@ -58,33 +60,36 @@ namespace RoslynReflection.Test.Builder
             {
                 IsClass = true
             };
-            var unused1 = new ScannedType("MyFirstInnerClass", expectedNamespace, expectedParentClass)
+            var firstInnerClass = new ScannedType("MyFirstInnerClass", expectedNamespace, expectedParentClass)
+            {
+                IsClass = true,
+            };
+            expectedParentClass.NestedTypes.Add(firstInnerClass);
+            var secondInnerClass = new ScannedType("MySecondInnerClass", expectedNamespace, expectedParentClass)
             {
                 IsClass = true
             };
-            var unused2 = new ScannedType("MySecondInnerClass", expectedNamespace, expectedParentClass)
+            expectedParentClass.NestedTypes.Add(secondInnerClass);
+            var nestedInnerInnerClass = new ScannedType("MyInnerInnerClass", expectedNamespace, secondInnerClass)
             {
                 IsClass = true
             };
-            var unused3 = new ScannedType("MyInnerInnerClass", expectedNamespace, unused2)
+            secondInnerClass.NestedTypes.Add(nestedInnerInnerClass);
+            var thirdInnerClass = new ScannedType("MyThirdInnerClass", expectedNamespace, expectedParentClass)
             {
                 IsClass = true
             };
-            var unused4 = new ScannedType("MyThirdInnerClass", expectedNamespace, expectedParentClass)
-            {
-                IsClass = true
-            };
-
+            expectedParentClass.NestedTypes.Add(thirdInnerClass);
 
             var actualModule = new ScannedModule()
                             .AddNamespace("MyNamespace")
                             .AddClass("MyClass")
                             .AddNestedClass("MyFirstInnerClass")
-                            .SurroundingType!
+                            .DeclaringType!
                         .AddNestedClass("MySecondInnerClass")
                         .AddNestedClass("MyInnerInnerClass")
-                        .SurroundingType!
-                    .SurroundingType!
+                        .DeclaringType!
+                    .DeclaringType!
                 .AddNestedClass("MyThirdInnerClass")
                 .Module;
 
@@ -104,10 +109,12 @@ namespace RoslynReflection.Test.Builder
             {
                 IsClass = true
             };
-            var unused2 = new ScannedType("Inner", expectedNamespace, middle)
+            outer.NestedTypes.Add(middle);
+            var inner = new ScannedType("Inner", expectedNamespace, middle)
             {
                 IsClass = true
             };
+            middle.NestedTypes.Add(inner);
 
             var actual = new ScannedModule()
                 .AddNamespace("MyNs")

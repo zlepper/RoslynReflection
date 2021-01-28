@@ -7,38 +7,33 @@ namespace RoslynReflection.Builder
 {
     public static class ScannedTypeExtensions
     {
+        private static ScannedType AddNestedType(ScannedType parent, string name, Action<ScannedType> modify)
+        {
+            Guard.AgainstNull(parent, nameof(parent));
+            Guard.AgainstNull(name, nameof(name));
+            Guard.AgainstNull(modify, nameof(modify));
+
+            var type = new ScannedType(name, parent.Namespace, parent);
+            parent.NestedTypes.Add(type);
+            
+            modify(type);
+            
+            return type;
+        }
+        
         public static ScannedType AddNestedClass(this ScannedType type, string name)
         {
-            Guard.AgainstNull(type, nameof(type));
-            Guard.AgainstNull(name, nameof(name));
-            
-            return new(name, type.Namespace, type)
-            {
-                IsClass = true
-            };
+            return AddNestedType(type, name, t => t.IsClass = true);
         }
 
         public static ScannedType AddNestedInterface(this ScannedType type, string name)
         {
-            Guard.AgainstNull(type, nameof(type));
-            Guard.AgainstNull(name, nameof(name));
-
-            return new ScannedType(name, type.Namespace, type)
-            {
-                IsInterface = true
-            };
+            return AddNestedType(type, name, t => t.IsInterface = true);
         }
 
         public static ScannedType AddNestedRecord(this ScannedType type, string name)
         {
-            Guard.AgainstNull(type, nameof(type));
-            Guard.AgainstNull(name, nameof(name));
-
-            return new ScannedType(name, type.Namespace, type)
-            {
-                IsClass = true,
-                IsRecord = true,
-            };
+            return AddNestedType(type, name, t => t.IsClass = t.IsRecord = true);
         }
 
         public static ScannedType AddAttribute(this ScannedType type, Attribute attribute)

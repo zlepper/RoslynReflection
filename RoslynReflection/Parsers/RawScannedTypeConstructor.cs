@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -20,6 +21,7 @@ namespace RoslynReflection.Parsers
             foreach (var scannedType in fullModule.Types())
             {
                 SetTypeDetails(scannedType);
+                HandleGenericInformation(scannedType);
             }
 
             return fullModule;
@@ -44,6 +46,23 @@ namespace RoslynReflection.Parsers
             }
         }
 
+        internal static void HandleGenericInformation(ScannedType type)
+        {
+            var raw = type.RawScannedType!;
+
+            var decl = raw.TypeDeclarationSyntax.First();
+            
+            if (decl.TypeParameterList == null)
+            {
+                return;
+            }
+
+            type.ContainsGenericParameters = true;
+            type.IsConstructedGenericType = false;
+            type.IsGenericType = true;
+            type.IsGenericTypeDefinition = true;
+
+        }
 
         internal static ScannedModule GetUnlinkedScannedModule(RawScannedModule rawModule)
         {

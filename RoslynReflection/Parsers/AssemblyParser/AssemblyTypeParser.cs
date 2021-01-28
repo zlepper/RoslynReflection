@@ -6,12 +6,12 @@ namespace RoslynReflection.Parsers.AssemblyParser
     internal class AssemblyTypeParser
     {
         private readonly ScannedNamespace _scannedNamespace;
-        private readonly ScannedType? _surroundingType;
+        private readonly ScannedType? _declaringType;
 
-        public AssemblyTypeParser(ScannedNamespace scannedNamespace, ScannedType? surroundingType)
+        public AssemblyTypeParser(ScannedNamespace scannedNamespace, ScannedType? declaringType)
         {
             _scannedNamespace = scannedNamespace;
-            _surroundingType = surroundingType;
+            _declaringType = declaringType;
         }
 
         internal ScannedType ParseType(Type type)
@@ -22,12 +22,27 @@ namespace RoslynReflection.Parsers.AssemblyParser
                 name = name.Substring(0, name.IndexOf('`'));
             }
 
-            var scannedType = new ScannedType(name, _scannedNamespace, _surroundingType)
+            var scannedType = new ScannedType(name, _scannedNamespace, _declaringType)
             {
                 ClrType = type
             };
 
+            if (_declaringType != null)
+            {
+                _declaringType.NestedTypes.Add(scannedType);
+            }
+            
+            ParseGenericParameters(scannedType, type);
+
             return scannedType;
+        }
+
+        private void ParseGenericParameters(ScannedType scannedType, Type type)
+        {
+            scannedType.ContainsGenericParameters = type.ContainsGenericParameters;
+            scannedType.IsConstructedGenericType = type.IsConstructedGenericType;
+            scannedType.IsGenericType = type.IsGenericType;
+            scannedType.IsGenericTypeDefinition = type.IsGenericTypeDefinition;
         }
     }
 }
