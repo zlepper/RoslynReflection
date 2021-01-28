@@ -98,5 +98,11 @@ namespace RoslynReflection.Collections
         {
             _innerCollection.Clear();
         }
+
+        public T this[int index]
+        {
+            get => _innerCollection[index];
+            internal set => _innerCollection[index] = value;
+        }
     }
 }

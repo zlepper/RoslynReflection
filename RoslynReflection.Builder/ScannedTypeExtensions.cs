@@ -15,6 +15,7 @@ namespace RoslynReflection.Builder
 
             var type = new ScannedType(name, parent.Namespace, parent);
             parent.NestedTypes.Add(type);
+            parent.Namespace.AddType(type);
             
             modify(type);
             

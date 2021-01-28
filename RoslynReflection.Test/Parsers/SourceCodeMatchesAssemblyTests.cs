@@ -203,6 +203,19 @@ namespace RoslynReflection.Test.Parsers
             AssertValues(raw.IsConstructedGenericType, compiled.IsConstructedGenericType, compiled.ClrType!.IsConstructedGenericType, Is.False);
             AssertValues(raw.IsGenericType, compiled.IsGenericType, compiled.ClrType!.IsGenericType, Is.True);
             AssertValues(raw.IsGenericTypeDefinition, compiled.IsGenericTypeDefinition, compiled.ClrType!.IsGenericTypeDefinition, Is.True);
+            
+            AssertMultiple(raw, compiled, type =>
+            {
+                Assert.That(type.Namespace.Types, Has.Exactly(1).Items);
+                
+                Assert.That(type.GenericTypeParameters, Has.Exactly(1).Items);
+                var p = type.GenericTypeParameters[0];
+                Assert.That(p.Name, Is.EqualTo("T"));
+                Assert.That(ReferenceEquals(p.DeclaringType, type));
+                Assert.That(p.IsGenericParameter);
+                Assert.That(p.GenericParameterPosition, Is.EqualTo(0));
+                
+            });
         }
 
         [Explicit("Will always fail")]
@@ -233,6 +246,12 @@ namespace RoslynReflection.Test.Parsers
         {
             Assert.That(rawValue, expression);
             Assert.That(compiledValue, expression);
+        }
+
+        private void AssertMultiple<T>(T raw, T compiled, Action<T> doAsserts)
+        {
+            doAsserts(raw);
+            doAsserts(compiled);
         }
     }
     

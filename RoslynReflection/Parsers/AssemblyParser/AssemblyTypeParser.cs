@@ -26,23 +26,15 @@ namespace RoslynReflection.Parsers.AssemblyParser
             {
                 ClrType = type
             };
+            _scannedNamespace.AddType(scannedType);
 
             if (_declaringType != null)
             {
                 _declaringType.NestedTypes.Add(scannedType);
             }
-            
-            ParseGenericParameters(scannedType, type);
 
             return scannedType;
         }
 
-        private void ParseGenericParameters(ScannedType scannedType, Type type)
-        {
-            scannedType.ContainsGenericParameters = type.ContainsGenericParameters;
-            scannedType.IsConstructedGenericType = type.IsConstructedGenericType;
-            scannedType.IsGenericType = type.IsGenericType;
-            scannedType.IsGenericTypeDefinition = type.IsGenericTypeDefinition;
-        }
     }
 }

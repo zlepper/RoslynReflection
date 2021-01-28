@@ -4,6 +4,7 @@ using System.Reflection.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoslynReflection.Extensions;
 using RoslynReflection.Models;
 using RoslynReflection.Models.Extensions;
 using RoslynReflection.Parsers.SourceCode.Models;
@@ -61,6 +62,16 @@ namespace RoslynReflection.Parsers
             type.IsConstructedGenericType = false;
             type.IsGenericType = true;
             type.IsGenericTypeDefinition = true;
+            
+            foreach (var (typeParameterSyntax, index) in decl.TypeParameterList.Parameters.WithIndex())
+            {
+                var parameterName = typeParameterSyntax.Identifier.Text.Trim();
+                var parameterType = new ScannedType(parameterName, type.Namespace, type)
+                {
+                    GenericParameterPosition = index, IsGenericParameter = true
+                };
+                type.GenericTypeParameters.Add(parameterType);
+            }
 
         }
 
@@ -88,6 +99,7 @@ namespace RoslynReflection.Parsers
             {
                 RawScannedType = rawType
             };
+            ns.AddType(type);
 
             foreach (var rawNestedType in rawType.NestedTypes)
             {

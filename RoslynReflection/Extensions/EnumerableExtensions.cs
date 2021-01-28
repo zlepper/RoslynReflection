@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using RoslynReflection.Collections;
 using RoslynReflection.Models;
 
@@ -47,6 +48,11 @@ namespace RoslynReflection.Extensions
             var list = new ValueList<T>();
             list.AddRange(enumerable);
             return list;
+        }
+
+        internal static IEnumerable<(TValue value, int index)> WithIndex<TValue>(this IEnumerable<TValue> enumerable)
+        {
+            return enumerable.Select((v, i) => (v, i));
         }
     }
 }

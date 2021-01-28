@@ -33,12 +33,30 @@ namespace RoslynReflection.Models
         
         public bool IsSealed { get; internal set; }
         
+        /// <summary>
+        /// Indicates if this type contains type parameters that has not yet been replaced by a concrete type
+        /// </summary>
         public bool ContainsGenericParameters { get; internal set; }
+        /// <summary>
+        /// If this is a constructed generic type. You can create instances of these.
+        /// </summary>
         public bool IsConstructedGenericType { get; internal set; }
+        /// <summary>
+        /// Indicates if this type is a generic type, aka if it takes a type parameter
+        /// </summary>
         public bool IsGenericType { get; internal set; }
+        /// <summary>
+        /// Indicates whether the current Type represents a generic type definition, from which other generic types can be constructed.
+        /// </summary>
         public bool IsGenericTypeDefinition { get; internal set; }
 
+        /// <summary>
+        /// The <b>resolved</b> types passed to this generic type
+        /// </summary>
         public ValueList<ScannedType> GenericTypeArguments { get; } = new();
+        /// <summary>
+        /// The <b>unresolved</b> type arguments for this type
+        /// </summary>
         public ValueList<ScannedType> GenericTypeParameters { get; } = new();
         
         public bool IsGenericParameter { get; internal set; }
@@ -56,8 +74,6 @@ namespace RoslynReflection.Models
             
             Name = name;
             Namespace = scannedNamespace;
-
-            scannedNamespace.AddType(this);
 
             DeclaringType = declaringType;
         }
