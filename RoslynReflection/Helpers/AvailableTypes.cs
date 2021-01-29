@@ -15,7 +15,6 @@ namespace RoslynReflection.Helpers
     {
         internal readonly Dictionary<string, ScannedNamespace> Namespaces = new();
         private readonly ScannedModule _fakeModule = new();
-        private readonly Dictionary<Type, ScannedType> _reflectedTypeLookup = new();
 
         internal IEnumerable<ScannedType> Types => Namespaces.Values.SelectMany(n => n.Types);
 
@@ -43,14 +42,6 @@ namespace RoslynReflection.Helpers
             }
 
             existing.AddTypes(ns.Types);
-            
-            foreach (var scannedType in ns.Types)
-            {
-                if (scannedType.ClrType != null)
-                {
-                    _reflectedTypeLookup[scannedType.ClrType] = scannedType;
-                }
-            }
         }
 
         public void AddNamespaces(IEnumerable<ScannedNamespace> namespaces)
@@ -75,9 +66,15 @@ namespace RoslynReflection.Helpers
             return TryFromSelf(fromType, typeName, out type) || TryGetFullyQualifiedType(typeName, out type);
         }
 
-        internal bool TryGetType(Type clrType, out ScannedType scannedType)
+        internal bool TryGetType(string namespaceName, string typeName, out ScannedType type)
         {
-            return _reflectedTypeLookup.TryGetValue(clrType, out scannedType);
+            if (Namespaces.TryGetValue(namespaceName, out var ns))
+            {
+                return ns.TryGetType(typeName, out type);
+            }
+
+            type = null!;
+            return false;
         }
 
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]

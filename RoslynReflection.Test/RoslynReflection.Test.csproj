@@ -19,7 +19,6 @@
     <ItemGroup>
       <ProjectReference Include="..\RoslynReflection.Builder\RoslynReflection.Builder.csproj" />
       <ProjectReference Include="..\RoslynReflection\RoslynReflection.csproj" />
-      <ProjectReference Include="..\TestAssemblies\ScanableAssembly\ScanableAssembly.csproj" />
     </ItemGroup>
 
     <ItemGroup>

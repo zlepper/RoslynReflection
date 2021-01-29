@@ -1,4 +1,5 @@
 ﻿using System;
+using RoslynReflection.Extensions;
 using RoslynReflection.Models;
 
 namespace RoslynReflection.Parsers.AssemblyParser
@@ -16,11 +17,7 @@ namespace RoslynReflection.Parsers.AssemblyParser
 
         internal ScannedType ParseType(Type type)
         {
-            string name = type.Name;
-            if (name.Contains("`"))
-            {
-                name = name.Substring(0, name.IndexOf('`'));
-            }
+            var name = type.GetNonGenericTypeName();
 
             var scannedType = new ScannedType(name, _scannedNamespace, _declaringType)
             {

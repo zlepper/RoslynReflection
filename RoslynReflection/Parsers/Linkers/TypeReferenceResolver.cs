@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RoslynReflection.Extensions;
 using RoslynReflection.Helpers;
 using RoslynReflection.Models;
 using RoslynReflection.Parsers.SourceCode.Models;
@@ -53,29 +54,43 @@ namespace RoslynReflection.Parsers.Linkers
                     switch (baseTypeSyntax)
                     {
                         case SimpleBaseTypeSyntax simpleBaseTypeSyntax:
-                            if (simpleBaseTypeSyntax.Type is IdentifierNameSyntax nameSyntax)
+                            switch (simpleBaseTypeSyntax.Type)
                             {
-                                var baseTypeName = nameSyntax.Identifier.Text.Trim();
-                                if (_availableTypes.TryGetType(raw, baseTypeName, out var baseType))
+                                case IdentifierNameSyntax nameSyntax:
                                 {
-                                    if (baseType.IsClass)
+                                    var baseTypeName = nameSyntax.Identifier.Text.Trim();
+                                    if (_availableTypes.TryGetType(raw, baseTypeName, out var baseType))
                                     {
-                                        type.BaseType = baseType;
+                                        if (baseType.IsClass)
+                                        {
+                                            type.BaseType = baseType;
+                                        }
+                                        else if (baseType.IsInterface)
+                                        {
+                                            type.ImplementedInterfaces.Add(baseType);
+                                        }
+                                        else
+                                        {
+                                            throw new Exception("Got base type that is neither a class nor an interface");
+                                        }
                                     }
-                                    else if (baseType.IsInterface)
-                                    {
-                                        type.ImplementedInterfaces.Add(baseType);
-                                    }
-                                    else
-                                    {
-                                        throw new Exception("Got base type that is neither a class nor an interface");
-                                    }
+
+                                    break;
                                 }
-                            }
-                            else
-                            {
-                                throw new NotImplementedException(
-                                    $"Missing implementation for SimpleBaseTypeSyntax.Type not being IdentiferNameSyntax. Got: {simpleBaseTypeSyntax.Type.GetType()}");
+                                case GenericNameSyntax genericNameSyntax:
+                                {
+                                    var baseTypeName = genericNameSyntax.Identifier.Text.Trim();
+                                    if (_availableTypes.TryGetType(raw, baseTypeName, out var baseType))
+                                    {
+                                        
+                                    }
+
+
+                                    break;
+                                }
+                                default:
+                                    throw new NotImplementedException(
+                                        $"Missing implementation for SimpleBaseTypeSyntax.Type not being IdentiferNameSyntax. Got: {simpleBaseTypeSyntax.Type.GetType()}");
                             }
 
                             break;
@@ -83,8 +98,6 @@ namespace RoslynReflection.Parsers.Linkers
                             throw new NotImplementedException(
                                 $"Missing implementation for base syntax: {baseTypeSyntax.GetType()}");
                     }
-
-                    Console.WriteLine(baseTypeSyntax.Type);
                 }
             }
         }
@@ -101,7 +114,9 @@ namespace RoslynReflection.Parsers.Linkers
                 return;
             }
 
-            if (_availableTypes.TryGetType(reflectedType.BaseType, out var baseType))
+            var reflectedBaseType = reflectedType.BaseType;
+            
+            if (_availableTypes.TryGetType(reflectedBaseType.Namespace ?? "", reflectedBaseType.GetNonGenericTypeName(), out var baseType))
             {
                 type.BaseType = baseType;
             }
@@ -114,7 +129,7 @@ namespace RoslynReflection.Parsers.Linkers
                     continue;
                 }
 
-                if (_availableTypes.TryGetType(interfaceType, out var scannedInterfaceType))
+                if (_availableTypes.TryGetType(interfaceType.Namespace ?? "", interfaceType.GetNonGenericTypeName(), out var scannedInterfaceType))
                 {
                     type.ImplementedInterfaces.Add(scannedInterfaceType);
                 }

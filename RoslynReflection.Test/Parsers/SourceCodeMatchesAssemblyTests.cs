@@ -257,6 +257,34 @@ namespace RoslynReflection.Test.Parsers
             });
         }
 
+        [Test]
+        public void FindsGenericBaseTypeAndSetsGenericParameters()
+        {
+            var code = @"namespace MyNamespace {
+    public class MyOtherClass {}
+    public class MyBaseClass<T> {}
+    public class MySubClass : MyBaseClass<MyOtherClass> {}
+}";
+            
+            
+            var result = AnalyzeCode(code);
+            
+            var (raw, compiled) = result.GetType("MyNamespace.MySubClass");
+
+            AssertMultiple(raw, compiled, type =>
+            {
+                Assert.That(type.BaseType, Is.Not.Null.And.Property(nameof(ScannedType.Name)).EqualTo("MyBaseClass"));
+                var bt = type.BaseType!;
+                Assert.That(bt.ContainsGenericParameters, Is.False);
+                Assert.That(bt.GenericTypeParameters, Is.Empty);
+                Assert.That(bt.GenericTypeArguments, Has.Exactly(1).Items);
+
+                var a = bt.GenericTypeArguments[0];
+                Assert.That(a.Name, Is.EqualTo("MyOtherClass"));
+                Assert.That(a.IsGenericParameter, Is.False);
+            });
+        }
+
         [Explicit("Will always fail")]
         [Test]
         public void Expirimentation()
@@ -265,11 +293,9 @@ namespace RoslynReflection.Test.Parsers
             
             
             
-            var typEmpty = typeof(MyClass<>);
-            var typInt = typeof(MyClass<int>);
+            var typEmpty = typeof(MySubClass);
 
             Console.WriteLine(typEmpty);
-            Console.WriteLine(typInt);
             
             throw new Exception("You forgot to delete this!!");
         }
@@ -290,4 +316,6 @@ namespace RoslynReflection.Test.Parsers
     }
     
     public class MyClass<T> {}
+
+    public class MySubClass : MyClass<int> { }
 }
