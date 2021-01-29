@@ -40,7 +40,7 @@ namespace RoslynReflection.Models
         }
 
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]
-        public bool TryGetType(string typeName, out ScannedType? type)
+        public bool TryGetType(string typeName, out ScannedType type)
         {
             foreach (var t in Types)
             {
@@ -50,7 +50,7 @@ namespace RoslynReflection.Models
                 return true;
             }
 
-            type = null;
+            type = null!;
             return false;
         }
 

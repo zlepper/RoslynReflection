@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using RoslynReflection.Extensions;
 using RoslynReflection.Models;
 using RoslynReflection.Models.Extensions;
 using RoslynReflection.Parsers.AssemblyParser;
 
-namespace RoslynReflection.Parsers
+namespace RoslynReflection.Parsers.Linkers
 {
     internal class AssemblyTypeLinker
     {

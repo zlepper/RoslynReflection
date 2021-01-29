@@ -218,6 +218,25 @@ namespace RoslynReflection.Test.Parsers
             });
         }
 
+        [Test]
+        public void ParsesSubClass()
+        {
+            var code = @"namespace MyNamespace {
+    public class BaseClass{}
+    public class SubClass : BaseClass {}
+}";
+            
+            var result = AnalyzeCode(code);
+            
+            var (raw, compiled) = result.GetType("MyNamespace.SubClass");
+            
+            AssertMultiple(raw, compiled, type =>
+            {
+                Assert.That(type.BaseType, Is.Not.Null.And.Property(nameof(ScannedType.Name)).EqualTo("BaseClass"));
+                
+            });
+        }
+
         [Explicit("Will always fail")]
         [Test]
         public void Expirimentation()
@@ -242,11 +261,6 @@ namespace RoslynReflection.Test.Parsers
             Assert.That(reflectionValue, expression);
         }
         
-        private static void AssertValues<T>(T rawValue, T compiledValue, IResolveConstraint expression)
-        {
-            Assert.That(rawValue, expression);
-            Assert.That(compiledValue, expression);
-        }
 
         private void AssertMultiple<T>(T raw, T compiled, Action<T> doAsserts)
         {

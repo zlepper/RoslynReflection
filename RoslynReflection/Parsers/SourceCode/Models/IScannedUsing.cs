@@ -8,6 +8,6 @@ namespace RoslynReflection.Parsers.SourceCode.Models
     {
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]
         internal bool TryGetType(string typeName, AvailableTypes availableTypes,
-            out ScannedType? type);
+            out ScannedType type);
     }
 }

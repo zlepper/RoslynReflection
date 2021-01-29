@@ -4,10 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynReflection", "RoslynR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynReflection.Test", "RoslynReflection.Test\RoslynReflection.Test.csproj", "{298D942A-7787-477E-AE7A-8C99F63F0169}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestAssemblies", "TestAssemblies", "{4E295072-3184-47DD-8B3A-2E18752055C8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanableAssembly", "TestAssemblies\ScanableAssembly\ScanableAssembly.csproj", "{4C4B4614-08B6-4ABD-8C03-1C8DD88E8311}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynReflection.Builder", "RoslynReflection.Builder\RoslynReflection.Builder.csproj", "{4BC0D93E-0B71-48A5-9A56-B6FBC434CF2C}"
 EndProject
 Global
@@ -24,16 +20,11 @@ Global
 		{298D942A-7787-477E-AE7A-8C99F63F0169}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{298D942A-7787-477E-AE7A-8C99F63F0169}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{298D942A-7787-477E-AE7A-8C99F63F0169}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C4B4614-08B6-4ABD-8C03-1C8DD88E8311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C4B4614-08B6-4ABD-8C03-1C8DD88E8311}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C4B4614-08B6-4ABD-8C03-1C8DD88E8311}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C4B4614-08B6-4ABD-8C03-1C8DD88E8311}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4BC0D93E-0B71-48A5-9A56-B6FBC434CF2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4BC0D93E-0B71-48A5-9A56-B6FBC434CF2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BC0D93E-0B71-48A5-9A56-B6FBC434CF2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BC0D93E-0B71-48A5-9A56-B6FBC434CF2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{4C4B4614-08B6-4ABD-8C03-1C8DD88E8311} = {4E295072-3184-47DD-8B3A-2E18752055C8}
 	EndGlobalSection
 EndGlobal

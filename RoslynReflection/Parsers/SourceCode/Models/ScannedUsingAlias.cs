@@ -19,9 +19,9 @@ namespace RoslynReflection.Parsers.SourceCode.Models
         }
 
         bool IScannedUsing.TryGetType(string typeName, AvailableTypes availableTypes,
-            out ScannedType? type)
+            out ScannedType type)
         {
-            type = null;
+            type = null!;
             var parts = typeName.Split('.');
             if (parts.Length == 1)
                 return false;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using RoslynReflection.Extensions;
@@ -6,12 +7,15 @@ using RoslynReflection.Models;
 using RoslynReflection.Models.Extensions;
 using RoslynReflection.Parsers.SourceCode.Models;
 
+#nullable enable annotations
+
 namespace RoslynReflection.Helpers
 {
     internal class AvailableTypes
     {
         internal readonly Dictionary<string, ScannedNamespace> Namespaces = new();
         private readonly ScannedModule _fakeModule = new();
+        private readonly Dictionary<Type, ScannedType> _reflectedTypeLookup = new();
 
         internal IEnumerable<ScannedType> Types => Namespaces.Values.SelectMany(n => n.Types);
 
@@ -27,7 +31,7 @@ namespace RoslynReflection.Helpers
         
         public AvailableTypes(ScannedModule module)
         {
-            AddNamespaces(module.Namespaces);
+            AddNamespaces(module.GetAllAvailableNamespaces());
         }
         
         public void AddNamespace(ScannedNamespace ns)
@@ -39,6 +43,14 @@ namespace RoslynReflection.Helpers
             }
 
             existing.AddTypes(ns.Types);
+            
+            foreach (var scannedType in ns.Types)
+            {
+                if (scannedType.ClrType != null)
+                {
+                    _reflectedTypeLookup[scannedType.ClrType] = scannedType;
+                }
+            }
         }
 
         public void AddNamespaces(IEnumerable<ScannedNamespace> namespaces)
@@ -50,7 +62,7 @@ namespace RoslynReflection.Helpers
         }
 
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]
-        internal bool TryGetType(RawScannedType fromType, string typeName, out ScannedType? type)
+        internal bool TryGetType(RawScannedType fromType, string typeName, out ScannedType type)
         {
             foreach (var usingStatement in fromType.Usings)
             {
@@ -63,8 +75,13 @@ namespace RoslynReflection.Helpers
             return TryFromSelf(fromType, typeName, out type) || TryGetFullyQualifiedType(typeName, out type);
         }
 
+        internal bool TryGetType(Type clrType, out ScannedType scannedType)
+        {
+            return _reflectedTypeLookup.TryGetValue(clrType, out scannedType);
+        }
+
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]
-        private bool TryFromSelf(RawScannedType fromType, string typeName, out ScannedType? type)
+        private bool TryFromSelf(RawScannedType fromType, string typeName, out ScannedType type)
         {
             var ns = Namespaces[fromType.Namespace.Name];
             if (ns.TryGetType(typeName, out type))
@@ -78,18 +95,18 @@ namespace RoslynReflection.Helpers
                 return true;
             }
 
-            type = null;
+            type = null!;
             return false;
             
         }
 
         [ContractAnnotation("=> true, type: notnull; => false, type: null")]
-        private bool TryGetFullyQualifiedType(string typeName, out ScannedType? type)
+        private bool TryGetFullyQualifiedType(string typeName, out ScannedType type)
         {
             var parts = typeName.Split('.');
             if (parts.Length == 1)
             {
-                type = null;
+                type = null!;
                 return false;
             }
 

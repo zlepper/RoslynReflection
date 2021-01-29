@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,7 +8,7 @@ using RoslynReflection.Models;
 using RoslynReflection.Models.Extensions;
 using RoslynReflection.Parsers.SourceCode.Models;
 
-namespace RoslynReflection.Parsers
+namespace RoslynReflection.Parsers.Linkers
 {
     internal class RawScannedTypeConstructor
     {

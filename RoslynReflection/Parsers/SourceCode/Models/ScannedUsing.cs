@@ -15,12 +15,12 @@ namespace RoslynReflection.Parsers.SourceCode.Models
         }
 
         bool IScannedUsing.TryGetType(string typeName, AvailableTypes availableTypes,
-            out ScannedType? type)
+            out ScannedType type)
         {
             if (availableTypes.Namespaces.TryGetValue(Namespace, out var ns))
                 return ns.TryGetType(typeName, out type);
 
-            type = null;
+            type = null!;
             return false;
         }
 

@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using RoslynReflection.Helpers;
 using RoslynReflection.Parsers;
+using RoslynReflection.Parsers.Linkers;
 using RoslynReflection.Parsers.SourceCode.Models;
 using RoslynReflection.Test.TestHelpers.Extensions;
 

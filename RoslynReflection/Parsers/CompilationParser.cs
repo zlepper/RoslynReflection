@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using RoslynReflection.Helpers;
 using RoslynReflection.Models;
 using RoslynReflection.Models.Extensions;
+using RoslynReflection.Parsers.Linkers;
 using RoslynReflection.Parsers.SourceCode;
 using RoslynReflection.Parsers.SourceCode.Models;
 
@@ -55,8 +56,8 @@ namespace RoslynReflection.Parsers
             
             var availableTypes = new AvailableTypes(mainModule);
 
-            // var typeReferenceResolver = new TypeReferenceResolver(availableTypes);
-            // typeReferenceResolver.ResolveUnlinkedTypes(availableTypes.Types);
+            var typeReferenceResolver = new TypeReferenceResolver(availableTypes);
+            typeReferenceResolver.ResolveUnlinkedTypes(availableTypes.Types);
 
             // var annotationResolver = new AnnotationResolver(availableTypes);
             // annotationResolver.ResolveAnnotations(mainModule.Types().);
