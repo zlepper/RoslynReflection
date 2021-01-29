@@ -237,6 +237,26 @@ namespace RoslynReflection.Test.Parsers
             });
         }
 
+        [Test]
+        public void ParsesAndLinksInterface()
+        {
+            var code = @"namespace MyNamespace {
+    public interface IInterface{}
+    public class SubClass : IInterface {}
+}";
+            
+            var result = AnalyzeCode(code);
+            
+            var (raw, compiled) = result.GetType("MyNamespace.SubClass");
+            
+            AssertMultiple(raw, compiled, type =>
+            {
+                Assert.That(type.ImplementedInterfaces, Has.Exactly(1).Items);
+                Assert.That(type.ImplementedInterfaces[0], Is.Not.Null.And.Property(nameof(ScannedType.Name)).EqualTo("IInterface"));
+                
+            });
+        }
+
         [Explicit("Will always fail")]
         [Test]
         public void Expirimentation()

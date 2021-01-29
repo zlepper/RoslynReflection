@@ -105,6 +105,20 @@ namespace RoslynReflection.Parsers.Linkers
             {
                 type.BaseType = baseType;
             }
+            
+            foreach (var interfaceType in reflectedType.GetInterfaces())
+            {
+                if (interfaceType.IsGenericType)
+                {
+                    // TODO
+                    continue;
+                }
+
+                if (_availableTypes.TryGetType(interfaceType, out var scannedInterfaceType))
+                {
+                    type.ImplementedInterfaces.Add(scannedInterfaceType);
+                }
+            }
         }
     }
 }
