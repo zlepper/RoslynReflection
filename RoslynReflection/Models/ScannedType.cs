@@ -53,15 +53,24 @@ namespace RoslynReflection.Models
         /// <summary>
         /// The <b>resolved</b> types passed to this generic type
         /// </summary>
-        public ValueList<ScannedType> GenericTypeArguments { get; } = new();
+        public ValueList<ScannedType> GenericTypeArguments { get; internal set; } = new();
         /// <summary>
         /// The <b>unresolved</b> type arguments for this type
         /// </summary>
-        public ValueList<ScannedType> GenericTypeParameters { get; } = new();
+        public ValueList<ScannedType> GenericTypeParameters { get; internal set; } = new();
         
         public bool IsGenericParameter { get; internal set; }
         public int GenericParameterPosition { get; internal set; } = -1;
         
+        /// <summary>
+        /// The underlying type if this is a generic type
+        /// </summary>
+        public ScannedType? UnderlyingType { get; internal set; }
+        
+        /// <summary>
+        /// Is true, then RoslynReflection could not resolve the actual type
+        /// </summary>
+        public bool IsUnknownType { get; internal set; }
 
         internal Type? ClrType;
         internal RawScannedType? RawScannedType;

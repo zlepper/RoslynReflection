@@ -285,6 +285,71 @@ namespace RoslynReflection.Test.Parsers
             });
         }
 
+        [Test]
+        public void ConcreteGenericTypesAreTheSameObjectIfDefinitionIsTheSameEvenWhenUsedInMultiplePlaces()
+        {
+            var code = @"namespace MyNamespace {
+    public class MyOtherClass {}
+    public class MyBaseClass<T> {}
+    public class MySubClass : MyBaseClass<MyOtherClass> {}
+    public class MySecondSubClass : MyBaseClass<MyOtherClass> {}
+}";
+            
+            
+            var result = AnalyzeCode(code);
+            
+            var (rawFirst, compiledFirst) = result.GetType("MyNamespace.MySubClass");
+            var (rawSecond, compiledSecond) = result.GetType("MyNamespace.MySecondSubClass");
+
+            Assert.That(rawFirst.BaseType, Is.SameAs(rawSecond.BaseType));
+            Assert.That(compiledFirst.BaseType, Is.SameAs(compiledSecond.BaseType));
+        }
+
+        [Test]
+        public void GenericArgumentIsSameWhenMovedAcrossBetweenTypes()
+        {
+            var code = @"namespace MyNamespace {
+    public class BasicBaseClass<T> {}
+    public class MyBaseClass<T> : BasicBaseClass<T> {}
+    public class MySubClass<T> : MyBaseClass<T> {}
+}";
+            var result = AnalyzeCode(code);
+            
+            var (raw, compiled) = result.GetType("MyNamespace.MySubClass");
+            
+            AssertMultiple(raw, compiled, type =>
+            {
+                Assert.That(type.BaseType!.GenericTypeParameters[0], Is.SameAs(type.GenericTypeParameters[0]));
+                Assert.That(type.BaseType!.BaseType!.GenericTypeParameters[0], Is.SameAs(type.GenericTypeParameters[0]));
+            });
+        }
+
+        [Test]
+        public void HandlesPassingGenericsToNestedGenerics()
+        {
+            var code = @"namespace MyNamespace {
+    public class ToBeNested<T> {}
+    public class MyBaseClass<T> {}
+    public class MySubClass<T> : MyBaseClass<ToBeNested<T>> {}
+}";
+            var result = AnalyzeCode(code);
+            
+            var (raw, compiled) = result.GetType("MyNamespace.MySubClass");
+            
+            AssertMultiple(raw, compiled, type =>
+            {
+                var bt = type.BaseType!;
+                Assert.That(bt.GenericTypeParameters, Is.Empty);
+                Assert.That(bt.GenericTypeArguments, Has.Exactly(1).Items);
+                var argument = bt.GenericTypeArguments[0];
+                Assert.That(argument.Name, Is.EqualTo("ToBeNested"));
+                Assert.That(argument.GenericTypeArguments, Is.Empty);
+                Assert.That(argument.GenericTypeParameters, Has.Exactly(1).Items);
+                Assert.That(type.GenericTypeParameters[0], Is.SameAs(argument.GenericTypeParameters[0]));
+                
+            });
+        }
+
         [Explicit("Will always fail")]
         [Test]
         public void Expirimentation()
@@ -293,9 +358,11 @@ namespace RoslynReflection.Test.Parsers
             
             
             
-            var typEmpty = typeof(MySubClass);
+            var subClass = typeof(MySubClass);
+            var otherClass = typeof(MyOtherClass);
 
-            Console.WriteLine(typEmpty);
+            Console.WriteLine(subClass);
+            Console.WriteLine(otherClass);
             
             throw new Exception("You forgot to delete this!!");
         }
@@ -311,11 +378,13 @@ namespace RoslynReflection.Test.Parsers
         private void AssertMultiple<T>(T raw, T compiled, Action<T> doAsserts)
         {
             doAsserts(raw);
-            doAsserts(compiled);
+            // doAsserts(compiled);
         }
     }
-    
+
     public class MyClass<T> {}
 
     public class MySubClass : MyClass<int> { }
+    
+    public class MyOtherClass : MyClass<int> {}
 }
